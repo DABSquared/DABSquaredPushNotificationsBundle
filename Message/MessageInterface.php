@@ -1,6 +1,6 @@
 <?php
 
-namespace RMS\PushNotificationsBundle\Message;
+namespace DABSquared\PushNotificationsBundle\Message;
 
 interface MessageInterface
 {

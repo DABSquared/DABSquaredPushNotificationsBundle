@@ -4,24 +4,24 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="rms_push_notifications.android.c2dm.class">RMS\PushNotificationsBundle\Service\OS\AndroidNotification</parameter>
-        <parameter key="rms_push_notifications.android.gcm.class">RMS\PushNotificationsBundle\Service\OS\AndroidGCMNotification</parameter>
+        <parameter key="dab_push_notifications.android.c2dm.class">DABSquared\PushNotificationsBundle\Service\OS\AndroidNotification</parameter>
+        <parameter key="dab_push_notifications.android.gcm.class">DABSquared\PushNotificationsBundle\Service\OS\AndroidGCMNotification</parameter>
     </parameters>
 
     <services>
 
         <!-- Android (C2DM) -->
-        <service id="rms_push_notifications.android.c2dm" class="%rms_push_notifications.android.c2dm.class%" public="false">
-            <argument>%rms_push_notifications.android.c2dm.username%</argument>
-            <argument>%rms_push_notifications.android.c2dm.password%</argument>
-            <argument>%rms_push_notifications.android.c2dm.source%</argument>
-            <tag name="rms_push_notifications.handler" osType="rms_push_notifications.os.android.c2dm" />
+        <service id="dab_push_notifications.android.c2dm" class="%dab_push_notifications.android.c2dm.class%" public="false">
+            <argument>%dab_push_notifications.android.c2dm.username%</argument>
+            <argument>%dab_push_notifications.android.c2dm.password%</argument>
+            <argument>%dab_push_notifications.android.c2dm.source%</argument>
+            <tag name="dab_push_notifications.handler" osType="dab_push_notifications.os.android.c2dm" />
         </service>
 
         <!-- Android (GCM) -->
-        <service id="rms_push_notifications.android.gcm" class="%rms_push_notifications.android.gcm.class%" public="false">
-            <argument>%rms_push_notifications.android.gcm.api_key%</argument>
-            <tag name="rms_push_notifications.handler" osType="rms_push_notifications.os.android.gcm" />
+        <service id="dab_push_notifications.android.gcm" class="%dab_push_notifications.android.gcm.class%" public="false">
+            <argument>%dab_push_notifications.android.gcm.api_key%</argument>
+            <tag name="dab_push_notifications.handler" osType="dab_push_notifications.os.android.gcm" />
         </service>
 
     </services>

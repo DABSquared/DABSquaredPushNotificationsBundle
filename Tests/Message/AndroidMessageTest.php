@@ -1,17 +1,17 @@
 <?php
 
-namespace RMS\PushNotificationsBundle\Tests\Message;
+namespace DABSquared\PushNotificationsBundle\Tests\Message;
 
-use RMS\PushNotificationsBundle\Device\Types,
-    RMS\PushNotificationsBundle\Message\AndroidMessage,
-    RMS\PushNotificationsBundle\Message\MessageInterface;
+use DABSquared\PushNotificationsBundle\Device\Types,
+    DABSquared\PushNotificationsBundle\Message\AndroidMessage,
+    DABSquared\PushNotificationsBundle\Message\MessageInterface;
 
 class AndroidMessageTest extends \PHPUnit_Framework_TestCase
 {
     public function testCreation()
     {
         $msg = new AndroidMessage();
-        $this->assertInstanceOf("RMS\PushNotificationsBundle\Message\MessageInterface", $msg);
+        $this->assertInstanceOf("DABSquared\PushNotificationsBundle\Message\MessageInterface", $msg);
         $this->assertEquals(Types::OS_ANDROID_C2DM, $msg->getTargetOS());
     }
 

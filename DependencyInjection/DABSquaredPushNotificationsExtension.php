@@ -1,13 +1,13 @@
 <?php
 
-namespace RMS\PushNotificationsBundle\DependencyInjection;
+namespace DABSquared\PushNotificationsBundle\DependencyInjection;
 
 use Symfony\Component\HttpKernel\DependencyInjection\Extension,
     Symfony\Component\DependencyInjection\ContainerBuilder,
     Symfony\Component\DependencyInjection\Loader\XmlFileLoader,
     Symfony\Component\Config\FileLocator;
 
-class RMSPushNotificationsExtension extends Extension
+class DABSquaredPushNotificationsExtension extends Extension
 {
     /**
      * @var ContainerBuilder
@@ -50,8 +50,8 @@ class RMSPushNotificationsExtension extends Extension
      */
     protected function setInitialParams()
     {
-        $this->container->setParameter("rms_push_notifications.android.enabled", false);
-        $this->container->setParameter("rms_push_notifications.ios.enabled", false);
+        $this->container->setParameter("dab_push_notifications.android.enabled", false);
+        $this->container->setParameter("dab_push_notifications.ios.enabled", false);
     }
 
     /**
@@ -61,8 +61,8 @@ class RMSPushNotificationsExtension extends Extension
      */
     protected function setAndroidConfig(array $config)
     {
-        $this->container->setParameter("rms_push_notifications.android.enabled", true);
-        $this->container->setParameter("rms_push_notifications.android.c2dm.enabled", true);
+        $this->container->setParameter("dab_push_notifications.android.enabled", true);
+        $this->container->setParameter("dab_push_notifications.android.c2dm.enabled", true);
 
         // C2DM
         $username = $config["android"]["username"];
@@ -73,14 +73,14 @@ class RMSPushNotificationsExtension extends Extension
             $password = $config["android"]["c2dm"]["password"];
             $source = $config["android"]["c2dm"]["source"];
         }
-        $this->container->setParameter("rms_push_notifications.android.c2dm.username", $username);
-        $this->container->setParameter("rms_push_notifications.android.c2dm.password", $password);
-        $this->container->setParameter("rms_push_notifications.android.c2dm.source", $source);
+        $this->container->setParameter("dab_push_notifications.android.c2dm.username", $username);
+        $this->container->setParameter("dab_push_notifications.android.c2dm.password", $password);
+        $this->container->setParameter("dab_push_notifications.android.c2dm.source", $source);
 
         // GCM
-        $this->container->setParameter("rms_push_notifications.android.gcm.enabled", isset($config["android"]["gcm"]));
+        $this->container->setParameter("dab_push_notifications.android.gcm.enabled", isset($config["android"]["gcm"]));
         if (isset($config["android"]["gcm"])) {
-            $this->container->setParameter("rms_push_notifications.android.gcm.api_key", $config["android"]["gcm"]["api_key"]);
+            $this->container->setParameter("dab_push_notifications.android.gcm.api_key", $config["android"]["gcm"]["api_key"]);
         }
     }
 
@@ -106,11 +106,11 @@ class RMSPushNotificationsExtension extends Extension
             }
         }
 
-        $this->container->setParameter("rms_push_notifications.ios.enabled", true);
-        $this->container->setParameter("rms_push_notifications.ios.sandbox", $config["ios"]["sandbox"]);
-        $this->container->setParameter("rms_push_notifications.ios.pem", $config["ios"]["pem"]);
-        $this->container->setParameter("rms_push_notifications.ios.passphrase", $config["ios"]["passphrase"]);
-        $this->container->setParameter("rms_push_notifications.ios.json_unescaped_unicode", (bool) $config['ios']['json_unescaped_unicode']);
+        $this->container->setParameter("dab_push_notifications.ios.enabled", true);
+        $this->container->setParameter("dab_push_notifications.ios.sandbox", $config["ios"]["sandbox"]);
+        $this->container->setParameter("dab_push_notifications.ios.pem", $config["ios"]["pem"]);
+        $this->container->setParameter("dab_push_notifications.ios.passphrase", $config["ios"]["passphrase"]);
+        $this->container->setParameter("dab_push_notifications.ios.json_unescaped_unicode", (bool) $config['ios']['json_unescaped_unicode']);
     }
 
     /**
@@ -120,9 +120,9 @@ class RMSPushNotificationsExtension extends Extension
      */
     protected function setBlackberryConfig(array $config)
     {
-        $this->container->setParameter("rms_push_notifications.blackberry.enabled", true);
-        $this->container->setParameter("rms_push_notifications.blackberry.evaluation", $config["blackberry"]["evaluation"]);
-        $this->container->setParameter("rms_push_notifications.blackberry.app_id", $config["blackberry"]["app_id"]);
-        $this->container->setParameter("rms_push_notifications.blackberry.password", $config["blackberry"]["password"]);
+        $this->container->setParameter("dab_push_notifications.blackberry.enabled", true);
+        $this->container->setParameter("dab_push_notifications.blackberry.evaluation", $config["blackberry"]["evaluation"]);
+        $this->container->setParameter("dab_push_notifications.blackberry.app_id", $config["blackberry"]["app_id"]);
+        $this->container->setParameter("dab_push_notifications.blackberry.password", $config["blackberry"]["password"]);
     }
 }

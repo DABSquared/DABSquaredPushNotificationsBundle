@@ -1,8 +1,8 @@
 <?php
 
-namespace RMS\PushNotificationsBundle\Service;
+namespace DABSquared\PushNotificationsBundle\Service;
 
-use RMS\PushNotificationsBundle\Message\MessageInterface;
+use DABSquared\PushNotificationsBundle\Message\MessageInterface;
 
 class Notifications
 {
@@ -24,7 +24,7 @@ class Notifications
      * Sends a message to a device, identified by
      * the OS and the supplied device token
      *
-     * @param \RMS\PushNotificationsBundle\Message\MessageInterface $message
+     * @param \DABSquared\PushNotificationsBundle\Message\MessageInterface $message
      * @throws \RuntimeException
      * @return bool
      */

@@ -1,8 +1,8 @@
 <?php
 
-namespace RMS\PushNotificationsBundle\Service;
+namespace DABSquared\PushNotificationsBundle\Service;
 
-use RMS\PushNotificationsBundle\Device\iOS\Feedback;
+use DABSquared\PushNotificationsBundle\Device\iOS\Feedback;
 
 class iOSFeedback
 {

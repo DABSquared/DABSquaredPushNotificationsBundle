@@ -1,10 +1,10 @@
 <?php
 
-namespace RMS\PushNotificationsBundle\Service\OS;
+namespace DABSquared\PushNotificationsBundle\Service\OS;
 
-use RMS\PushNotificationsBundle\Exception\InvalidMessageTypeException,
-    RMS\PushNotificationsBundle\Message\AndroidMessage,
-    RMS\PushNotificationsBundle\Message\MessageInterface;
+use DABSquared\PushNotificationsBundle\Exception\InvalidMessageTypeException,
+    DABSquared\PushNotificationsBundle\Message\AndroidMessage,
+    DABSquared\PushNotificationsBundle\Message\MessageInterface;
 use Buzz\Browser;
 
 class AndroidNotification implements OSNotificationServiceInterface
@@ -57,8 +57,8 @@ class AndroidNotification implements OSNotificationServiceInterface
      * Sends a C2DM message
      * This assumes that a valid auth token can be obtained
      *
-     * @param \RMS\PushNotificationsBundle\Message\MessageInterface $message
-     * @throws \RMS\PushNotificationsBundle\Exception\InvalidMessageTypeException
+     * @param \DABSquared\PushNotificationsBundle\Message\MessageInterface $message
+     * @throws \DABSquared\PushNotificationsBundle\Exception\InvalidMessageTypeException
      * @return bool
      */
     public function send(MessageInterface $message)

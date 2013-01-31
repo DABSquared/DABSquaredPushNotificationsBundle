@@ -1,6 +1,6 @@
 <?php
 
-namespace RMS\PushNotificationsBundle\Exception;
+namespace DABSquared\PushNotificationsBundle\Exception;
 
 class InvalidMessageTypeException extends \RuntimeException
 {

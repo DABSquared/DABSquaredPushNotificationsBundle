@@ -1,15 +1,15 @@
 <?php
 
-namespace RMS\PushNotificationsBundle\Service\OS;
+namespace DABSquared\PushNotificationsBundle\Service\OS;
 
-use RMS\PushNotificationsBundle\Message\MessageInterface;
+use DABSquared\PushNotificationsBundle\Message\MessageInterface;
 
 interface OSNotificationServiceInterface
 {
     /**
      * Send a notification message
      *
-     * @param \RMS\PushNotificationsBundle\Message\MessageInterface $message
+     * @param \DABSquared\PushNotificationsBundle\Message\MessageInterface $message
      * @return mixed
      */
     public function send(MessageInterface $message);

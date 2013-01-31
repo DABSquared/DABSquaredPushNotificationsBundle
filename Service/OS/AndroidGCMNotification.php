@@ -1,10 +1,10 @@
 <?php
 
-namespace RMS\PushNotificationsBundle\Service\OS;
+namespace DABSquared\PushNotificationsBundle\Service\OS;
 
-use RMS\PushNotificationsBundle\Exception\InvalidMessageTypeException,
-    RMS\PushNotificationsBundle\Message\AndroidMessage,
-    RMS\PushNotificationsBundle\Message\MessageInterface;
+use DABSquared\PushNotificationsBundle\Exception\InvalidMessageTypeException,
+    DABSquared\PushNotificationsBundle\Message\AndroidMessage,
+    DABSquared\PushNotificationsBundle\Message\MessageInterface;
 use Buzz\Browser,
     Buzz\Client\MultiCurl;
 
@@ -59,8 +59,8 @@ class AndroidGCMNotification implements OSNotificationServiceInterface
     /**
      * Sends the data to the given registration IDs via the GCM server
      *
-     * @param \RMS\PushNotificationsBundle\Message\MessageInterface $message
-     * @throws \RMS\PushNotificationsBundle\Exception\InvalidMessageTypeException
+     * @param \DABSquared\PushNotificationsBundle\Message\MessageInterface $message
+     * @throws \DABSquared\PushNotificationsBundle\Exception\InvalidMessageTypeException
      * @return bool
      */
     public function send(MessageInterface $message)

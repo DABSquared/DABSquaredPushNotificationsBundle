@@ -1,10 +1,10 @@
 <?php
 
-namespace RMS\PushNotificationsBundle\Service\OS;
+namespace DABSquared\PushNotificationsBundle\Service\OS;
 
-use RMS\PushNotificationsBundle\Exception\InvalidMessageTypeException,
-    RMS\PushNotificationsBundle\Message\BlackberryMessage,
-    RMS\PushNotificationsBundle\Message\MessageInterface;
+use DABSquared\PushNotificationsBundle\Exception\InvalidMessageTypeException,
+    DABSquared\PushNotificationsBundle\Message\BlackberryMessage,
+    DABSquared\PushNotificationsBundle\Message\MessageInterface;
 use Buzz\Browser,
     Buzz\Listener\BasicAuthListener,
     Buzz\Client\Curl;
@@ -49,8 +49,8 @@ class BlackberryNotification implements OSNotificationServiceInterface
     /**
      * Sends a Blackberry Push message
      *
-     * @param \RMS\PushNotificationsBundle\Message\MessageInterface $message
-     * @throws \RMS\PushNotificationsBundle\Exception\InvalidMessageTypeException
+     * @param \DABSquared\PushNotificationsBundle\Message\MessageInterface $message
+     * @throws \DABSquared\PushNotificationsBundle\Exception\InvalidMessageTypeException
      * @return bool
      */
     public function send(MessageInterface $message)
@@ -65,7 +65,7 @@ class BlackberryNotification implements OSNotificationServiceInterface
     /**
      * Does the actual sending
      *
-     * @param \RMS\PushNotificationsBundle\Message\BlackberryMessage $message
+     * @param \DABSquared\PushNotificationsBundle\Message\BlackberryMessage $message
      * @return bool
      */
     protected function doSend(BlackberryMessage $message)
@@ -92,7 +92,7 @@ class BlackberryNotification implements OSNotificationServiceInterface
     /**
      * Builds the actual body of the message
      *
-     * @param \RMS\PushNotificationsBundle\Message\BlackberryMessage $message
+     * @param \DABSquared\PushNotificationsBundle\Message\BlackberryMessage $message
      * @param $separator
      * @return string
      */

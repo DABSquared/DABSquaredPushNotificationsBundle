@@ -1,6 +1,6 @@
 <?php
 
-namespace RMS\PushNotificationsBundle\DependencyInjection;
+namespace DABSquared\PushNotificationsBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -20,7 +20,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $this->root = $treeBuilder->root("rms_push_notifications");
+        $this->root = $treeBuilder->root("dabsquared_push_notifications");
 
         $this->addAndroid();
         $this->addiOS();

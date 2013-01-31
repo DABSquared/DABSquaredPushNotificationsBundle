@@ -1,10 +1,10 @@
 <?php
 
-namespace RMS\PushNotificationsBundle\Service\OS;
+namespace DABSquared\PushNotificationsBundle\Service\OS;
 
-use RMS\PushNotificationsBundle\Exception\InvalidMessageTypeException,
-    RMS\PushNotificationsBundle\Message\iOSMessage,
-    RMS\PushNotificationsBundle\Message\MessageInterface;
+use DABSquared\PushNotificationsBundle\Exception\InvalidMessageTypeException,
+    DABSquared\PushNotificationsBundle\Message\iOSMessage,
+    DABSquared\PushNotificationsBundle\Message\MessageInterface;
 use Buzz\Browser;
 
 class iOSNotification implements OSNotificationServiceInterface
@@ -90,9 +90,9 @@ class iOSNotification implements OSNotificationServiceInterface
     /**
      * Send a notification message
      *
-     * @param \RMS\PushNotificationsBundle\Message\MessageInterface|\RMS\PushNotificationsBundle\Service\OS\MessageInterface $message
+     * @param \DABSquared\PushNotificationsBundle\Message\MessageInterface|\DABSquared\PushNotificationsBundle\Service\OS\MessageInterface $message
      * @throws \RuntimeException
-     * @throws \RMS\PushNotificationsBundle\Exception\InvalidMessageTypeException
+     * @throws \DABSquared\PushNotificationsBundle\Exception\InvalidMessageTypeException
      * @return int
      */
     public function send(MessageInterface $message)
@@ -119,7 +119,7 @@ class iOSNotification implements OSNotificationServiceInterface
      * @param int $firstMessageId
      * @param string $apnURL
      * @throws \RuntimeException
-     * @throws \RMS\PushNotificationsBundle\Exception\InvalidMessageTypeException
+     * @throws \DABSquared\PushNotificationsBundle\Exception\InvalidMessageTypeException
      * @return int
      */
     protected function sendMessages($firstMessageId, $apnURL)

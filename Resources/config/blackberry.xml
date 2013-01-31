@@ -4,17 +4,17 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="rms_push_notifications.blackberry.class">RMS\PushNotificationsBundle\Service\OS\BlackberryNotification</parameter>
+        <parameter key="dab_push_notifications.blackberry.class">DABSquared\PushNotificationsBundle\Service\OS\BlackberryNotification</parameter>
     </parameters>
 
     <services>
 
         <!-- Blackberry -->
-        <service id="rms_push_notifications.blackberry" class="%rms_push_notifications.blackberry.class%" public="false">
-            <argument>%rms_push_notifications.blackberry.evaluation%</argument>
-            <argument>%rms_push_notifications.blackberry.app_id%</argument>
-            <argument>%rms_push_notifications.blackberry.password%</argument>
-            <tag name="rms_push_notifications.handler" osType="rms_push_notifications.os.blackberry" />
+        <service id="dab_push_notifications.blackberry" class="%dab_push_notifications.blackberry.class%" public="false">
+            <argument>%dab_push_notifications.blackberry.evaluation%</argument>
+            <argument>%dab_push_notifications.blackberry.app_id%</argument>
+            <argument>%dab_push_notifications.blackberry.password%</argument>
+            <tag name="dab_push_notifications.handler" osType="dab_push_notifications.os.blackberry" />
         </service>
 
     </services>

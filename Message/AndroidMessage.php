@@ -1,8 +1,8 @@
 <?php
 
-namespace RMS\PushNotificationsBundle\Message;
+namespace DABSquared\PushNotificationsBundle\Message;
 
-use RMS\PushNotificationsBundle\Device\Types;
+use DABSquared\PushNotificationsBundle\Device\Types;
 
 class AndroidMessage implements MessageInterface
 {

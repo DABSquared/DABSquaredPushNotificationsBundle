@@ -4,25 +4,25 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="rms_push_notifications.ios.class">RMS\PushNotificationsBundle\Service\OS\iOSNotification</parameter>
+        <parameter key="dab_push_notifications.ios.class">DABSquared\PushNotificationsBundle\Service\OS\iOSNotification</parameter>
     </parameters>
 
     <services>
 
         <!-- iOS-->
-        <service id="rms_push_notifications.ios" class="%rms_push_notifications.ios.class%" public="false">
-            <argument>%rms_push_notifications.ios.sandbox%</argument>
-            <argument>%rms_push_notifications.ios.pem%</argument>
-            <argument>%rms_push_notifications.ios.passphrase%</argument>
-            <argument>%rms_push_notifications.ios.json_unescaped_unicode%</argument>
-            <tag name="rms_push_notifications.handler" osType="rms_push_notifications.os.ios" />
+        <service id="dab_push_notifications.ios" class="%dab_push_notifications.ios.class%" public="false">
+            <argument>%dab_push_notifications.ios.sandbox%</argument>
+            <argument>%dab_push_notifications.ios.pem%</argument>
+            <argument>%dab_push_notifications.ios.passphrase%</argument>
+            <argument>%dab_push_notifications.ios.json_unescaped_unicode%</argument>
+            <tag name="dab_push_notifications.handler" osType="dab_push_notifications.os.ios" />
         </service>
 
         <!-- iOS Feedback requests -->
-        <service id="rms_push_notifications.ios.feedback" class="%rms_push_notifications.ios.feedback.class%">
-            <argument>%rms_push_notifications.ios.sandbox%</argument>
-            <argument>%rms_push_notifications.ios.pem%</argument>
-            <argument>%rms_push_notifications.ios.passphrase%</argument>
+        <service id="dab_push_notifications.ios.feedback" class="%dab_push_notifications.ios.feedback.class%">
+            <argument>%dab_push_notifications.ios.sandbox%</argument>
+            <argument>%dab_push_notifications.ios.pem%</argument>
+            <argument>%dab_push_notifications.ios.passphrase%</argument>
         </service>
 
 

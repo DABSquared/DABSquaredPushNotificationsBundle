@@ -1,8 +1,8 @@
 <?php
 
-namespace RMS\PushNotificationsBundle\Tests\DependencyInjection;
+namespace DABSquared\PushNotificationsBundle\Tests\DependencyInjection;
 
-use RMS\PushNotificationsBundle\DependencyInjection\Configuration;
+use DABSquared\PushNotificationsBundle\DependencyInjection\Configuration;
 use Symfony\Component\Config\Definition\Processor;
 
 class ConfigurationTest extends \PHPUnit_Framework_TestCase

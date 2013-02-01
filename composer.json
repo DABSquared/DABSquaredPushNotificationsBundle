@@ -1,9 +1,9 @@
 {
-    "name": "bassrock499/DABSquaredPushNotificationsBundle",
+    "name": "dabsquared/dabsquared-push-notifications-bundle",
     "type": "symfony-bundle",
     "description": "Push notifications/messages for mobile devices",
     "keywords": ["push", "notification", "bundle", "gcm", "c2dm", "ios", "apns", "blackberry"],
-    "homepage": "https://github.com/bassrock499/DABSquaredPushNotificationsBundle",
+    "homepage": "https://github.com/DABSquared/DABSquaredPushNotificationsBundle",
     "license": "MIT",
     "authors": [
         {

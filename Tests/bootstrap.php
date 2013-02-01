@@ -1,8 +1,11 @@
 <?php
 
-if (file_exists($file = __DIR__.'/autoload.php')) {
-    require_once $file;
-} elseif (file_exists($file = __DIR__.'/autoload.php.dist')) {
-    require_once $file;
+$vendorDir = __DIR__ . '/../vendor';
+
+if (!@include($vendorDir . '/autoload.php')) {
+    die("You must set up the project dependencies, run the following commands:
+wget http://getcomposer.org/composer.phar
+php composer.phar install
+");
 }
 

@@ -1,10 +1,28 @@
-# DABSquaredPushNotificationsBundle ![](https://secure.travis-ci.org/richsage/DABSquaredPushNotificationsBundle.png)
+# DABSquaredPushNotificationsBundle ![](https://secure.travis-ci.org/bassrock499/DABSquaredPushNotificationsBundle.png)
 
 A bundle to allow sending of push notifications to mobile devices.  Currently supports Android (C2DM, GCM), Blackberry and iOS devices.
 
 ## Installation
 
-To use this bundle in your Symfony2 project add `richsage/rms-push-notifications-bundle` to the required packages in your `composer.json` and run `php composer.phar update` to install the bundle. Then add `new DABSquared\PushNotificationsBundle\DABSquaredPushNotificationsBundle()` to your `$bundles`-array in the `AppKernel.php` and you're ready!
+Not Yet Ready for Use.. Any contributions are welcome. The goal here is to provide an interface for push notifications with device registration and user device pairing just like FOSCommentBundle.
+
+The Base framework is imported from https://github.com/richsage/RMSPushNotificationsBundle
+
+
+Road Map:
+
+V1.0:
+  Support Basic Device Registration for iOS Devices (at least)
+  Be able to associate a device with a user much like FOSCommentBundle
+  Be able to send messages to a particular device or user, using about 2-4 lines of code.
+
+V1.1:
+  Full Support for all types of Device Push Notifications
+
+V2.0:
+  Push Notification read receipts and statistics like UrbanAirship.
+
+
 
 ## Configuration
 
@@ -27,7 +45,53 @@ Below you'll find all configuration options; just use what you need:
           app_id: <string_bb_app_id>
           password: <string_bb_password>
 
-## Usage
+
+
+
+## DABSquared New Usage
+
+Send to a User:
+
+    use DABSquared\PushNotificationsBundle\Message\iOSMessage;
+
+    class PushDemoController extends Controller
+    {
+        public function pushAction($aUser)
+        {
+
+            foreach($aUser->getDevices() as $device) {
+
+                $message = new Message();
+                $message->setMessage('Oh my! A push notification!');
+                $message->setDevice($device);
+                $this->container->get('dab_push_notifications')->send($message);
+
+            }
+
+            return new Response('Push notification send!');
+        }
+    }
+
+Send to a Device:
+
+        use DABSquared\PushNotificationsBundle\Message\iOSMessage;
+
+        class PushDemoController extends Controller
+        {
+            public function pushAction($aDevice)
+            {
+                $message = new Message();
+                $message->setMessage('Oh my! A push notification!');
+                $message->setDevice($aDevice);
+
+                $this->container->get('dab_push_notifications')->send($message);
+
+                return new Response('Push notification send!');
+            }
+        }
+
+
+## RMS Imported Usage
 
 A little example of how to push your first message to an iOS device, we'll assume that you've set up the configuration correctly:
 

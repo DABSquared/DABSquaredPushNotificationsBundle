@@ -1,0 +1,4 @@
+dab_device_api:
+    type: rest
+    resource: DABSquared\PushNotificationsBundle\Controller\DeviceController
+    name_prefix: dab_device_

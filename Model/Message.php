@@ -22,15 +22,7 @@ abstract class Message implements MessageInterface
      */
     protected $id;
 
-    /**
-     * @var DateTime
-     */
-    protected $createdAt;
 
-    /**
-     * @var DateTime
-     */
-    protected $updatedAt;
 
     /**
      * @var mixed
@@ -349,6 +341,88 @@ abstract class Message implements MessageInterface
     public function getGCMOptions()
     {
         return $this->gcmOptions;
+    }
+
+
+    /**
+     * @param boolean $isGCM
+     */
+    public function setIsGCM($isGCM)
+    {
+        $this->isGCM = $isGCM;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getIsGCM()
+    {
+        return $this->isGCM;
+    }
+
+    /**
+     * @param array $apsBody
+     */
+    public function setApsBody($apsBody)
+    {
+        $this->apsBody = $apsBody;
+    }
+
+    /**
+     * @return array
+     */
+    public function getApsBody()
+    {
+        return $this->apsBody;
+    }
+
+    /**
+     * @param array $customData
+     */
+    public function setCustomData($customData)
+    {
+        $this->customData = $customData;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCustomData()
+    {
+        return $this->customData;
+    }
+
+    /**
+     * @param mixed $device
+     */
+    public function setDevice($device)
+    {
+        $this->device = $device;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDevice()
+    {
+        return $this->device;
+    }
+
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
 }

@@ -15,17 +15,6 @@ interface MessageInterface
     public function getId();
 
     /**
-     * @return DateTime
-     */
-    public function getCreatedAt();
-
-    /**
-     * @return DateTime
-     */
-    public function getUpdatedAt();
-
-
-    /**
      * @return integer What Message type
      */
     public function getMessageType();

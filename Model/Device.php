@@ -19,16 +19,6 @@ abstract class Device implements DeviceInterface
     protected $id;
 
     /**
-     * @var DateTime
-     */
-    protected $createdAt;
-
-    /**
-     * @var DateTime
-     */
-    protected $updatedAt;
-
-    /**
      * Current state of the device.
      *
      * @var integer
@@ -81,7 +71,7 @@ abstract class Device implements DeviceInterface
 
     public function __construct()
     {
-        $this->createdAt = new DateTime();
+
     }
 
     public function __toString()
@@ -96,19 +86,6 @@ abstract class Device implements DeviceInterface
        return $this->id;
     }
 
-    /**
-     * @return DateTime
-     */
-    public function getCreatedAt() {
-        return $this->createdAt;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getUpdatedAt() {
-        return $this->updatedAt;
-    }
 
     /**
      * @return mixed unique device ID from the application

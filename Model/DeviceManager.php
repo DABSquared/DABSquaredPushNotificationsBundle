@@ -69,7 +69,7 @@ abstract class DeviceManager implements DeviceManagerInterface
             return;
         }
 
-        $this->doSaveComment($device);
+        $this->doSaveDevice($device);
 
         $event = new DeviceEvent($device);
         $this->dispatcher->dispatch(Events::DEVICE_POST_PERSIST, $event);
@@ -81,6 +81,6 @@ abstract class DeviceManager implements DeviceManagerInterface
      * @abstract
      * @param DeviceInterface $device
      */
-    abstract protected function doSaveComment(DeviceInterface $device);
+    abstract protected function doSaveDevice(DeviceInterface $device);
 
 }

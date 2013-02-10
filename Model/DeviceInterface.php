@@ -22,16 +22,6 @@ interface DeviceInterface
     public function getId();
 
     /**
-     * @return DateTime
-     */
-    public function getCreatedAt();
-
-    /**
-     * @return DateTime
-     */
-    public function getUpdatedAt();
-
-    /**
      * @return mixed unique device ID from the application
      */
     public function getDeviceIdentifier();

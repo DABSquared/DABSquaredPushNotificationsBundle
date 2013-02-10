@@ -2,7 +2,7 @@
 
 namespace DABSquared\PushNotificationsBundle\Service;
 
-use DABSquared\PushNotificationsBundle\Message\MessageInterface;
+use DABSquared\PushNotificationsBundle\Model\MessageInterface;
 
 class Notifications
 {
@@ -24,7 +24,7 @@ class Notifications
      * Sends a message to a device, identified by
      * the OS and the supplied device token
      *
-     * @param \DABSquared\PushNotificationsBundle\Message\MessageInterface $message
+     * @param \DABSquared\PushNotificationsBundle\Model\MessageInterface $message
      * @throws \RuntimeException
      * @return bool
      */

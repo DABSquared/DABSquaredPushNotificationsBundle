@@ -3,8 +3,9 @@
 namespace DABSquared\PushNotificationsBundle\Service\OS;
 
 use DABSquared\PushNotificationsBundle\Exception\InvalidMessageTypeException,
-    DABSquared\PushNotificationsBundle\Message\AndroidMessage,
-    DABSquared\PushNotificationsBundle\Message\MessageInterface;
+    DABSquared\PushNotificationsBundle\Model\Message,
+    DABSquared\PushNotificationsBundle\Model\MessageInterface,
+    DABSquared\PushNotificationsBundle\Device\Types;
 use Buzz\Browser,
     Buzz\Client\MultiCurl;
 
@@ -59,13 +60,13 @@ class AndroidGCMNotification implements OSNotificationServiceInterface
     /**
      * Sends the data to the given registration IDs via the GCM server
      *
-     * @param \DABSquared\PushNotificationsBundle\Message\MessageInterface $message
+     * @param \DABSquared\PushNotificationsBundle\Model\MessageInterface $message
      * @throws \DABSquared\PushNotificationsBundle\Exception\InvalidMessageTypeException
      * @return bool
      */
     public function send(MessageInterface $message)
     {
-        if (!$message instanceof AndroidMessage) {
+        if ($message->getTargetOS() != Types::OS_ANDROID_GCM) {
             throw new InvalidMessageTypeException(sprintf("Message type '%s' not supported by GCM", get_class($message)));
         }
         if (!$message->isGCM()) {

@@ -3,8 +3,9 @@
 namespace DABSquared\PushNotificationsBundle\Service\OS;
 
 use DABSquared\PushNotificationsBundle\Exception\InvalidMessageTypeException,
-    DABSquared\PushNotificationsBundle\Message\iOSMessage,
-    DABSquared\PushNotificationsBundle\Message\MessageInterface;
+    DABSquared\PushNotificationsBundle\Model\Message,
+    DABSquared\PushNotificationsBundle\Model\MessageInterface,
+    DABSquared\PushNotificationsBundle\Device\Types;
 use Buzz\Browser;
 
 class iOSNotification implements OSNotificationServiceInterface
@@ -90,14 +91,14 @@ class iOSNotification implements OSNotificationServiceInterface
     /**
      * Send a notification message
      *
-     * @param \DABSquared\PushNotificationsBundle\Message\MessageInterface|\DABSquared\PushNotificationsBundle\Service\OS\MessageInterface $message
+     * @param \DABSquared\PushNotificationsBundle\Model\MessageInterface|\DABSquared\PushNotificationsBundle\Service\OS\MessageInterface $message
      * @throws \RuntimeException
      * @throws \DABSquared\PushNotificationsBundle\Exception\InvalidMessageTypeException
      * @return int
      */
     public function send(MessageInterface $message)
     {
-        if (!$message instanceof iOSMessage) {
+        if ($message->getTargetOS() != Types::OS_IOS) {
             throw new InvalidMessageTypeException(sprintf("Message type '%s' not supported by APN", get_class($message)));
         }
 

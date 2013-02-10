@@ -3,8 +3,9 @@
 namespace DABSquared\PushNotificationsBundle\Service\OS;
 
 use DABSquared\PushNotificationsBundle\Exception\InvalidMessageTypeException,
-    DABSquared\PushNotificationsBundle\Message\BlackberryMessage,
-    DABSquared\PushNotificationsBundle\Message\MessageInterface;
+    DABSquared\PushNotificationsBundle\Model\Message,
+    DABSquared\PushNotificationsBundle\Model\MessageInterface,
+    DABSquared\PushNotificationsBundle\Device\Types;
 use Buzz\Browser,
     Buzz\Listener\BasicAuthListener,
     Buzz\Client\Curl;
@@ -49,13 +50,13 @@ class BlackberryNotification implements OSNotificationServiceInterface
     /**
      * Sends a Blackberry Push message
      *
-     * @param \DABSquared\PushNotificationsBundle\Message\MessageInterface $message
+     * @param \DABSquared\PushNotificationsBundle\Model\MessageInterface $message
      * @throws \DABSquared\PushNotificationsBundle\Exception\InvalidMessageTypeException
      * @return bool
      */
     public function send(MessageInterface $message)
     {
-        if (!$message instanceof BlackberryMessage) {
+        if ($message->getTargetOS() != Types::OS_BLACKBERRY) {
             throw new InvalidMessageTypeException(sprintf("Message type '%s' not supported by Blackberry", get_class($message)));
         }
 
@@ -65,7 +66,7 @@ class BlackberryNotification implements OSNotificationServiceInterface
     /**
      * Does the actual sending
      *
-     * @param \DABSquared\PushNotificationsBundle\Message\BlackberryMessage $message
+     * @param \DABSquared\PushNotificationsBundle\Model\BlackberryMessage $message
      * @return bool
      */
     protected function doSend(BlackberryMessage $message)

@@ -2,14 +2,14 @@
 
 namespace DABSquared\PushNotificationsBundle\Service\OS;
 
-use DABSquared\PushNotificationsBundle\Message\MessageInterface;
+use DABSquared\PushNotificationsBundle\Model\MessageInterface;
 
 interface OSNotificationServiceInterface
 {
     /**
      * Send a notification message
      *
-     * @param \DABSquared\PushNotificationsBundle\Message\MessageInterface $message
+     * @param \DABSquared\PushNotificationsBundle\Model\MessageInterface $message
      * @return mixed
      */
     public function send(MessageInterface $message);

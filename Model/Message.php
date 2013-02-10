@@ -105,7 +105,25 @@ abstract class Message implements MessageInterface
             ),
         );
 
+        $this->createdAt = new DateTime();
+    }
 
+
+    /**
+     * @return DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Sets the creation date
+     * @param DateTime $createdAt
+     */
+    public function setCreatedAt(DateTime $createdAt)
+    {
+        $this->createdAt = $createdAt;
     }
 
     /**

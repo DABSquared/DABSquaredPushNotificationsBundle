@@ -5,6 +5,10 @@ namespace DABSquared\PushNotificationsBundle\Model;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use InvalidArgumentException;
 
+use DABSquared\PushNotificationsBundle\Events;
+use DABSquared\PushNotificationsBundle\Event\MessageEvent;
+use DABSquared\PushNotificationsBundle\Event\MessagePersistEvent;
+
 /**
  * Created by JetBrains PhpStorm.
  * User: daniel_brooks

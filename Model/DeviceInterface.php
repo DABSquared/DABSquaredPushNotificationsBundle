@@ -119,4 +119,13 @@ interface DeviceInterface
      */
     public function setDeviceVersion($deviceVersion);
 
+
+    public function getMessages();
+
+    public function setMessages($messages);
+
+    public function addMessage($message);
+
+    public function removeMessage($message);
+
 }

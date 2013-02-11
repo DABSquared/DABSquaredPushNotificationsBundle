@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ This file is part of the DABSquaredPushNotificationsBundle package.
+
+
+ This source file is subject to the MIT license that is bundled
+ with this source code in the file LICENSE.
+-->
+
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                        http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <mapped-superclass name="DABSquared\PushNotificationsBundle\Entity\Device">
+
+        <id name="id" type="integer">
+            <generator strategy="AUTO" />
+        </id>
+
+        <field name="state"  type="integer" />
+
+        <field name="deviceIdentifier" type="text" nullable="false" />
+
+        <field name="deviceToken"  type="text" nullable="false" />
+
+        <field name="badgeAllowed" type="boolean" />
+
+        <field name="soundAllowed" type="boolean" />
+
+        <field name="alertAllowed" type="boolean" />
+
+        <field name="deviceName" type="text" />
+
+        <field name="deviceModel" type="text" />
+
+        <field name="deviceVersion" type="text" />
+
+        <field name="createdAt" type="datetime" />
+
+        <many-to-one field="messages" target-entity="DABSquared\PushNotificationsBundle\Entity\Message" inversed-by="message" />
+
+
+    </mapped-superclass>
+
+</doctrine-mapping>

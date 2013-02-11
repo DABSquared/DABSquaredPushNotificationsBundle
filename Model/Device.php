@@ -65,6 +65,11 @@ abstract class Device implements DeviceInterface
     protected $deviceModel;
 
     /**
+     * @var mixed
+     */
+    protected $messages;
+
+    /**
      * @var string
      */
     protected $deviceVersion;
@@ -72,7 +77,7 @@ abstract class Device implements DeviceInterface
     public function __construct()
     {
         $this->createdAt = new DateTime();
-
+        $this->messages = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
 
@@ -250,5 +255,23 @@ abstract class Device implements DeviceInterface
         return $this->state;
     }
 
+
+    public function getMessages() {
+        return $this->messages;
+    }
+
+    public function setMessages($messages) {
+        $this->messages = $messages;
+    }
+
+    public function addMessage($message) {
+        $message->setDevice($this);
+        $this->messages[] = $message;
+    }
+
+    public function removeMessage($message)
+    {
+        $this->messages->removeElement($message);
+    }
 
 }

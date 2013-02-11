@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ This file is part of the DABSquaredPushNotificationsBundle package.
+
+
+ This source file is subject to the MIT license that is bundled
+ with this source code in the file LICENSE.
+-->
+
+<doctrine-mongo-mapping xmlns="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xsi:schemaLocation="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping
+                        http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping.xsd">
+
+    <mapped-superclass name="DABSquared\PushNotificationsBundle\Entity\Message" collection="dab_pushnotifications_message">
+
+        <id name="id" type="integer">
+            <generator strategy="AUTO" />
+        </id>
+
+        <field name="type"  type="int" />
+
+        <field name="message" type="string" />
+
+        <field name="createdAt" type="date" />
+
+        <reference-one target-document="DABSquared\PushNotificationsBundle\Document\Device" field="device">
+            <cascade>
+                <all />
+            </cascade>
+        </reference-one>
+
+    </mapped-superclass>
+
+</doctrine-mongo-mapping>

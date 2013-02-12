@@ -80,6 +80,7 @@ abstract class MessageManager implements MessageManagerInterface
 
         $event = new MessageEvent($message);
         $this->dispatcher->dispatch(Events::MESSAGE_POST_PERSIST, $event);
+
     }
 
     /**

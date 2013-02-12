@@ -42,17 +42,17 @@ abstract class Device implements DeviceInterface
     /**
      * @var boolean
      */
-    protected $badgeAllowed;
+    protected $badgeAllowed = false;
 
     /**
      * @var boolean
      */
-    protected $soundAllowed;
+    protected $soundAllowed = false;
 
     /**
      * @var boolean
      */
-    protected $alertAllowed;
+    protected $alertAllowed = false;
 
     /**
      * @var string

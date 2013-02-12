@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use DABSquared\PushNotificationsBundle\Device\Types;
+use DABSquared\PushNotificationsBundle\Model\Device;
 
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
@@ -33,20 +34,27 @@ class DeviceController extends Controller
 {
 
     /**
-     * This the documentation description of your method, it will appear
-     * on a specific pane. It will read all the text until the first
-     * annotation.
-     *
      * @ApiDoc(
      *  resource=true,
-     *  description="This is a description of your API method",
+     *  description="Registers an iOS Device",
+     *  statusCodes={
+     *         200="Returned when successful",
+     *         401="Returned when their is an error"},
+     *  filters={
+     *      {"name"="device_identifier", "dataType"="string", "required"="true"},
+     *      {"name"="device_token", "dataType"="boolean", "required"="true"},
+     *      {"name"="badge_allowed", "dataType"="boolean", "required"="true"},
+     *      {"name"="sound_allowed", "dataType"="boolean", "required"="true"},
+     *      {"name"="alert_allowed", "dataType"="boolean", "required"="true"},
+     *      {"name"="is_sandbox", "dataType"="boolean", "required"="true"},
+     *  }
      * )
      *
      * @Route("device/ios/register", defaults={"_format": "json"})
      * @Method("POST")
      *
      */
-    public function registerDeviceAction()
+    public function registeriOSDeviceAction()
     {
         /** @var $request \Symfony\Component\HttpFoundation\Request */
         $request = $this->get('request');
@@ -56,6 +64,7 @@ class DeviceController extends Controller
         $badgeAllowed = filter_var($request->request->get('badge_allowed'), FILTER_VALIDATE_BOOLEAN);
         $soundAllowed = filter_var($request->request->get('sound_allowed'), FILTER_VALIDATE_BOOLEAN);
         $alertAllowed = filter_var($request->request->get('alert_allowed'), FILTER_VALIDATE_BOOLEAN);
+        $isSandbox = filter_var($request->request->get('is_sandbox'), FILTER_VALIDATE_BOOLEAN);
 
         /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
         $deviceManager = $this->get('dab_push_notifications.manager.device');
@@ -73,10 +82,13 @@ class DeviceController extends Controller
         $device->setSoundAllowed($soundAllowed);
         $device->setAlertAllowed($alertAllowed);
 
+        $device->setState($isSandbox ? Device::STATE_SANDBOX : Device::STATE_PRODUCTION);
+
         $deviceManager->saveDevice($device);
 
         return $this->showSuccessData($device, null);
     }
+
 
 
 

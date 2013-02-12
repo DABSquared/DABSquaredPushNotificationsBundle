@@ -47,4 +47,15 @@ interface DeviceManagerInterface
      * @return string
      */
     public function getClass();
+
+
+
+    /*** Find Methods  *********/
+
+
+    /**
+     */
+    public function findDeviceByIdentifierAndTypeAndToken($deviceIdentifier, $type, $token);
+
+
 }

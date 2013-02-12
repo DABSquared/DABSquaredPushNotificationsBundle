@@ -4,7 +4,7 @@ A bundle to allow sending of push notifications to mobile devices.  Currently su
 
 ## Installation
 
-Not Yet Ready for Use.. Any contributions are welcome. The goal here is to provide an interface for push notifications with device registration and user device pairing just like FOSCommentBundle.
+Almost Ready for Use.. Any contributions are welcome. The goal here is to provide an interface for push notifications with device registration and user device pairing just like FOSCommentBundle.
 
 The Base framework is imported from https://github.com/richsage/RMSPushNotificationsBundle
 
@@ -22,6 +22,39 @@ V1.1:
 V2.0:
   Push Notification read receipts and statistics like UrbanAirship.
 
+
+## Installation ##
+
+Add this bundle to your `composer.json` file:
+
+    {
+        "require": {
+            "dabsquared/dabsquared-push-notifications-bundle": "dev-master"
+        }
+    }
+
+Register the bundle in `app/AppKernel.php`:
+
+    // app/AppKernel.php
+    public function registerBundles()
+    {
+        return array(
+            // ...
+            new DABSquared\PushNotificationsBundle\DABSquaredPushNotificationsBundle(),
+        );
+    }
+
+Import the routing definition in `routing.yml`:
+
+    # app/config/routing.yml
+    DABSquaredPushNotificationsBundle:
+        resource: "@DABSquaredPushNotificationsBundle/Resources/config/routing.yml"
+        prefix:   /push
+
+
+If you want to enable API documentation setup the following bundle:
+
+    https://github.com/nelmio/NelmioApiDocBundle
 
 
 ## Configuration

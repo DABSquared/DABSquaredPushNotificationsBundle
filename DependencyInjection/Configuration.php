@@ -22,6 +22,23 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $this->root = $treeBuilder->root("dabsquared_push_notifications");
 
+
+        $this->root
+            ->children()
+                ->scalarNode('db_driver')->cannotBeOverwritten()->isRequired()->end()
+                ->scalarNode('model_manager_name')->defaultNull()->end()
+
+                ->arrayNode('class')->isRequired()
+                    ->children()
+                        ->arrayNode('model')->isRequired()
+                            ->children()
+                                ->scalarNode('device')->isRequired()->end()
+                                ->scalarNode('message')->isRequired()->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end();
+
         $this->addAndroid();
         $this->addiOS();
         $this->addBlackberry();

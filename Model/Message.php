@@ -41,6 +41,8 @@ abstract class Message implements MessageInterface
      */
     protected $message = "";
 
+    protected $badgeNumber = 0;
+
     /**
      * Custom data
      *
@@ -446,5 +448,6 @@ abstract class Message implements MessageInterface
     {
         return $this->id;
     }
+
 
 }

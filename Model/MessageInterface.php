@@ -20,30 +20,13 @@ interface MessageInterface
     public function getCreatedAt();
 
     /**
-     * @return integer What Message type
-     */
-    public function getMessageType();
-
-    /**
-     * @param integer $type
-     */
-    public function setMessageType($type);
-
-    /**
      * @param $number
      * @return mixed
      */
     public function setBadgeNumber($number);
 
-    /**
-     * @param $number
-     * @return mixed
-     */
-    public function getBadgeNumber($number);
 
     public function setSound($sound);
-
-    public function getSound();
 
     public function setMessage($message);
 

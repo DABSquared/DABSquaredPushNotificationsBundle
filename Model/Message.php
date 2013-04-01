@@ -91,6 +91,10 @@ abstract class Message implements MessageInterface
 
 
 
+    protected $createdAt;
+
+
+    protected $updatedAt;
 
     /**
      * Class constructor

@@ -74,9 +74,16 @@ abstract class Device implements DeviceInterface
      */
     protected $deviceVersion;
 
+
+    protected $createdAt;
+
+
+    protected $updatedAt;
+
+
     public function __construct()
     {
-        $this->createdAt = new DateTime();
+        $this->createdAt = new \DateTime();
         $this->messages = new \Doctrine\Common\Collections\ArrayCollection();
     }
 

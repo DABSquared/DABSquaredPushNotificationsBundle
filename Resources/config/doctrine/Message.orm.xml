@@ -25,6 +25,9 @@
 
         <field name="createdAt" type="datetime" />
 
+        <field name="updatedAt" type="datetime" />
+
+
         <one-to-many field="device" target-entity="DABSquared\PushNotificationsBundle\Entity\Device" mapped-by="messages" />
 
 

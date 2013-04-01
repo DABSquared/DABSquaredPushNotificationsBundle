@@ -39,6 +39,9 @@
 
         <field name="createdAt" type="date" />
 
+        <field name="updatedAt" type="date" />
+
+
         <reference-many target-document="DABSquared\PushNotificationsBundle\Document\Message" field="messages">
             <cascade>
                 <all />

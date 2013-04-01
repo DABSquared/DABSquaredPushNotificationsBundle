@@ -1,4 +1,4 @@
 dab_device_api:
     resource: DABSquared\PushNotificationsBundle\Controller\DeviceController
     type: annotation
-    name_prefix: dab_device_
+    prefix: dab_device_

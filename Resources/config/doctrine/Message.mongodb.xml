@@ -28,11 +28,7 @@
         <field name="updatedAt" type="date" />
 
 
-        <reference-one target-document="DABSquared\PushNotificationsBundle\Document\Device" field="device">
-            <cascade>
-                <all />
-            </cascade>
-        </reference-one>
+
 
     </mapped-superclass>
 

@@ -42,7 +42,6 @@
         <field name="updatedAt" type="datetime" />
 
 
-        <one-to-many field="messages" target-entity="DABSquared\PushNotificationsBundle\Entity\Message" mapped-by="device" />
 
 
     </mapped-superclass>

@@ -75,7 +75,7 @@ class MessageManager extends BaseMessageManager
     /**
      * {@inheritDoc}
      */
-    public function isNewMessage(DeviceInterface $message)
+    public function isNewMessage(MessageInterface $message)
     {
         return !$this->dm->getUnitOfWork()->isInIdentityMap($message);
     }

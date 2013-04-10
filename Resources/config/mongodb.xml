@@ -27,7 +27,7 @@
             <argument type="service" id="dab_push_notifications.document_manager" />
             <argument>%dab_push_notifications.model.device.class%</argument>
         </service>
-        <service id="dab_push_notifications.manager.comment.default" class="%dab_push_notifications.manager.message.default.class%">
+        <service id="dab_push_notifications.manager.message.default" class="%dab_push_notifications.manager.message.default.class%">
             <argument type="service" id="event_dispatcher" />
             <argument type="service" id="dab_push_notifications.document_manager" />
             <argument>%dab_push_notifications.model.message.class%</argument>

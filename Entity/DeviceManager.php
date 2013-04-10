@@ -14,6 +14,10 @@ use DABSquared\PushNotificationsBundle\Model\DeviceManager as BaseDeviceManger;
 use DABSquared\PushNotificationsBundle\Model\DeviceInterface;
 use DABSquared\PushNotificationsBundle\Model\MessageInterface;
 
+use Doctrine\ORM\EntityManager;
+
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+
 class DeviceManager extends BaseDeviceManger
 {
 
@@ -86,8 +90,8 @@ class DeviceManager extends BaseDeviceManger
         $qb = $this->repository
             ->createQueryBuilder('d')
             ->where('d.deviceIdentifier = :deviceIdentifier')
-            ->where('d.type = :type')
-            ->where('d.deviceToken = :token')
+            ->andWhere('d.type = :type')
+            ->andWhere('d.deviceToken = :token')
             ->setParameter('deviceIdentifier', $deviceIdentifier)
             ->setParameter('type', $type)
             ->setParameter('token', $token);
@@ -100,9 +104,11 @@ class DeviceManager extends BaseDeviceManger
             return null;
         }
 
-        if(count($devices) > 1) {
+        if(count($devices) != 1) {
             return null;
         }
+
+
 
         return $devices[0];
 

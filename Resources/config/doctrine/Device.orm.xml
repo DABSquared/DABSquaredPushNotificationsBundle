@@ -37,6 +37,8 @@
 
         <field name="deviceVersion" type="text" />
 
+        <field name="type" type="text" />
+
         <field name="createdAt" type="datetime" />
 
         <field name="updatedAt" type="datetime" />

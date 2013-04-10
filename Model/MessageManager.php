@@ -40,7 +40,7 @@ abstract class MessageManager implements MessageManagerInterface
      *
      * @return Device
      */
-    public function createMessage(MessageInterface $message)
+    public function createMessage($message)
     {
         $class = $this->getClass();
         $message = new $class;

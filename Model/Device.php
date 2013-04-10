@@ -23,7 +23,7 @@ abstract class Device implements DeviceInterface
      *
      * @var integer
      */
-    protected $state = STATE_PRODUCTION;
+    protected $state = Device::STATE_PRODUCTION;
 
     /**
      * Device identifier
@@ -58,6 +58,11 @@ abstract class Device implements DeviceInterface
      * @var string
      */
     protected $deviceName;
+
+    /**
+     * @var string
+     */
+    protected $type;
 
     /**
      * @var string
@@ -260,6 +265,22 @@ abstract class Device implements DeviceInterface
     public function getState()
     {
         return $this->state;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+
+    /**
+     * @return int
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 
 

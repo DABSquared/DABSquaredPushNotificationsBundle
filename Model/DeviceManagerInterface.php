@@ -38,7 +38,7 @@ interface DeviceManagerInterface
      *
      * @return Device
      */
-    public function createDevice(DeviceInterface $device);
+    public function createDevice($device);
 
 
     /**

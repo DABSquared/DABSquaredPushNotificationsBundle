@@ -108,7 +108,7 @@ class iOSNotification implements OSNotificationServiceInterface
         }
 
         $messageId = ++$this->lastMessageId;
-        $this->messages[$messageId] = $this->createPayload($messageId, $message->getDeviceIdentifier(), $message->getMessageBody());
+        $this->messages[$messageId] = $this->createPayload($messageId, $message->getDevice()->getDeviceIdentifier(), $message->getMessageBody());
         $this->sendMessages($messageId, $apnURL);
 
         return $messageId;

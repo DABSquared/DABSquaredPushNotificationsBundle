@@ -2,6 +2,7 @@
 
 namespace DABSquared\PushNotificationsBundle\Controller;
 
+use DABSquared\PushNotificationsBundle\Model\UserDeviceInterface;
 use FOS\Rest\Util\Codes;
 use FOS\RestBundle\View\RouteRedirectView;
 use FOS\RestBundle\View\View;
@@ -47,6 +48,9 @@ class DeviceController extends Controller
      *      {"name"="sound_allowed", "dataType"="boolean", "required"="true"},
      *      {"name"="alert_allowed", "dataType"="boolean", "required"="true"},
      *      {"name"="is_sandbox", "dataType"="boolean", "required"="true"},
+     *      {"name"="device_name", "dataType"="string", "required"="true"},
+     *      {"name"="device_model", "dataType"="string", "required"="true"},
+     *      {"name"="device_version", "dataType"="string", "required"="true"},
      *  }
      * )
      *
@@ -61,6 +65,10 @@ class DeviceController extends Controller
 
         $deviceIdentifier = $request->request->get('device_identifier');
         $deviceToken = $request->request->get('device_token');
+        $deviceName = $request->request->get('device_name');
+        $deviceModel = $request->request->get('device_model');
+        $deviceVersion = $request->request->get('device_version');
+
         $badgeAllowed = filter_var($request->request->get('badge_allowed'), FILTER_VALIDATE_BOOLEAN);
         $soundAllowed = filter_var($request->request->get('sound_allowed'), FILTER_VALIDATE_BOOLEAN);
         $alertAllowed = filter_var($request->request->get('alert_allowed'), FILTER_VALIDATE_BOOLEAN);
@@ -70,7 +78,7 @@ class DeviceController extends Controller
         $deviceManager = $this->get('dab_push_notifications.manager.device');
 
         /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
-        $device = $deviceManager->findDeviceByIdentifierAndType($deviceIdentifier, Types::OS_IOS, $deviceToken);
+        $device = $deviceManager->findDeviceByIdentifierAndTypeAndToken($deviceIdentifier, Types::OS_IOS, $deviceToken);
 
         if(is_null($device)) {
            $device = $deviceManager->createDevice($device);
@@ -78,9 +86,18 @@ class DeviceController extends Controller
            $device->setDeviceToken($deviceToken);
         }
 
+        if($device instanceof UserDeviceInterface) {
+            $user = $this->get('security.context')->getToken()->getUser();
+            $device->setUser($user);
+        }
+
+        $device->setDeviceModel($deviceModel);
+        $device->setDeviceName($deviceName);
+        $device->setDeviceVersion($deviceVersion);
         $device->setBadgeAllowed($badgeAllowed);
         $device->setSoundAllowed($soundAllowed);
         $device->setAlertAllowed($alertAllowed);
+        $device->setType(Types::OS_IOS);
 
         $device->setState($isSandbox ? Device::STATE_SANDBOX : Device::STATE_PRODUCTION);
 

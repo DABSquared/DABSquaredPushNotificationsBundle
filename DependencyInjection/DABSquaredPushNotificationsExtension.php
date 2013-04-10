@@ -2,10 +2,13 @@
 
 namespace DABSquared\PushNotificationsBundle\DependencyInjection;
 
-use Symfony\Component\HttpKernel\DependencyInjection\Extension,
-    Symfony\Component\DependencyInjection\ContainerBuilder,
-    Symfony\Component\DependencyInjection\Loader\XmlFileLoader,
-    Symfony\Component\Config\FileLocator;
+
+use Symfony\Component\Config\Definition\Processor;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Alias;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class DABSquaredPushNotificationsExtension extends Extension
 {
@@ -23,12 +26,41 @@ class DABSquaredPushNotificationsExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        $processor = new Processor();
+        $configuration = new Configuration();
+
         $this->container = $container;
+
+        $config = $processor->process($configuration->getConfigTreeBuilder(), $configs);
+
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+
+
+        if (!in_array(strtolower($config['db_driver']), array('mongodb', 'orm'))) {
+            throw new \InvalidArgumentException(sprintf('Invalid db driver "%s".', $config['db_driver']));
+        }
+
+        $loader->load(sprintf('%s.xml', $config['db_driver']));
         $loader->load('services.xml');
 
-        $configuration = new Configuration();
-        $config = $this->processConfiguration($configuration, $configs);
+
+        $container->setParameter('dab_push_notifications.model.device.class', $config['class']['model']['device']);
+        $container->setParameter('dab_push_notifications.model.device.message', $config['class']['model']['message']);
+        $container->setParameter('dab_push_notifications.model_manager_name', $config['model_manager_name']);
+
+
+        // handle the MongoDB document manager name in a specific way as it does not have a registry to make it easy
+        // TODO: change it if https://github.com/symfony/DoctrineMongoDBBundle/pull/31 is merged
+        if ('mongodb' === $config['db_driver']) {
+            if (null === $config['model_manager_name']) {
+                $container->setAlias('dab_push_notifications.document_manager', new Alias('doctrine.odm.mongodb.document_manager', false));
+            } else {
+                $container->setAlias('dab_push_notifications.document_manager', new Alias(sprintf('doctrine.odm.%s_mongodb.document_manager', $config['model_manager_name']), false));
+            }
+        }
+
+        $container->setAlias('dab_push_notifications.manager.device', $config['service']['manager']['device']);
+        $container->setAlias('dab_push_notifications.manager.message', $config['service']['manager']['message']);
 
         $this->setInitialParams();
         if (isset($config["android"])) {
@@ -43,6 +75,7 @@ class DABSquaredPushNotificationsExtension extends Extension
             $this->setBlackberryConfig($config);
             $loader->load('blackberry.xml');
         }
+
     }
 
     /**

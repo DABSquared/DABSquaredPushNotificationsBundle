@@ -1,12 +1,8 @@
 # DABSquaredPushNotificationsBundle ![](https://secure.travis-ci.org/bassrock499/DABSquaredPushNotificationsBundle.png)
 
-A bundle to allow sending of push notifications to mobile devices.  Currently supports Android (C2DM, GCM), Blackberry and iOS devices.
-
-## Installation
+A bundle to allow sending of push notifications to mobile devices.  Currently supports Android (C2DM, GCM), Blackberry and iOS devices. The Base framework is imported from https://github.com/richsage/RMSPushNotificationsBundle
 
 Almost Ready for Use.. Any contributions are welcome. The goal here is to provide an interface for push notifications with device registration and user device pairing just like FOSCommentBundle.
-
-The Base framework is imported from https://github.com/richsage/RMSPushNotificationsBundle
 
 
 Road Map:
@@ -23,44 +19,33 @@ V2.0:
   Push Notification read receipts and statistics like UrbanAirship.
 
 
-## Installation ##
+Documentation
+-------------
 
-Add this bundle to your `composer.json` file:
+The bulk of the documentation is stored in the `Resources/doc/index.md`
+file in this bundle:
 
-    {
-        "require": {
-            "dabsquared/dabsquared-push-notifications-bundle": "dev-master"
-        }
-    }
+[Read the Documentation](https://github.com/DABSquared/DABSquaredPushNotificationsBundle/blob/master/Resources/doc/index.md)
 
-Register the bundle in `app/AppKernel.php`:
+Installation
+------------
 
-    // app/AppKernel.php
-    public function registerBundles()
-    {
-        return array(
-            // ...
-            new DABSquared\PushNotificationsBundle\DABSquaredPushNotificationsBundle(),
-        );
-    }
+All the installation instructions are located in [documentation](https://github.com/DABSquared/DABSquaredPushNotificationsBundle/blob/master/Resources/doc/index.md).
 
-Import the routing definition in `routing.yml`:
+License
+-------
 
-    # app/config/routing.yml
-    DABSquaredPushNotificationsBundle:
-        resource: "@DABSquaredPushNotificationsBundle/Resources/config/routing.yml"
-        prefix:   /push
+This bundle is under the MIT license. See the complete license in the bundle:
+
+    Resources/meta/LICENSE
 
 
-If you want to enable API documentation setup the following bundle:
-
-    https://github.com/nelmio/NelmioApiDocBundle
-
-
-## Configuration
+Configuration
+-------
 
 Below you'll find all configuration options; just use what you need:
 
+``` yaml
     dab_push_notifications:
       android:
           c2dm:
@@ -77,7 +62,7 @@ Below you'll find all configuration options; just use what you need:
           evaluation: <bool_bb_evaluation_mode>
           app_id: <string_bb_app_id>
           password: <string_bb_password>
-
+```
 
 
 
@@ -85,75 +70,45 @@ Below you'll find all configuration options; just use what you need:
 
 Send to a User:
 
-    use DABSquared\PushNotificationsBundle\Message\iOSMessage;
+``` php
+use DABSquared\PushNotificationsBundle\Message\iOSMessage;
 
-    class PushDemoController extends Controller
+class PushDemoController extends Controller
+{
+    public function pushAction($aUser)
     {
-        public function pushAction($aUser)
-        {
 
-            foreach($aUser->getDevices() as $device) {
+        foreach($aUser->getDevices() as $device) {
 
-                $message = new Message();
-                $message->setMessage('Oh my! A push notification!');
-                $message->setDevice($device);
-                $this->container->get('dab_push_notifications')->send($message);
+            $message = new Message();
+            $message->setMessage('Oh my! A push notification!');
+            $message->setDevice($device);
+            $this->container->get('dab_push_notifications')->send($message);
 
-            }
-
-            return new Response('Push notification send!');
         }
+
+        return new Response('Push notification send!');
     }
+}
+```
 
 Send to a Device:
 
-        use DABSquared\PushNotificationsBundle\Message\iOSMessage;
+``` php
+use DABSquared\PushNotificationsBundle\Message\iOSMessage;
 
-        class PushDemoController extends Controller
-        {
-            public function pushAction($aDevice)
-            {
-                $message = new Message();
-                $message->setMessage('Oh my! A push notification!');
-                $message->setDevice($aDevice);
-
-                $this->container->get('dab_push_notifications')->send($message);
-
-                return new Response('Push notification send!');
-            }
-        }
-
-
-## RMS Imported Usage
-
-A little example of how to push your first message to an iOS device, we'll assume that you've set up the configuration correctly:
-
-    use DABSquared\PushNotificationsBundle\Message\iOSMessage;
-
-    class PushDemoController extends Controller
+class PushDemoController extends Controller
+{
+    public function pushAction($aDevice)
     {
-        public function pushAction()
-        {
-            $message = new iOSMessage();
-            $message->setMessage('Oh my! A push notification!');
-            $message->setDeviceIdentifier('test012fasdf482asdfd63f6d7bc6d4293aedd5fb448fe505eb4asdfef8595a7');
+        $message = new Message();
+        $message->setMessage('Oh my! A push notification!');
+        $message->setDevice($aDevice);
 
-            $this->container->get('dab_push_notifications')->send($message);
+        $this->container->get('dab_push_notifications')->send($message);
 
-            return new Response('Push notification send!');
-        }
+        return new Response('Push notification send!');
     }
-
-The send method will detect the type of message so if you'll pass it an `AndroidMessage` it will automatically send it through the C2DM/GCM servers, and likewise for Blackberry.
-
-## Android messages
-
-Since both C2DM and GCM are still available, the `AndroidMessage` class has a small flag on it to toggle which service to send it to.  Use as follows:
-
-    use DABSquared\PushNotificationsBundle\Message\AndroidMessage;
-
-    $message = new AndroidMessage();
-    $message->setGCM(true);
-    
-to send as a GCM message rather than C2DM.
+}
+```
 

@@ -50,6 +50,8 @@ class Configuration
             ->end()
             ->end()
 
+
+
             ->end();
 
         $this->addAndroid();
@@ -105,18 +107,26 @@ class Configuration
      */
     protected function addiOS()
     {
-        $this->root->
-            children()->
-            arrayNode("ios")->
-            children()->
-            booleanNode("sandbox")->defaultFalse()->end()->
-            scalarNode("pem")->isRequired()->cannotBeEmpty()->end()->
-            scalarNode("passphrase")->defaultValue("")->end()->
-            scalarNode('json_unescaped_unicode')->defaultFalse()->info('PHP >= 5.4.0 and each messaged must be UTF-8 encoding')->end()->
-            end()->
-            end()->
-            end()
-        ;
+        $this->root
+            ->children()
+                ->arrayNode("ios")
+                    ->children()
+                         ->arrayNode('certificates')
+                            ->isRequired()
+                            ->requiresAtLeastOneElement()
+                            ->useAttributeAsKey('name')
+                            ->prototype('array')
+                                ->children()
+                                    ->scalarNode('pem')->isRequired()->end()
+                                    ->scalarNode("passphrase")->defaultValue("")->end()
+                                    ->booleanNode("sandbox")->defaultFalse()->end()
+                                    ->scalarNode('json_unescaped_unicode')->defaultFalse()->info('PHP >= 5.4.0 and each messaged must be UTF-8 encoding')->end()
+                                    ->end()
+                                ->end()
+                            ->end()
+                         ->end()
+                    ->end()
+                ->end();
     }
 
     /**

@@ -42,7 +42,6 @@ class DeviceController extends Controller
      *         200="Returned when successful",
      *         401="Returned when their is an error"},
      *  filters={
-     *      {"name"="device_identifier", "dataType"="string", "required"="true"},
      *      {"name"="device_token", "dataType"="boolean", "required"="true"},
      *      {"name"="badge_allowed", "dataType"="boolean", "required"="true"},
      *      {"name"="sound_allowed", "dataType"="boolean", "required"="true"},
@@ -51,6 +50,9 @@ class DeviceController extends Controller
      *      {"name"="device_name", "dataType"="string", "required"="true"},
      *      {"name"="device_model", "dataType"="string", "required"="true"},
      *      {"name"="device_version", "dataType"="string", "required"="true"},
+     *      {"name"="app_name", "dataType"="string", "required"="false"},
+     *      {"name"="app_version", "dataType"="string", "required"="false"},
+     *
      *  }
      * )
      *
@@ -63,11 +65,13 @@ class DeviceController extends Controller
         /** @var $request \Symfony\Component\HttpFoundation\Request */
         $request = $this->get('request');
 
-        $deviceIdentifier = $request->request->get('device_identifier');
         $deviceToken = $request->request->get('device_token');
         $deviceName = $request->request->get('device_name');
         $deviceModel = $request->request->get('device_model');
         $deviceVersion = $request->request->get('device_version');
+        $appName = $request->request->get('app_name');
+        $appVersion = $request->request->get('app_version');
+
 
         $badgeAllowed = filter_var($request->request->get('badge_allowed'), FILTER_VALIDATE_BOOLEAN);
         $soundAllowed = filter_var($request->request->get('sound_allowed'), FILTER_VALIDATE_BOOLEAN);
@@ -78,11 +82,10 @@ class DeviceController extends Controller
         $deviceManager = $this->get('dab_push_notifications.manager.device');
 
         /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
-        $device = $deviceManager->findDeviceByIdentifierAndTypeAndToken($deviceIdentifier, Types::OS_IOS, $deviceToken);
+        $device = $deviceManager->findDeviceByTypeAndToken(Types::OS_IOS, $deviceToken);
 
         if(is_null($device)) {
            $device = $deviceManager->createDevice($device);
-           $device->setDeviceIdentifier($deviceIdentifier);
            $device->setDeviceToken($deviceToken);
         }
 
@@ -98,6 +101,8 @@ class DeviceController extends Controller
         $device->setSoundAllowed($soundAllowed);
         $device->setAlertAllowed($alertAllowed);
         $device->setType(Types::OS_IOS);
+        $device->setAppName($appName);
+        $device->setAppVersion($appVersion);
 
         $device->setState($isSandbox ? Device::STATE_SANDBOX : Device::STATE_PRODUCTION);
 

@@ -5,31 +5,21 @@ namespace DABSquared\PushNotificationsBundle\Service\OS;
 use DABSquared\PushNotificationsBundle\Exception\InvalidMessageTypeException,
     DABSquared\PushNotificationsBundle\Model\Message,
     DABSquared\PushNotificationsBundle\Model\MessageInterface,
-    DABSquared\PushNotificationsBundle\Device\Types;
+    DABSquared\PushNotificationsBundle\Device\Types,
+    DABSquared\PushNotificationsBundle\Model\Device;
+
 use Buzz\Browser;
+use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 
 class iOSNotification implements OSNotificationServiceInterface
 {
-    /**
-     * Whether or not to use the sandbox APNS
-     *
-     * @var bool
-     */
-    protected $useSandbox = false;
 
     /**
-     * Path to PEM file
+     * Array for certificates
      *
-     * @var string
+     * @var array
      */
-    protected $pem;
-
-    /**
-     * Passphrase for PEM file
-     *
-     * @var string
-     */
-    protected $passphrase;
+    protected $certificates;
 
     /**
      * Array for streams to APN
@@ -37,20 +27,6 @@ class iOSNotification implements OSNotificationServiceInterface
      * @var array
      */
     protected $apnStreams;
-
-    /**
-     * Array for messages to APN
-     *
-     * @var array
-     */
-    protected $messages;
-
-    /**
-     * Last used message ID
-     *
-     * @var int
-     */
-    protected $lastMessageId;
 
     /**
      * JSON_UNESCAPED_UNICODE
@@ -66,27 +42,12 @@ class iOSNotification implements OSNotificationServiceInterface
      * @param $pem
      * @param $passphrase
      */
-    public function __construct($sandbox, $pem, $passphrase = "", $jsonUnescapedUnicode = FALSE)
+    public function __construct($certificates)
     {
-        $this->useSandbox = $sandbox;
-        $this->pem = $pem;
-        $this->passphrase = $passphrase;
-        $this->apnStreams = array();
-        $this->messages = array();
-        $this->lastMessageId = -1;
-        $this->jsonUnescapedUnicode = $jsonUnescapedUnicode;
+        $this->certificates = $certificates;
+
     }
 
-    /**
-     * Set option JSON_UNESCAPED_UNICODE to json encoders
-     *
-     * @param boolean $jsonUnescapedUnicode
-     */
-    public function setJsonUnescapedUnicode($jsonUnescapedUnicode)
-    {
-        $this->jsonUnescapedUnicode = (bool) $jsonUnescapedUnicode;
-        return $this;
-    }
 
     /**
      * Send a notification message
@@ -103,41 +64,33 @@ class iOSNotification implements OSNotificationServiceInterface
         }
 
         $apnURL = "ssl://gateway.push.apple.com:2195";
-        if ($this->useSandbox) {
+
+        if($message->getDevice()->getState() == Device::STATE_SANDBOX) {
             $apnURL = "ssl://gateway.sandbox.push.apple.com:2195";
         }
 
-        $messageId = ++$this->lastMessageId;
-        $this->messages[$messageId] = $this->createPayload($messageId, $message->getDevice()->getDeviceIdentifier(), $message->getMessageBody());
-        $this->sendMessages($messageId, $apnURL);
+        $certsToTry = array();
 
-        return $messageId;
-    }
-
-    /**
-     * Send all notification messages starting from the given ID
-     *
-     * @param int $firstMessageId
-     * @param string $apnURL
-     * @throws \RuntimeException
-     * @throws \DABSquared\PushNotificationsBundle\Exception\InvalidMessageTypeException
-     * @return int
-     */
-    protected function sendMessages($firstMessageId, $apnURL)
-    {
-        // Loop through all messages starting from the given ID
-        for ($currentMessageId = $firstMessageId; $currentMessageId < count($this->messages); $currentMessageId++)
-        {
-            // Send the message
-            $result = $this->writeApnStream($apnURL, $this->messages[$currentMessageId]);
-
-            // Check if there is an error result
-            if (is_array($result)) {
-                // Resend all messages that where send after the failed message
-                $this->sendMessages($result['identifier']+1, $apnURL);
+        foreach ($this->certificates as $cert) {
+            if($message->getDevice()->getState() == Device::STATE_SANDBOX && $cert['sandbox'] == true) {
+                $certsToTry[] = $cert;
+            } else if($message->getDevice()->getState() == Device::STATE_PRODUCTION && $cert['sandbox'] == false) {
+                $certsToTry[] = $cert;
             }
         }
+
+        if(count($certsToTry) == 0) {
+            throw new RuntimeException(sprintf("The device with it's current state, %s did not find a valid Push Certificate", $message->getDevice()->getState()));
+        }
+
+        foreach($certsToTry as $cert) {
+            $this->apnStreams = array();
+            $payload = $this->createPayload($message->getDevice()->getDeviceToken(), $message->getMessageBody(), $cert);
+            $result = $this->writeApnStream($apnURL, $payload ,$cert);
+        }
+
     }
+
 
     /**
      * Write data to the apn stream that is associated with the given apn URL
@@ -147,83 +100,23 @@ class iOSNotification implements OSNotificationServiceInterface
      * @throws \RuntimeException
      * @return mixed
      */
-    protected function writeApnStream($apnURL, $payload)
+    protected function writeApnStream($apnURL, $payload, $cert)
     {
-        // Get the correct Apn stream and send data
-        $fp = $this->getApnStream($apnURL);
-        $response = (strlen($payload) === @fwrite($fp, $payload, strlen($payload)));
 
-        // Check if there is responsedata to read
-        $readStreams = array($fp);
-        $null = NULL;
-        $streamsReadyToRead = stream_select($readStreams, $null, $null, 1, 0);
-        if ($streamsReadyToRead > 0) {
-            // Unpack error response data and set as the result
-            $response = @unpack("Ccommand/Cstatus/Nidentifier", fread($fp, 6));
-            $this->closeApnStream($apnURL);
-        }
-
-        // Will contain true if writing succeeded and no error is returned yet
-        return $response;
-    }
-
-    /**
-     * Get an apn stream associated with the given apn URL, create one if necessary
-     *
-     * @param string $apnURL
-     * @throws \RuntimeException
-     * @return resource
-     */
-    protected function getApnStream($apnURL)
-    {
-        if (!isset($this->apnStreams[$apnURL])) {
-            // No stream found, setup a new stream
-            $ctx = $this->getStreamContext();
-            $this->apnStreams[$apnURL] = stream_socket_client($apnURL, $err, $errstr, 60, STREAM_CLIENT_CONNECT, $ctx);
-            if (!$this->apnStreams[$apnURL]) {
-                throw new \RuntimeException("Couldn't connect to APN server");
-            }
-
-            // Reduce buffering and blocking
-            stream_set_read_buffer($this->apnStreams[$apnURL], 6);
-            stream_set_write_buffer($this->apnStreams[$apnURL], 0);
-            stream_set_blocking($this->apnStreams[$apnURL], 0);
-        }
-
-        return $this->apnStreams[$apnURL];
-    }
-
-    /**
-     * Close the apn stream associated with the given apn URL
-     *
-     * @param string $apnURL
-     */
-    protected function closeApnStream($apnURL)
-    {
-        if (isset($this->apnStreams[$apnURL])) {
-            // Stream found, close the stream
-            fclose($this->apnStreams[$apnURL]);
-            unset($this->apnStreams[$apnURL]);
-        }
-    }
-
-    /**
-     * Gets a stream context set up for SSL
-     * using our PEM file and passphrase
-     *
-     * @return resource
-     */
-    protected function getStreamContext()
-    {
         $ctx = stream_context_create();
-
-        stream_context_set_option($ctx, "ssl", "local_cert", $this->pem);
-        if (strlen($this->passphrase)) {
-            stream_context_set_option($ctx, "ssl", "passphrase", $this->passphrase);
+        stream_context_set_option($ctx, "ssl", "local_cert", $cert['pem']);
+        if (strlen($cert['passphrase'])) {
+            stream_context_set_option($ctx, "ssl", "passphrase", $cert['passphrase']);
         }
 
-        return $ctx;
+        $apns = stream_socket_client($apnURL, $err, $errstr, 2, STREAM_CLIENT_CONNECT, $ctx);
+
+        echo $errstr;
+
+        fwrite($apns, $payload);
+        fclose($apns);
     }
+
 
     /**
      * Creates the full payload for the notification
@@ -233,9 +126,9 @@ class iOSNotification implements OSNotificationServiceInterface
      * @param $message
      * @return string
      */
-    protected function createPayload($messageId, $token, $message)
+    protected function createPayload($token, $message, $cert)
     {
-        if ($this->jsonUnescapedUnicode) {
+        if ($cert['json_unescaped_unicode']) {
             // Validate PHP version
             if (!version_compare(PHP_VERSION, '5.4.0', '>=')) {
                 throw new \LogicException(sprintf(
@@ -262,9 +155,10 @@ class iOSNotification implements OSNotificationServiceInterface
         else {
             $jsonBody = json_encode($message, JSON_FORCE_OBJECT);
         }
+        //$token = preg_replace("/[^0-9A-Fa-f]/", "", $token);
+        //$payload = chr(1) . pack("N", 0) . pack("n", 32) . pack("H*", $token) . pack("n", strlen($jsonBody)) . $jsonBody;
 
-        $token = preg_replace("/[^0-9A-Fa-f]/", "", $token);
-        $payload = chr(1) . pack("N", $messageId) . pack("N", 0) . pack("n", 32) . pack("H*", $token) . pack("n", strlen($jsonBody)) . $jsonBody;
+        $payload = chr(0) . chr(0) . chr(32) . pack('H*', str_replace(' ', '', $token)) . chr(0) . chr(strlen($jsonBody)) . $jsonBody;
 
         return $payload;
     }

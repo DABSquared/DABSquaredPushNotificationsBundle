@@ -62,8 +62,8 @@ abstract class DeviceManager implements DeviceManagerInterface
      */
     public function saveDevice(DeviceInterface $device)
     {
-        if (null === $device->getDeviceIdentifier()) {
-            throw new InvalidArgumentException('The device must have an identifier');
+        if (null === $device->getDeviceToken()) {
+            throw new InvalidArgumentException('The device must have a token');
         }
 
         $event = new DevicePersistEvent($device);

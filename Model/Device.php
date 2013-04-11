@@ -12,6 +12,37 @@ namespace DABSquared\PushNotificationsBundle\Model;
 abstract class Device implements DeviceInterface
 {
     /**
+     * @param string $appName
+     */
+    public function setAppName($appName)
+    {
+        $this->appName = $appName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAppName()
+    {
+        return $this->appName;
+    }
+
+    /**
+     * @param string $appVersion
+     */
+    public function setAppVersion($appVersion)
+    {
+        $this->appVersion = $appVersion;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAppVersion()
+    {
+        return $this->appVersion;
+    }
+    /**
      * Device database id
      *
      * @var mixed
@@ -25,12 +56,6 @@ abstract class Device implements DeviceInterface
      */
     protected $state = Device::STATE_PRODUCTION;
 
-    /**
-     * Device identifier
-     *
-     * @var string
-     */
-    protected $deviceIdentifier;
 
     /**
      * Device token
@@ -79,6 +104,16 @@ abstract class Device implements DeviceInterface
      */
     protected $deviceVersion;
 
+    /**
+     * @var string
+     */
+    protected $appName;
+
+    /**
+     * @var string
+     */
+    protected $appVersion;
+
 
     protected $createdAt;
 
@@ -122,21 +157,6 @@ abstract class Device implements DeviceInterface
      */
     public function getId(){
        return $this->id;
-    }
-
-
-    /**
-     * @return mixed unique device ID from the application
-     */
-    public function getDeviceIdentifier() {
-        return $this->deviceIdentifier;
-    }
-
-    /**
-     * @param string $deviceIdentifier
-     */
-    public function setDeviceIdentifier($deviceIdentifier) {
-        $this->deviceIdentifier = $deviceIdentifier;
     }
 
     /**

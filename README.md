@@ -55,9 +55,11 @@ Below you'll find all configuration options; just use what you need:
           gcm:
               api_key: <string_android_gcm_api_key>
       ios:
-          sandbox: <bool_use_apns_sandbox>
-          pem: <path_apns_certificate>
-          passphrase: <string_apns_certificate_passphrase>
+          certificates:  #replace these certs with your own. The bundle will loop through all certs displayed here when sending a push based on the sandbox param. You can add as many certificates as you need.
+              dev_prem: { sandbox: true, pem: %kernel.root_dir%/../pushcerts/premium/dev/certificate.pem, passphrase: ~}
+              dev_lite: { sandbox: true, pem: %kernel.root_dir%/../pushcerts/lite/dev/certificate.pem, passphrase: ~}
+              prod_prem: { sandbox: false, pem: %kernel.root_dir%/../pushcerts/premium/prod/certificate.pem, passphrase: ~}
+              prod_lite: { sandbox: false, pem: %kernel.root_dir%/../pushcerts/lite/prod/certificate.pem, passphrase: ~}
       blackberry:
           evaluation: <bool_bb_evaluation_mode>
           app_id: <string_bb_app_id>

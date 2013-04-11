@@ -21,8 +21,6 @@
 
         <field name="state"  type="int" />
 
-        <field name="deviceIdentifier" type="string" nullable="false" />
-
         <field name="deviceToken"  type="string" nullable="false" />
 
         <field name="badgeAllowed" type="boolean" />
@@ -36,6 +34,10 @@
         <field name="deviceModel" type="string" />
 
         <field name="deviceVersion" type="string" />
+
+        <field name="appName" type="string" nullable="true"/>
+
+        <field name="appVersion" type="string" nullable="true"/>
 
         <field name="createdAt" type="date" />
 

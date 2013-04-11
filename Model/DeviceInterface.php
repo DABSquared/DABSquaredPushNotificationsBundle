@@ -27,17 +27,6 @@ interface DeviceInterface
     public function getCreatedAt();
 
     /**
-     * @return mixed unique device ID from the application
-     */
-    public function getDeviceIdentifier();
-
-    /**
-     * @param string $deviceIdentifier
-     */
-    public function setDeviceIdentifier($deviceIdentifier);
-
-
-    /**
      * @return integer Whether or not to use sandbox mode for this device
      */
     public function getState();

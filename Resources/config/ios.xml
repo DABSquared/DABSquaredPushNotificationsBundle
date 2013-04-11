@@ -11,18 +11,14 @@
 
         <!-- iOS-->
         <service id="dab_push_notifications.ios" class="%dab_push_notifications.ios.class%" public="false">
-            <argument>%dab_push_notifications.ios.sandbox%</argument>
-            <argument>%dab_push_notifications.ios.pem%</argument>
-            <argument>%dab_push_notifications.ios.passphrase%</argument>
-            <argument>%dab_push_notifications.ios.json_unescaped_unicode%</argument>
+            <argument>%dab_push_notifications.ios.certificates%</argument>
             <tag name="dab_push_notifications.handler" osType="dab_push_notifications.os.ios" />
         </service>
 
         <!-- iOS Feedback requests -->
         <service id="dab_push_notifications.ios.feedback" class="%dab_push_notifications.ios.feedback.class%">
-            <argument>%dab_push_notifications.ios.sandbox%</argument>
-            <argument>%dab_push_notifications.ios.pem%</argument>
-            <argument>%dab_push_notifications.ios.passphrase%</argument>
+            <argument>%dab_push_notifications.ios.certificates%</argument>
+
         </service>
 
 

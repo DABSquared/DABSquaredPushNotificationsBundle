@@ -125,25 +125,30 @@ class DABSquaredPushNotificationsExtension extends Extension
     protected function setiOSConfig(array $config)
     {
         // PEM file is required
-        if (!file_exists($config['ios']['pem'])) {
-            throw new \RuntimeException(sprintf('Pem file "%s" not found.', $config['ios']['pem']));
+        if(count($config['ios']['certificates']) <= 0) {
+            throw new \RuntimeException(sprintf('A push certificate is required'));
+
         }
 
-        if ($config['ios']['json_unescaped_unicode']) {
-            // Not support JSON_UNESCAPED_UNICODE option
-            if (!version_compare(PHP_VERSION, '5.4.0', '>=')) {
-                throw new \LogicException(sprintf(
-                    'Can\'t use JSON_UNESCAPED_UNICODE option. This option can use only PHP Version >= 5.4.0. Your version: %s',
-                    PHP_VERSION
-                ));
+        foreach ($config['ios']['certificates'] as $iosCert) {
+            if (!file_exists($iosCert['pem'])) {
+                throw new \RuntimeException(sprintf('Pem file "%s" not found.', $iosCert['pem']));
+            }
+
+            if ($iosCert['json_unescaped_unicode']) {
+                // Not support JSON_UNESCAPED_UNICODE option
+                if (!version_compare(PHP_VERSION, '5.4.0', '>=')) {
+                    throw new \LogicException(sprintf(
+                        'Can\'t use JSON_UNESCAPED_UNICODE option. This option can use only PHP Version >= 5.4.0. Your version: %s',
+                        PHP_VERSION
+                    ));
+                }
             }
         }
 
+
         $this->container->setParameter("dab_push_notifications.ios.enabled", true);
-        $this->container->setParameter("dab_push_notifications.ios.sandbox", $config["ios"]["sandbox"]);
-        $this->container->setParameter("dab_push_notifications.ios.pem", $config["ios"]["pem"]);
-        $this->container->setParameter("dab_push_notifications.ios.passphrase", $config["ios"]["passphrase"]);
-        $this->container->setParameter("dab_push_notifications.ios.json_unescaped_unicode", (bool) $config['ios']['json_unescaped_unicode']);
+        $this->container->setParameter("dab_push_notifications.ios.certificates", $config['ios']['certificates']);
     }
 
     /**

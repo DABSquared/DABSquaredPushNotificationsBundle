@@ -19,7 +19,7 @@
             <generator strategy="AUTO" />
         </id>
 
-        <field name="type"  type="integer" />
+        <field name="type"  type="text" />
 
         <field name="message" type="text" />
 

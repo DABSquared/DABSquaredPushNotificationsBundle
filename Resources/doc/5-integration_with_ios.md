@@ -84,7 +84,7 @@ In the AppDelegate file do the following:
 	// !!! CHANGE "www.mywebsite.com" TO YOUR WEBSITE. Leave out the http://
 	// !!! SAMPLE: "secure.awesomeapp.com"
 	NSString *host = @"www.mywebsite.com";
-
+	postString = [postString stringByAppendingString:@"?app_id=0000001"]; //Some tiype of internal app id that matches the app id configured on the server
 	postString = [postString stringByAppendingString:@"&device_identifier="];
 	postString = [postString stringByAppendingString:deviceIdentifier];
 	postString = [postString stringByAppendingString:@"&device_token="];

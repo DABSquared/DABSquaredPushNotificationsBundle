@@ -55,7 +55,7 @@ interface DeviceManagerInterface
 
     /**
      */
-    public function findDeviceByTypeAndToken($type, $token);
+    public function findDeviceByTypeIdentifierAndAppId($type,$deviceIdentifier, $appId);
 
 
 }

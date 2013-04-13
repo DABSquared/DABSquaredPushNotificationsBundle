@@ -108,6 +108,26 @@ interface DeviceInterface
      */
     public function setDeviceVersion($deviceVersion);
 
+    /**
+     * @return string The device version
+     */
+    public function getDeviceIdentifier();
+
+    /**
+     * @param string $deviceVersion
+     */
+    public function setDeviceIdentifier($deviceIdentifier);
+
+    /**
+     * @return string The device version
+     */
+    public function getAppId();
+
+    /**
+     * @param string $deviceVersion
+     */
+    public function setAppId($appId);
+
 
     public function getMessages();
 

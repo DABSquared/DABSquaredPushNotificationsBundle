@@ -119,6 +119,7 @@ class Configuration
                                 ->children()
                                     ->scalarNode('pem')->isRequired()->end()
                                     ->scalarNode("passphrase")->defaultValue("")->end()
+                                    ->scalarNode('internal_app_id')->isRequired()->end()
                                     ->booleanNode("sandbox")->defaultFalse()->end()
                                     ->scalarNode('json_unescaped_unicode')->defaultFalse()->info('PHP >= 5.4.0 and each messaged must be UTF-8 encoding')->end()
                                     ->end()

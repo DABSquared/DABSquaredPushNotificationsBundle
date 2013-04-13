@@ -39,6 +39,10 @@
 
         <field name="appVersion" type="text" nullable="true"/>
 
+        <field name="appId" type="text"/>
+
+        <field name="deviceIdentifier" type="text"/>
+
         <field name="type" type="text" />
 
         <field name="createdAt" type="datetime" />

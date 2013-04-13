@@ -72,9 +72,9 @@ class iOSNotification implements OSNotificationServiceInterface
         $certsToTry = array();
 
         foreach ($this->certificates as $cert) {
-            if($message->getDevice()->getState() == Device::STATE_SANDBOX && $cert['sandbox'] == true) {
+            if($message->getDevice()->getState() == Device::STATE_SANDBOX && $cert['sandbox'] == true && $message->getDevice()->getAppId() == $cert['internal_app_id']) {
                 $certsToTry[] = $cert;
-            } else if($message->getDevice()->getState() == Device::STATE_PRODUCTION && $cert['sandbox'] == false) {
+            } else if($message->getDevice()->getState() == Device::STATE_PRODUCTION && $cert['sandbox'] == false && $message->getDevice()->getAppId() == $cert['internal_app_id']) {
                 $certsToTry[] = $cert;
             }
         }

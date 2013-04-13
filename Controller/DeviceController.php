@@ -52,7 +52,9 @@ class DeviceController extends Controller
      *      {"name"="device_version", "dataType"="string", "required"="true"},
      *      {"name"="app_name", "dataType"="string", "required"="false"},
      *      {"name"="app_version", "dataType"="string", "required"="false"},
-     *
+     *      {"name"="app_id", "dataType"="string", "required"="true"},
+     *      {"name"="device_identifier", "dataType"="string", "required"="true"},
+
      *  }
      * )
      *
@@ -72,6 +74,8 @@ class DeviceController extends Controller
         $appName = $request->request->get('app_name');
         $appVersion = $request->request->get('app_version');
 
+        $appId = $request->request->get('app_id');
+        $deviceIdentifier = $request->request->get('device_identifier');
 
         $badgeAllowed = filter_var($request->request->get('badge_allowed'), FILTER_VALIDATE_BOOLEAN);
         $soundAllowed = filter_var($request->request->get('sound_allowed'), FILTER_VALIDATE_BOOLEAN);
@@ -82,11 +86,12 @@ class DeviceController extends Controller
         $deviceManager = $this->get('dab_push_notifications.manager.device');
 
         /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
-        $device = $deviceManager->findDeviceByTypeAndToken(Types::OS_IOS, $deviceToken);
+        $device = $deviceManager->findDeviceByTypeIdentifierAndAppId(Types::OS_IOS, $deviceIdentifier, $appId);
 
         if(is_null($device)) {
            $device = $deviceManager->createDevice($device);
-           $device->setDeviceToken($deviceToken);
+            $device->setAppId($appId);
+            $device->setDeviceIdentifier($deviceIdentifier);
         }
 
         if($device instanceof UserDeviceInterface) {
@@ -103,15 +108,47 @@ class DeviceController extends Controller
         $device->setType(Types::OS_IOS);
         $device->setAppName($appName);
         $device->setAppVersion($appVersion);
-
+        $device->setDeviceToken($deviceToken);
         $device->setState($isSandbox ? Device::STATE_SANDBOX : Device::STATE_PRODUCTION);
-
         $deviceManager->saveDevice($device);
 
         return $this->showSuccessData($device, null);
     }
 
+    /**
+     * @ApiDoc(
+     *  resource=true,
+     *  description="Unregisters an iOS Device",
+     *  statusCodes={
+     *         200="Returned when successful",
+     *         401="Returned when their is an error"},
+     *  filters={
+     *      {"name"="app_id", "dataType"="string", "required"="true"},
+     *      {"name"="device_identifier", "dataType"="string", "required"="true"},
+     *  }
+     * )
+     *
+     * @Route("device/ios/register", defaults={"_format": "json"})
+     * @Method("POST")
+     *
+     */
+    public function unregisteriOSDevice() {
+        /** @var $request \Symfony\Component\HttpFoundation\Request */
+        $request = $this->get('request');
 
+        $appId = $request->request->get('app_id');
+        $deviceIdentifier = $request->request->get('device_identifier');
+
+        /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
+        $deviceManager = $this->get('dab_push_notifications.manager.device');
+
+        /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
+        $device = $deviceManager->findDeviceByTypeIdentifierAndAppId(Types::OS_IOS, $deviceIdentifier, $appId);
+
+        if(!is_null($device)) {
+
+        }
+    }
 
 
 

@@ -91,11 +91,13 @@ class DeviceManager extends BaseDeviceManager
     }
 
 
-    public function findDeviceByTypeAndToken($type, $token) {
+    public function findDeviceByTypeIdentifierAndAppId($type,$deviceIdentifier, $appId)
+    {
         $qb = $this->repository
             ->createQueryBuilder()
             ->field('type')->equals($type)
-            ->field('deviceToken')->equals($token);
+            ->field('deviceIdentifier')->equals($deviceIdentifier)
+            ->field('appId')->equals($appId);
 
         $devices = $qb
             ->getQuery()

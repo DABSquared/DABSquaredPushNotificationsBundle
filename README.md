@@ -55,11 +55,11 @@ Below you'll find all configuration options; just use what you need:
           gcm:
               api_key: <string_android_gcm_api_key>
       ios:
-          certificates:  #replace these certs with your own. The bundle will loop through all certs displayed here when sending a push based on the sandbox param. You can add as many certificates as you need.
-              dev_prem: { sandbox: true, pem: %kernel.root_dir%/../pushcerts/premium/dev/certificate.pem, passphrase: ~}
-              dev_lite: { sandbox: true, pem: %kernel.root_dir%/../pushcerts/lite/dev/certificate.pem, passphrase: ~}
-              prod_prem: { sandbox: false, pem: %kernel.root_dir%/../pushcerts/premium/prod/certificate.pem, passphrase: ~}
-              prod_lite: { sandbox: false, pem: %kernel.root_dir%/../pushcerts/lite/prod/certificate.pem, passphrase: ~}
+          certificates:  #replace these certs with your own as well as app ids. The bundle will loop through all certs displayed here when sending a push based on the sandbox param. You can add as many certificates as you need. Also note that the bundle will send using certificates that match the internal_app_ids of the registered devices.
+              dev_prem: { sandbox: true, pem: %kernel.root_dir%/../pushcerts/premium/dev/certificate.pem, passphrase: ~, internal_app_id: 0000001}
+            dev_lite: { sandbox: true, pem: %kernel.root_dir%/../pushcerts/lite/dev/certificate.pem, passphrase: ~, internal_app_id: 0000002}
+            prod_prem: { sandbox: false, pem: %kernel.root_dir%/../pushcerts/premium/prod/certificate.pem, passphrase: ~, internal_app_id: 0000001}
+            prod_lite: { sandbox: false, pem: %kernel.root_dir%/../pushcerts/lite/prod/certificate.pem, passphrase: ~,internal_app_id: 0000002}
       blackberry:
           evaluation: <bool_bb_evaluation_mode>
           app_id: <string_bb_app_id>

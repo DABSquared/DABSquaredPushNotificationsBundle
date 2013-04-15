@@ -15,15 +15,9 @@ interface MessageInterface
     public function getId();
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getCreatedAt();
-
-    /**
-     * @param $number
-     * @return mixed
-     */
-    public function setBadgeNumber($number);
 
 
     public function setSound($sound);

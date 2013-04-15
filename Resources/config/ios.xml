@@ -12,6 +12,8 @@
         <!-- iOS-->
         <service id="dab_push_notifications.ios" class="%dab_push_notifications.ios.class%" public="false">
             <argument>%dab_push_notifications.ios.certificates%</argument>
+            <argument type="service" id="dab_push_notifications.manager.message" />
+            <argument type="service" id="dab_push_notifications.manager.device" />
             <tag name="dab_push_notifications.handler" osType="dab_push_notifications.os.ios" />
         </service>
 

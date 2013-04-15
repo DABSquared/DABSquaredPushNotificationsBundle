@@ -37,6 +37,45 @@ class Notifications
         return $this->handlers[$message->getTargetOS()]->send($message);
     }
 
+
+    /**
+     * Sends a set of messages
+     *
+     * @param array $message
+     * @throws \RuntimeException
+     * @return bool
+     */
+    public function sendMessages(array $messages)
+    {
+        $messageTypes = array();
+
+        foreach($messages as $message) {
+            if (!isset($this->handlers[$message->getTargetOS()])) {
+                throw new \RuntimeException("OS type {$message->getTargetOS()} not supported");
+            }
+
+            if(!array_key_exists($message->getTargetOS(), $messageTypes)) {
+                $messageTypes[$message->getTargetOS()] = array();
+            }
+
+            $messageTypes[$message->getTargetOS()][] = $message;
+        }
+
+        $return = false;
+
+
+        foreach($messageTypes as $key => $messageType) {
+            if($return) {
+                return $return;
+            }
+
+
+            $return = $this->handlers[$key]->sendMessages($messageType);
+        }
+
+        return $return;
+    }
+
     /**
      * Adds a handler
      *

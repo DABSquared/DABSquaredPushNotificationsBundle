@@ -15,6 +15,7 @@ use DABSquared\PushNotificationsBundle\Model\DeviceInterface;
 use DABSquared\PushNotificationsBundle\Model\MessageInterface;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 

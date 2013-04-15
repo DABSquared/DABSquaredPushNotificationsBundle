@@ -2,6 +2,8 @@
 
 namespace DABSquared\PushNotificationsBundle\Model;
 
+use DABSquared\PushNotificationsBundle\Device\DeviceStatus;
+
 /**
  * Created by JetBrains PhpStorm.
  * User: daniel_brooks
@@ -11,67 +13,9 @@ namespace DABSquared\PushNotificationsBundle\Model;
  */
 abstract class Device implements DeviceInterface
 {
-    /**
-     * @param string $appId
-     */
-    public function setAppId($appId)
-    {
-        $this->appId = $appId;
-    }
 
-    /**
-     * @return string
-     */
-    public function getAppId()
-    {
-        return $this->appId;
-    }
-    /**
-     * @param string $deviceIdentifier
-     */
-    public function setDeviceIdentifier($deviceIdentifier)
-    {
-        $this->deviceIdentifier = $deviceIdentifier;
-    }
 
-    /**
-     * @return string
-     */
-    public function getDeviceIdentifier()
-    {
-        return $this->deviceIdentifier;
-    }
-    /**
-     * @param string $appName
-     */
-    public function setAppName($appName)
-    {
-        $this->appName = $appName;
-    }
 
-    /**
-     * @return string
-     */
-    public function getAppName()
-    {
-        return $this->appName;
-    }
-
-    /**
-     * @param string $appVersion
-     */
-    public function setAppVersion($appVersion)
-    {
-        $this->appVersion = $appVersion;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAppVersion()
-    {
-        return $this->appVersion;
-    }
     /**
      * Device database id
      *
@@ -86,6 +30,12 @@ abstract class Device implements DeviceInterface
      */
     protected $state = Device::STATE_PRODUCTION;
 
+    /**
+     * Current Badge Number.
+     *
+     * @var integer
+     */
+    protected $badgeNumber = 0;
 
     /**
      * Device token
@@ -118,6 +68,11 @@ abstract class Device implements DeviceInterface
      * @var string
      */
     protected $type;
+
+    /**
+     * @var string
+     */
+    protected $status = DeviceStatus::DEVICE_STATUS_ACTIVE;
 
     /**
      * @var string
@@ -171,7 +126,7 @@ abstract class Device implements DeviceInterface
 
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -180,9 +135,9 @@ abstract class Device implements DeviceInterface
 
     /**
      * Sets the creation date
-     * @param DateTime $createdAt
+     * @param \DateTime $createdAt
      */
-    public function setCreatedAt(DateTime $createdAt)
+    public function setCreatedAt(\DateTime $createdAt)
     {
         $this->createdAt = $createdAt;
     }
@@ -361,6 +316,100 @@ abstract class Device implements DeviceInterface
     public function removeMessage($message)
     {
         $this->messages->removeElement($message);
+    }
+
+    /**
+     * @param string $appId
+     */
+    public function setAppId($appId)
+    {
+        $this->appId = $appId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAppId()
+    {
+        return $this->appId;
+    }
+    /**
+     * @param string $deviceIdentifier
+     */
+    public function setDeviceIdentifier($deviceIdentifier)
+    {
+        $this->deviceIdentifier = $deviceIdentifier;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDeviceIdentifier()
+    {
+        return $this->deviceIdentifier;
+    }
+    /**
+     * @param string $appName
+     */
+    public function setAppName($appName)
+    {
+        $this->appName = $appName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAppName()
+    {
+        return $this->appName;
+    }
+
+    /**
+     * @param string $appVersion
+     */
+    public function setAppVersion($appVersion)
+    {
+        $this->appVersion = $appVersion;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAppVersion()
+    {
+        return $this->appVersion;
+    }
+
+    /**
+     * @param int $badgeNumber
+     */
+    public function setBadgeNumber($badgeNumber)
+    {
+        $this->badgeNumber = $badgeNumber;
+    }
+
+    /**
+     * @return int
+     */
+    public function getBadgeNumber()
+    {
+        return $this->badgeNumber;
+    }
+
+    /**
+     * @param string $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 
 }

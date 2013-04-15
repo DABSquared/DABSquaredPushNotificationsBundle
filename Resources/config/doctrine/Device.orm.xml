@@ -21,6 +21,8 @@
 
         <field name="state"  type="integer" />
 
+        <field name="badgeNumber"  type="integer" nullable="false" />
+
         <field name="deviceToken"  type="text" nullable="false" />
 
         <field name="badgeAllowed" type="boolean" />
@@ -44,6 +46,8 @@
         <field name="deviceIdentifier" type="text"/>
 
         <field name="type" type="text" />
+
+        <field name="status" type="text" />
 
         <field name="createdAt" type="datetime" />
 

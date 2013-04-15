@@ -13,4 +13,13 @@ interface OSNotificationServiceInterface
      * @return mixed
      */
     public function send(MessageInterface $message);
+
+    /**
+     * Sends a set of messages
+     *
+     * @param array $message
+     * @throws \RuntimeException
+     * @return bool
+     */
+    public function sendMessages(array $messages);
 }

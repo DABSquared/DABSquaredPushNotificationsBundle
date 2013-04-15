@@ -90,4 +90,18 @@ class MessageManager extends BaseMessageManager
         return $this->class;
     }
 
+    public function findByStatus($status) {
+        $qb = $this->repository
+            ->createQueryBuilder()
+            ->field('status')->equals($status);
+
+        $messages = $qb
+            ->getQuery()
+            ->execute();
+
+
+        return $messages;
+
+    }
+
 }

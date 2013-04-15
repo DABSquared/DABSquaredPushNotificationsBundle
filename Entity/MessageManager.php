@@ -15,6 +15,7 @@ use DABSquared\PushNotificationsBundle\Model\MessageManager as BaseMessageManger
 use DABSquared\PushNotificationsBundle\Model\DeviceInterface;
 use DABSquared\PushNotificationsBundle\Model\MessageInterface;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -83,4 +84,20 @@ class MessageManager extends BaseMessageManger
     {
         return $this->class;
     }
+
+
+    public function findByStatus($status) {
+        $qb = $this->repository
+            ->createQueryBuilder('m')
+            ->where('m.status = :status')
+            ->setParameter('status', $status);
+
+        $messages = $qb
+            ->getQuery()
+            ->execute();
+
+        return $messages;
+
+    }
+
 }

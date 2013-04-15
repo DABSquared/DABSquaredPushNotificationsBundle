@@ -2,6 +2,7 @@
 
 namespace DABSquared\PushNotificationsBundle\Controller;
 
+use DABSquared\PushNotificationsBundle\Device\DeviceStatus;
 use DABSquared\PushNotificationsBundle\Model\UserDeviceInterface;
 use FOS\Rest\Util\Codes;
 use FOS\RestBundle\View\RouteRedirectView;
@@ -128,7 +129,7 @@ class DeviceController extends Controller
      *  }
      * )
      *
-     * @Route("device/ios/register", defaults={"_format": "json"})
+     * @Route("device/ios/unregister", defaults={"_format": "json"})
      * @Method("POST")
      *
      */
@@ -146,7 +147,46 @@ class DeviceController extends Controller
         $device = $deviceManager->findDeviceByTypeIdentifierAndAppId(Types::OS_IOS, $deviceIdentifier, $appId);
 
         if(!is_null($device)) {
+            $device->setStatus(DeviceStatus::DEVICE_STATUS_UNACTIVE);
+            $device->setBadgeNumber(0);
+            $deviceManager->saveDevice($device);
+        }
+    }
 
+
+    /**
+     * @ApiDoc(
+     *  resource=true,
+     *  description="App Open",
+     *  statusCodes={
+     *         200="Returned when successful",
+     *         401="Returned when their is an error"},
+     *  filters={
+     *      {"name"="app_id", "dataType"="string", "required"="true"},
+     *      {"name"="device_identifier", "dataType"="string", "required"="true"},
+     *  }
+     * )
+     *
+     * @Route("device/app_open", defaults={"_format": "json"})
+     * @Method("POST")
+     *
+     */
+    public function appOpen() {
+        /** @var $request \Symfony\Component\HttpFoundation\Request */
+        $request = $this->get('request');
+
+        $appId = $request->request->get('app_id');
+        $deviceIdentifier = $request->request->get('device_identifier');
+
+        /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
+        $deviceManager = $this->get('dab_push_notifications.manager.device');
+
+        /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
+        $device = $deviceManager->findDeviceByTypeIdentifierAndAppId(Types::OS_IOS, $deviceIdentifier, $appId);
+
+        if(!is_null($device)) {
+            $device->setBadgeNumber(0);
+            $deviceManager->saveDevice($device);
         }
     }
 

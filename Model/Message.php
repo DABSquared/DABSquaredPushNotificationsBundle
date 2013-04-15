@@ -3,6 +3,7 @@
 namespace DABSquared\PushNotificationsBundle\Model;
 
 use DABSquared\PushNotificationsBundle\Device\Types;
+use DABSquared\PushNotificationsBundle\Message\MessageStatus;
 
 
 /**
@@ -35,19 +36,32 @@ abstract class Message implements MessageInterface
     protected $type;
 
     /**
+     * @var string
+     */
+    protected $status = MessageStatus::MESSAGE_STATUS_NOT_SENT;
+
+
+    /**
      * String message
      *
      * @var string
      */
     protected $message = "";
 
-    protected $badgeNumber = 0;
+    /**
+     * String sound
+     *
+     * @var string
+     */
+    protected $sound = null;
 
     /**
      * Custom data
      *
      * @var array
      */
+
+    //TODO: Implement Custom Data properly
     protected $customData = array();
 
 
@@ -111,12 +125,12 @@ abstract class Message implements MessageInterface
             ),
         );
 
-        $this->createdAt = new DateTime();
+        $this->createdAt = new \DateTime();
     }
 
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -125,9 +139,9 @@ abstract class Message implements MessageInterface
 
     /**
      * Sets the creation date
-     * @param DateTime $createdAt
+     * @param \DateTime $createdAt
      */
-    public function setCreatedAt(DateTime $createdAt)
+    public function setCreatedAt(\DateTime $createdAt)
     {
         $this->createdAt = $createdAt;
     }
@@ -139,16 +153,7 @@ abstract class Message implements MessageInterface
      */
     public function setMessage($message)
     {
-
         $this->message = $message;
-
-        if($this->type == Types::OS_IOS) {
-            $this->apsBody["aps"]["alert"] = $message;
-        }else if($this->type == Types::OS_ANDROID_GCM || $this->type == Types::OS_ANDROID_C2DM) {
-
-        }else if($this->type == Types::OS_BLACKBERRY) {
-            $this->setData($message);
-        }
     }
 
 
@@ -169,7 +174,16 @@ abstract class Message implements MessageInterface
      */
     public function getMessageBody()
     {
+
         if($this->type == Types::OS_IOS) {
+        }else if($this->type == Types::OS_ANDROID_GCM || $this->type == Types::OS_ANDROID_C2DM) {
+
+        }else if($this->type == Types::OS_BLACKBERRY) {
+        }
+
+        if($this->type == Types::OS_IOS) {
+            $this->apsBody["aps"]["alert"] = $this->getMessage();
+
             $payloadBody = $this->apsBody;
             if (!empty($this->customData)) {
                 $payloadBody = array_merge($payloadBody, $this->customData);
@@ -186,6 +200,7 @@ abstract class Message implements MessageInterface
             }
             return $data;
         }else if($this->type == Types::OS_BLACKBERRY) {
+            $this->setData($this->getMessage());
             return $this->customData;
         }
 
@@ -261,16 +276,6 @@ abstract class Message implements MessageInterface
     }
 
 
-    /**
-     * @param $number
-     * @return mixed
-     */
-    public function setBadgeNumber($number) {
-        if($this->type == Types::OS_IOS) {
-            $this->apsBody["aps"]["badge"] = $number;
-        }
-
-    }
 
     public function setSound($sound)
     {
@@ -449,6 +454,22 @@ abstract class Message implements MessageInterface
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param string $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 
 

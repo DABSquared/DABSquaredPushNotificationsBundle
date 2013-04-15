@@ -46,4 +46,8 @@ interface MessageManagerInterface
      * @return string
      */
     public function getClass();
-}
+
+
+    public function findByStatus($status);
+
+ }

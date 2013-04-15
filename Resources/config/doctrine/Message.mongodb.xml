@@ -21,6 +21,8 @@
 
         <field name="type"  type="string" />
 
+        <field name="status"  type="string" />
+
         <field name="message" type="string" />
 
         <field name="createdAt" type="date" />

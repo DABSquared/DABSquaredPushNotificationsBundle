@@ -22,7 +22,7 @@ interface DeviceInterface
     public function getId();
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getCreatedAt();
 

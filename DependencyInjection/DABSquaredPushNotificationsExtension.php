@@ -45,7 +45,7 @@ class DABSquaredPushNotificationsExtension extends Extension
 
 
         $container->setParameter('dab_push_notifications.model.device.class', $config['class']['model']['device']);
-        $container->setParameter('dab_push_notifications.model.device.message', $config['class']['model']['message']);
+        $container->setParameter('dab_push_notifications.model.message.class', $config['class']['model']['message']);
         $container->setParameter('dab_push_notifications.model_manager_name', $config['model_manager_name']);
 
 

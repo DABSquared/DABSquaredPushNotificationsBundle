@@ -151,6 +151,9 @@ class DeviceController extends Controller
             $device->setBadgeNumber(0);
             $deviceManager->saveDevice($device);
         }
+
+        return $this->showSuccessData($device, null);
+
     }
 
 
@@ -188,6 +191,9 @@ class DeviceController extends Controller
             $device->setBadgeNumber(0);
             $deviceManager->saveDevice($device);
         }
+
+        return $this->showSuccessData($device, null);
+
     }
 
 

@@ -113,7 +113,7 @@ class DeviceController extends Controller
         $device->setState($isSandbox ? Device::STATE_SANDBOX : Device::STATE_PRODUCTION);
         $deviceManager->saveDevice($device);
 
-        return $this->showSuccessData($device, null);
+        return $this->showSuccessData(null, null);
     }
 
     /**
@@ -152,7 +152,7 @@ class DeviceController extends Controller
             $deviceManager->saveDevice($device);
         }
 
-        return $this->showSuccessData($device, null);
+        return $this->showSuccessData(null, null);
 
     }
 
@@ -192,7 +192,7 @@ class DeviceController extends Controller
             $deviceManager->saveDevice($device);
         }
 
-        return $this->showSuccessData($device, null);
+        return $this->showSuccessData(null, null);
 
     }
 

@@ -8,9 +8,10 @@ Almost Ready for Use.. Any contributions are welcome. The goal here is to provid
 Road Map:
 
 V1.0:
-  Support Basic Device Registration for iOS Devices (at least)
-  Be able to associate a device with a user much like FOSCommentBundle
-  Be able to send messages to a particular device or user, using about 2-4 lines of code.
+  Support Basic Device Registration for iOS Devices (at least)   - WORKING
+  Be able to associate a device with a user much like FOSCommentBundle   - WORKING
+  Be able to send messages to a particular device or user, using about 2-4 lines of code.  - WORKING
+  Auto-manage badge numbers.   WORKING, NEEED TO ADD DOCUMENTATION FOR HOW TO SUPPORT.
 
 V1.1:
   Full Support for all types of Device Push Notifications

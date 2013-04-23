@@ -13,6 +13,8 @@ namespace DABSquared\PushNotificationsBundle\Message;
 class MessageStatus {
     const MESSAGE_STATUS_NOT_SENT = "dab_push_notifications.status.not.sent";
     const MESSAGE_STATUS_SENT = "dab_push_notifications.status.sent";
+    const MESSAGE_STATUS_SENDING = "dab_push_notifications.status.sending";
+
 }
 
 

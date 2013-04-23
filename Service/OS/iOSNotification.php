@@ -195,6 +195,8 @@ class iOSNotification implements OSNotificationServiceInterface
             try {
                 fwrite($apns, $payload);
             } catch (\ErrorException $er) {
+                $messages[$i]->setStatus(MessageStatus::MESSAGE_STATUS_NOT_SENT);
+                $this->messageManager->saveMessage($messages[$i]);
                 $i++;
                 continue;
             }
@@ -232,7 +234,9 @@ class iOSNotification implements OSNotificationServiceInterface
             fwrite($apns, $payload);
             fclose($apns);
         } catch (\ErrorException $er) {
-
+            $message->setStatus(MessageStatus::MESSAGE_STATUS_NOT_SENT);
+            $this->messageManager->saveMessage($message);
+            return;
         }
 
 

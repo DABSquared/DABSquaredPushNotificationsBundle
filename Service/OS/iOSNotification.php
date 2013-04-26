@@ -147,6 +147,10 @@ class iOSNotification implements OSNotificationServiceInterface
         }
 
         if(count($this->certificates) == 0) {
+            foreach ($messages as $message) {
+                $message->setStatus(MessageStatus::MESSAGE_STATUS_NO_CERT);
+                $this->messageManager->saveMessage($message);
+            }
             throw new RuntimeException(sprintf("The device with it's current state, %s did not find a valid Push Certificate", $message->getDevice()->getState()));
         }
 
@@ -183,6 +187,10 @@ class iOSNotification implements OSNotificationServiceInterface
         try {
             $apns = stream_socket_client($apnURL, $err, $errstr, 2, STREAM_CLIENT_CONNECT, $ctx);
         } catch (\ErrorException $er) {
+            foreach ($messages as $message) {
+                $message->setStatus(MessageStatus::MESSAGE_STATUS_STREAM_ERROR);
+                $this->messageManager->saveMessage($message);
+            }
             return;
         }
 
@@ -195,7 +203,7 @@ class iOSNotification implements OSNotificationServiceInterface
             try {
                 fwrite($apns, $payload);
             } catch (\ErrorException $er) {
-                $messages[$i]->setStatus(MessageStatus::MESSAGE_STATUS_NOT_SENT);
+                $messages[$i]->setStatus(MessageStatus::MESSAGE_STATUS_STREAM_ERROR);
                 $this->messageManager->saveMessage($messages[$i]);
                 $i++;
                 continue;
@@ -234,7 +242,7 @@ class iOSNotification implements OSNotificationServiceInterface
             fwrite($apns, $payload);
             fclose($apns);
         } catch (\ErrorException $er) {
-            $message->setStatus(MessageStatus::MESSAGE_STATUS_NOT_SENT);
+            $message->setStatus(MessageStatus::MESSAGE_STATUS_STREAM_ERROR);
             $this->messageManager->saveMessage($message);
             return;
         }

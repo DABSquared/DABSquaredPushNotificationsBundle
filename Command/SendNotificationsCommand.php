@@ -39,6 +39,32 @@ class SendNotificationsCommand  extends ContainerAwareCommand{
 
         $notificationManager->sendMessages($messages);
 
+
+
+        /***** Lets try and send old messages now. ********/
+
+        $messages = $messageManager->findByStatus(MessageStatus::MESSAGE_STATUS_NO_CERT);
+
+        /** @var $message \DABSquared\PushNotificationsBundle\Model\Message */
+        foreach($messages as $message) {
+            $message->setStatus(MessageStatus::MESSAGE_STATUS_SENDING);
+            $messageManager->saveMessage($message);
+        }
+
+        $notificationManager->sendMessages($messages);
+
+
+        $messages = $messageManager->findByStatus(MessageStatus::MESSAGE_STATUS_STREAM_ERROR);
+
+        /** @var $message \DABSquared\PushNotificationsBundle\Model\Message */
+        foreach($messages as $message) {
+            $message->setStatus(MessageStatus::MESSAGE_STATUS_SENDING);
+            $messageManager->saveMessage($message);
+        }
+
+        $notificationManager->sendMessages($messages);
+
+
         die();
     }
 }

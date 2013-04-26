@@ -14,6 +14,8 @@ class MessageStatus {
     const MESSAGE_STATUS_NOT_SENT = "dab_push_notifications.status.not.sent";
     const MESSAGE_STATUS_SENT = "dab_push_notifications.status.sent";
     const MESSAGE_STATUS_SENDING = "dab_push_notifications.status.sending";
+    const MESSAGE_STATUS_NO_CERT = "dab_push_notifications.status.no.cert.found";
+    const MESSAGE_STATUS_STREAM_ERROR = "dab_push_notifications.status.stream.error";
 
 }
 

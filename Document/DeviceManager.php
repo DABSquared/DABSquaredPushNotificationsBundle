@@ -67,8 +67,8 @@ class DeviceManager extends BaseDeviceManager
      */
     protected function doSaveDevice(DeviceInterface $device)
     {
-        $this->em->persist($device);
-        $this->em->flush();
+        $this->dm->persist($device);
+        $this->dm->flush();
     }
 
 
@@ -113,6 +113,53 @@ class DeviceManager extends BaseDeviceManager
 
         return $devices[0];
 
+    }
+
+    public function findDeviceWithName($searchTerm) {
+        $qb = $this->repository
+            ->createQueryBuilder()
+               ->field('deviceName')->like($searchTerm);
+
+        $devices = $qb
+            ->getQuery()
+            ->execute();
+        return $devices;
+    }
+
+    public function findDevicesWithTypeAndStatus($type, $status) {
+        $qb = $this->repository
+            ->createQueryBuilder()
+            ->field('type')->equals($type)
+            ->field('status')->equals($status);
+
+        $devices = $qb
+            ->getQuery()
+            ->execute();
+        return $devices;
+    }
+
+    public function findDeviceWithId($id) {
+        $qb = $this->repository
+            ->createQueryBuilder()
+            ->field('id')->equals($id);
+
+
+        $devices = $qb
+            ->getQuery()
+            ->execute();
+
+
+        if(is_null($devices)) {
+            return null;
+        }
+
+        if(count($devices) != 1) {
+            return null;
+        }
+
+
+
+        return $devices[0];
     }
 
 }

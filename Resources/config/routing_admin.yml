@@ -1,0 +1,3 @@
+dab_admin_views:
+    resource: DABSquared\PushNotificationsBundle\Controller\PushAdminController
+    type: annotation

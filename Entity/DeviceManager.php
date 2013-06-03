@@ -116,4 +116,53 @@ class DeviceManager extends BaseDeviceManger
     }
 
 
+    public function findDeviceWithName($searchTerm) {
+        $qb = $this->repository
+            ->createQueryBuilder('d')
+            ->where('d.deviceName', 'LIKE', '%$searchTerm%');
+
+        $devices = $qb
+            ->getQuery()
+            ->execute();
+        return $devices;
+    }
+
+    public function findDeviceWithId($id) {
+        $qb = $this->repository
+            ->createQueryBuilder('d')
+            ->where('d.id = :id')
+            ->setParameter('id', $id);
+
+        $devices = $qb
+            ->getQuery()
+            ->execute();
+
+
+        if(is_null($devices)) {
+            return null;
+        }
+
+        if(count($devices) != 1) {
+            return null;
+        }
+
+
+
+        return $devices[0];
+    }
+
+    public function findDevicesWithTypeAndStatus($type, $status) {
+        $qb = $this->repository
+            ->createQueryBuilder('d')
+            ->where('d.type = :type')
+            ->andWhere('d.status = :status')
+            ->setParameter('type', $type)
+            ->setParameter('status', $status);
+
+        $devices = $qb
+            ->getQuery()
+            ->execute();
+        return $devices;
+    }
+
 }

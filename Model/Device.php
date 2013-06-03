@@ -397,8 +397,8 @@ abstract class Device implements DeviceInterface
     }
 
     /**
-     * @param string $status
-     */
+ * @param string $status
+ */
     public function setStatus($status)
     {
         $this->status = $status;
@@ -411,5 +411,7 @@ abstract class Device implements DeviceInterface
     {
         return $this->status;
     }
+
+
 
 }

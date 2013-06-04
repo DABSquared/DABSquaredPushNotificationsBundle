@@ -152,7 +152,10 @@ class PushAdminController extends Controller
         $deviceRepository = $em->getRepository('DABSquaredPushBundle:Device');
         $deviceName = $this->get('request')->query->get('term');
 
-        $devices = $deviceRepository->findAllWithStartName($deviceName);
+        /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
+        $deviceManager = $this->get('dab_push_notifications.manager.device');
+
+        $devices = $deviceManager->findDeviceWithName($deviceName);
         if (empty($devices)) {
             $devices = array();
             $aDevice['deviceName'] = 'None';

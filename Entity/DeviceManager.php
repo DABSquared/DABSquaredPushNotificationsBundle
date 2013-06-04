@@ -119,7 +119,7 @@ class DeviceManager extends BaseDeviceManger
     public function findDeviceWithName($searchTerm) {
         $qb = $this->repository
             ->createQueryBuilder('d')
-            ->where('d.deviceName', 'LIKE', '%$searchTerm%');
+            ->where("d.deviceName LIKE '%$searchTerm%'");
 
         $devices = $qb
             ->getQuery()

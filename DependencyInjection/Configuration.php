@@ -130,6 +130,40 @@ class Configuration
                 ->end();
     }
 
+
+    /**
+     * iOS configuration
+     */
+    protected function addSafari()
+    {
+        $this->root
+            ->children()
+                ->arrayNode("safari")
+                    ->children()
+                        ->arrayNode('certificates')
+                        ->isRequired()
+                        ->requiresAtLeastOneElement()
+                        ->useAttributeAsKey('name')
+                        ->prototype('array')
+                            ->children()
+                                ->scalarNode('pem')->isRequired()->end()
+                                ->scalarNode("passphrase")->defaultValue("")->end()
+                                ->scalarNode('website_push_id')->isRequired()->end()
+                                ->scalarNode('icon16x16')->isRequired()->end()
+                                ->scalarNode('icon16x16@2x')->isRequired()->end()
+                                ->scalarNode('icon32x32')->isRequired()->end()
+                                ->scalarNode('icon32x32@2x')->isRequired()->end()
+                                ->scalarNode('icon128x128')->isRequired()->end()
+                                ->scalarNode('icon128x128@2x')->isRequired()->end()
+                                ->scalarNode('json_unescaped_unicode')->defaultFalse()->info('PHP >= 5.4.0 and each messaged must be UTF-8 encoding')->end()
+                                ->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end();
+    }
+
     /**
      * Blackberry configuration
      */

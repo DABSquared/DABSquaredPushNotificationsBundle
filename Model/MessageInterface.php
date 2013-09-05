@@ -24,6 +24,8 @@ interface MessageInterface
 
     public function setMessage($message);
 
+    public function setStatus($status);
+
     public function setData($data);
 
     public function setDevice($device);

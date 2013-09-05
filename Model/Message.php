@@ -432,7 +432,7 @@ abstract class Message implements MessageInterface
     }
 
     /**
-     * @return mixed
+     * @return \DABSquared\PushNotificationsBundle\Model\Device
      */
     public function getDevice()
     {

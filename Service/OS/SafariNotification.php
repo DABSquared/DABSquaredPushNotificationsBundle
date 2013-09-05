@@ -12,7 +12,7 @@ use Buzz\Browser;
 use DABSquared\PushNotificationsBundle\Message\MessageStatus;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 
-class iOSNotification implements OSNotificationServiceInterface
+class SafariNotification implements OSNotificationServiceInterface
 {
 
     /**
@@ -51,6 +51,7 @@ class iOSNotification implements OSNotificationServiceInterface
      * @param $sandbox
      * @param $pem
      * @param $passphrase
+     *
      */
     public function __construct($certificates, \DABSquared\PushNotificationsBundle\Model\MessageManager $messageManager, \DABSquared\PushNotificationsBundle\Model\DeviceManager $deviceManager)
     {
@@ -187,7 +188,7 @@ class iOSNotification implements OSNotificationServiceInterface
         try {
             $apns = stream_socket_client($apnURL, $err, $errstr, 2, STREAM_CLIENT_CONNECT, $ctx);
         } catch (\ErrorException $er) {
-            /* @var \DABSquared\PushNotificationsBundle\Model\Message $message*/
+            /* @var \DABSquared\PushNotificationsBundle\Model\Message $message */
             foreach ($messages as $message) {
                 $message->setStatus(MessageStatus::MESSAGE_STATUS_STREAM_ERROR);
                 $this->messageManager->saveMessage($message);
@@ -229,7 +230,7 @@ class iOSNotification implements OSNotificationServiceInterface
      * @throws \RuntimeException
      * @return mixed
      */
-    protected function writeApnStream($apnURL, $payload, $cert, \DABSquared\PushNotificationsBundle\Model\Message $message)
+    protected function writeApnStream($apnURL, $payload, $cert, \DABSquared\PushNotificationsBundle\Model\MessageInterface  $message)
     {
 
         $ctx = stream_context_create();

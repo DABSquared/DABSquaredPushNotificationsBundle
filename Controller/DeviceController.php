@@ -197,6 +197,48 @@ class DeviceController extends Controller
     }
 
 
+    /********************************* Safari Methods ***************************************/
+
+
+    /**
+     * @ApiDoc(
+     *  resource=true,
+     *  description="Register Website",
+     *  statusCodes={
+     *         200="Returned when successful",
+     *         401="Returned when their is an error"},
+     *  filters={
+     *      {"name"="app_id", "dataType"="string", "required"="true"},
+     *      {"name"="device_identifier", "dataType"="string", "required"="true"},
+     *  }
+     * )
+     *
+     * @Route("v1/devices/{deviceToken}/registrations/{websitePushID}", defaults={"_format": "json"})
+     * @Method("POST")
+     *
+     */
+    public function registerSafariDeviceAction($deviceToken,$websitePushID) {
+        /** @var $request \Symfony\Component\HttpFoundation\Request */
+        $request = $this->get('request');
+
+        $appId = $request->request->get('app_id');
+        $deviceIdentifier = $request->request->get('device_identifier');
+
+        /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
+        $deviceManager = $this->get('dab_push_notifications.manager.device');
+
+        /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
+        $device = $deviceManager->findDeviceByTypeIdentifierAndAppId(Types::OS_IOS, $deviceIdentifier, $appId);
+
+        if(!is_null($device)) {
+            $device->setBadgeNumber(0);
+            $deviceManager->saveDevice($device);
+        }
+
+        return $this->showSuccessData(null, null);
+
+    }
+
 
     /********************************* Helper Methods ***************************************/
 

@@ -22,43 +22,34 @@ class Configuration
         $treeBuilder = new TreeBuilder();
         $this->root = $treeBuilder->root("dab_push_notifications");
 
-
         $this->root
             ->children()
-            ->scalarNode('db_driver')->cannotBeOverwritten()->isRequired()->end()
-            ->scalarNode('model_manager_name')->defaultNull()->end()
-
-            ->arrayNode('class')->isRequired()
-            ->children()
-            ->arrayNode('model')->isRequired()
-            ->children()
-            ->scalarNode('device')->isRequired()->end()
-            ->scalarNode('message')->isRequired()->end()
-            ->end()
-            ->end()
-            ->end()
-            ->end()
-
-            ->arrayNode('service')->addDefaultsIfNotSet()
-            ->children()
-            ->arrayNode('manager')->addDefaultsIfNotSet()
-            ->children()
-            ->scalarNode('device')->cannotBeEmpty()->defaultValue('dab_push_notifications.manager.device.default')->end()
-            ->scalarNode('message')->cannotBeEmpty()->defaultValue('dab_push_notifications.manager.message.default')->end()
-            ->end()
-            ->end()
-            ->end()
-            ->end()
-
-
-
+                ->scalarNode('db_driver')->cannotBeOverwritten()->isRequired()->end()
+                ->scalarNode('model_manager_name')->defaultNull()->end()
+                ->arrayNode('class')->isRequired()
+                    ->children()
+                        ->arrayNode('model')->isRequired()
+                            ->children()
+                                ->scalarNode('device')->isRequired()->end()
+                                ->scalarNode('message')->isRequired()->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+                ->arrayNode('service')->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('manager')->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode('device')->cannotBeEmpty()->defaultValue('dab_push_notifications.manager.device.default')->end()
+                                ->scalarNode('message')->cannotBeEmpty()->defaultValue('dab_push_notifications.manager.message.default')->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
             ->end();
-
         $this->addAndroid();
         $this->addiOS();
         $this->addBlackberry();
-
-
 
         return $treeBuilder->buildTree();
     }
@@ -70,34 +61,32 @@ class Configuration
     {
         $this->root->
             children()->
-            arrayNode("android")->
-            canBeUnset()->
-            children()->
-
-            // WARNING: These 3 fields as they are, outside of the c2dm array
-            // are deprecrated in favour of using the c2dm array configuration
-            // At present these will be overriden by anything supplied
-            // in the c2dm array
-            scalarNode("username")->defaultValue("")->end()->
-            scalarNode("password")->defaultValue("")->end()->
-            scalarNode("source")->defaultValue("")->end()->
-
-            arrayNode("c2dm")->
-            canBeUnset()->
-            children()->
-            scalarNode("username")->isRequired()->end()->
-            scalarNode("password")->isRequired()->end()->
-            scalarNode("source")->defaultValue("")->end()->
-            end()->
-            end()->
-            arrayNode("gcm")->
-            canBeUnset()->
-            children()->
-            scalarNode("api_key")->isRequired()->cannotBeEmpty()->end()->
-            end()->
-            end()->
-            end()->
-            end()->
+                arrayNode("android")->
+                    canBeUnset()->
+                        children()->
+                            // WARNING: These 3 fields as they are, outside of the c2dm array
+                            // are deprecrated in favour of using the c2dm array configuration
+                            // At present these will be overriden by anything supplied
+                            // in the c2dm array
+                            scalarNode("username")->defaultValue("")->end()->
+                            scalarNode("password")->defaultValue("")->end()->
+                            scalarNode("source")->defaultValue("")->end()->
+                            arrayNode("c2dm")->
+                                canBeUnset()->
+                                    children()->
+                                        scalarNode("username")->isRequired()->end()->
+                                        scalarNode("password")->isRequired()->end()->
+                                        scalarNode("source")->defaultValue("")->end()->
+                                    end()->
+                            end()->
+                            arrayNode("gcm")->
+                                canBeUnset()->
+                                    children()->
+                                        scalarNode("api_key")->isRequired()->cannotBeEmpty()->end()->
+                                    end()->
+                            end()->
+                        end()->
+                end()->
             end()
         ;
     }
@@ -122,17 +111,18 @@ class Configuration
                                     ->scalarNode('internal_app_id')->isRequired()->end()
                                     ->booleanNode("sandbox")->defaultFalse()->end()
                                     ->scalarNode('json_unescaped_unicode')->defaultFalse()->info('PHP >= 5.4.0 and each messaged must be UTF-8 encoding')->end()
-                                    ->end()
                                 ->end()
                             ->end()
                          ->end()
-                    ->end()
-                ->end();
+                     ->end()
+                ->end()
+            ->end()
+        ;
     }
 
 
     /**
-     * iOS configuration
+     * Safari configuration
      */
     protected function addSafari()
     {
@@ -161,7 +151,8 @@ class Configuration
                         ->end()
                     ->end()
                 ->end()
-            ->end();
+            ->end()
+        ;
     }
 
     /**
@@ -171,13 +162,13 @@ class Configuration
     {
         $this->root->
             children()->
-            arrayNode("blackberry")->
-            children()->
-            booleanNode("evaluation")->defaultFalse()->end()->
-            scalarNode("app_id")->isRequired()->cannotBeEmpty()->end()->
-            scalarNode("password")->isRequired()->cannotBeEmpty()->end()->
-            end()->
-            end()->
+                arrayNode("blackberry")->
+                    children()->
+                        booleanNode("evaluation")->defaultFalse()->end()->
+                        scalarNode("app_id")->isRequired()->cannotBeEmpty()->end()->
+                        scalarNode("password")->isRequired()->cannotBeEmpty()->end()->
+                    end()->
+                end()->
             end()
         ;
     }

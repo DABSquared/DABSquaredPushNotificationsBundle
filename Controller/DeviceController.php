@@ -208,8 +208,8 @@ class DeviceController extends Controller
      *         200="Returned when successful",
      *         401="Returned when their is an error"},
      *  filters={
-     *      {"name"="app_id", "dataType"="string", "required"="true"},
-     *      {"name"="device_identifier", "dataType"="string", "required"="true"},
+     *      {"name"="websitePushID", "dataType"="string", "required"="true"},
+     *      {"name"="deviceToken", "dataType"="string", "required"="true"},
      *  }
      * )
      *
@@ -220,6 +220,47 @@ class DeviceController extends Controller
     public function registerSafariDeviceAction($deviceToken,$websitePushID) {
         /** @var $request \Symfony\Component\HttpFoundation\Request */
         $request = $this->get('request');
+
+        $authenticationToken = $request->headers->get('content_type');
+
+
+        /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
+        $deviceManager = $this->get('dab_push_notifications.manager.device');
+
+        /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
+        $device = $deviceManager->findDeviceByTypeIdentifierAndAppId(Types::OS_IOS, $deviceToken, $websitePushID);
+
+        if(!is_null($device)) {
+            $device->setBadgeNumber(0);
+            $deviceManager->saveDevice($device);
+        }
+
+        return $this->showSuccessData(null, null);
+
+    }
+
+
+    /**
+     * @ApiDoc(
+     *  resource=true,
+     *  description="Download Payload For Safari Push",
+     *  statusCodes={
+     *         200="Returned when successful",
+     *         401="Returned when their is an error"},
+     *  filters={
+     *      {"name"="app_id", "dataType"="string", "required"="true"},
+     *      {"name"="device_identifier", "dataType"="string", "required"="true"},
+     *  }
+     * )
+     *
+     * @Route("v1/pushPackages/{websitePushID}", defaults={"_format": "json"})
+     * @Method("POST")
+     *
+     */
+    public function downloadSafariDevicePayloadAction($deviceToken,$websitePushID) {
+        /** @var $request \Symfony\Component\HttpFoundation\Request */
+        $request = $this->get('request');
+        $request->headers->set('Content-Type', 'application/zip');
 
         $authenticationToken = $request->headers->get('content_type');
 

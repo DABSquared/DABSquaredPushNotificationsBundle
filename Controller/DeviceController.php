@@ -221,14 +221,14 @@ class DeviceController extends Controller
         /** @var $request \Symfony\Component\HttpFoundation\Request */
         $request = $this->get('request');
 
-        $appId = $request->request->get('app_id');
-        $deviceIdentifier = $request->request->get('device_identifier');
+        $authenticationToken = $request->headers->get('content_type');
+
 
         /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
         $deviceManager = $this->get('dab_push_notifications.manager.device');
 
         /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
-        $device = $deviceManager->findDeviceByTypeIdentifierAndAppId(Types::OS_IOS, $deviceIdentifier, $appId);
+        $device = $deviceManager->findDeviceByTypeIdentifierAndAppId(Types::OS_IOS, $deviceToken, $websitePushID);
 
         if(!is_null($device)) {
             $device->setBadgeNumber(0);

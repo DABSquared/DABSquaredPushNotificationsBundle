@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="dab_push_notifications.safari.class">DABSquared\PushNotificationsBundle\Service\OS\SafariNotification</parameter>
+    </parameters>
+
+    <services>
+
+        <!-- Safari-->
+        <service id="dab_push_notifications.safari" class="%dab_push_notifications.safari.class%" public="false">
+            <argument>%dab_push_notifications.safari.pem%</argument>
+            <argument>%dab_push_notifications.safari.passphrase%</argument>
+            <argument type="service" id="dab_push_notifications.manager.message" />
+            <argument type="service" id="dab_push_notifications.manager.device" />
+            <tag name="dab_push_notifications.handler" osType="dab_push_notifications.os.safari" />
+        </service>
+
+
+
+
+    </services>
+
+</container>

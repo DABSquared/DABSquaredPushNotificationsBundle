@@ -16,11 +16,14 @@ class SafariNotification implements OSNotificationServiceInterface
 {
 
     /**
-     * Array for certificates
      *
-     * @var array
      */
-    protected $certificates;
+    protected $pem;
+
+    /**
+     *
+     */
+    protected $passphrase;
 
 
     /**
@@ -53,9 +56,10 @@ class SafariNotification implements OSNotificationServiceInterface
      * @param $passphrase
      *
      */
-    public function __construct($certificates, \DABSquared\PushNotificationsBundle\Model\MessageManager $messageManager, \DABSquared\PushNotificationsBundle\Model\DeviceManager $deviceManager)
+    public function __construct($pem, $passphrase, \DABSquared\PushNotificationsBundle\Model\MessageManager $messageManager, \DABSquared\PushNotificationsBundle\Model\DeviceManager $deviceManager)
     {
-        $this->certificates = $certificates;
+        $this->pem = $pem;
+        $this->passphrase = $passphrase;
         $this->messageManager = $messageManager;
         $this->deviceManager = $deviceManager;
     }

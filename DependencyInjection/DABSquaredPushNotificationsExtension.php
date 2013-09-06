@@ -71,6 +71,12 @@ class DABSquaredPushNotificationsExtension extends Extension
             $this->setiOSConfig($config);
             $loader->load('ios.xml');
         }
+
+        if (isset($config["safari"])) {
+            $this->setSafariConfig($config);
+            $loader->load('safari.xml');
+        }
+
         if (isset($config["blackberry"])) {
             $this->setBlackberryConfig($config);
             $loader->load('blackberry.xml');
@@ -149,6 +155,25 @@ class DABSquaredPushNotificationsExtension extends Extension
 
         $this->container->setParameter("dab_push_notifications.ios.enabled", true);
         $this->container->setParameter("dab_push_notifications.ios.certificates", $config['ios']['certificates']);
+    }
+
+    protected function setSafariConfig(array $config)
+    {
+        $this->container->setParameter("dab_push_notifications.safari.pem", $config['safari']['pem']);
+        $this->container->setParameter("dab_push_notifications.safari.pk12", $config['safari']['pk12']);
+        $this->container->setParameter("dab_push_notifications.safari.passphrase", $config['safari']['passphrase']);
+        $this->container->setParameter("dab_push_notifications.safari.website_push_id", $config['safari']['website_push_id']);
+        $this->container->setParameter("dab_push_notifications.safari.icon16x16", $config['safari']['icon16x16']);
+        $this->container->setParameter("dab_push_notifications.safari.icon16x16@2x", $config['safari']['icon16x16@2x']);
+        $this->container->setParameter("dab_push_notifications.safari.icon32x32", $config['safari']['icon32x32']);
+        $this->container->setParameter("dab_push_notifications.safari.icon32x32@2x", $config['safari']['icon32x32@2x']);
+        $this->container->setParameter("dab_push_notifications.safari.icon128x128", $config['safari']['icon128x128']);
+        $this->container->setParameter("dab_push_notifications.safari.icon128x128@2x", $config['safari']['icon128x128@2x']);
+        $this->container->setParameter("dab_push_notifications.safari.websiteName", $config['safari']['websiteName']);
+        $this->container->setParameter("dab_push_notifications.safari.allowedDomains", $config['safari']['allowedDomains']);
+        $this->container->setParameter("dab_push_notifications.safari.urlFormatString", $config['safari']['urlFormatString']);
+        $this->container->setParameter("dab_push_notifications.safari.webServiceURL", $config['safari']['webServiceURL']);
+
     }
 
     /**

@@ -37,6 +37,46 @@ class SafariController extends Controller
 
 
 
+    /**
+     * @ApiDoc(
+     *  resource=true,
+     *  description="Register Website",
+     *  statusCodes={
+     *         200="Returned when successful",
+     *         401="Returned when their is an error"},
+     *  filters={
+     *      {"name"="websitePushID", "dataType"="string", "required"="true"},
+     *      {"name"="deviceToken", "dataType"="string", "required"="true"},
+     *  }
+     * )
+     *
+     * @Route("v1/log", defaults={"_format": "json"})
+     * @Method("POST")
+     *
+     */
+    public function logSafariErrorAction() {
+        /** @var $request \Symfony\Component\HttpFoundation\Request */
+        $request = $this->get('request');
+
+
+
+        /** @var $logger \Symfony\Component\HttpKernel\Log\LoggerInterface */
+        $logger = $this->container->get('logger');
+
+        $logger->error("Push error!!!");
+
+        $logs = json_decode($request->getContent());
+
+        $logs = $logs->logs;
+
+        foreach($logs as $log) {
+            $logger->error("Push error: ".$log);
+        }
+
+
+        return new Response();
+    }
+
 
     /**
      * @ApiDoc(
@@ -92,17 +132,41 @@ class SafariController extends Controller
      * )
      *
      * @Route("v1/pushPackages/{websitePushID}", defaults={"_format": "json"})
-     * @Method("GET")
+     * @Method({"POST","GET"})
      *
      */
     public function downloadSafariDevicePayloadAction($websitePushID) {
         /** @var $request \Symfony\Component\HttpFoundation\Request */
         $request = $this->get('request');
 
+        $zipName = $this->buildPushPackage($websitePushID);
+
+        if(is_null($zipName)) {
+            return;
+        }
+
+        $response = new Response();
+        $response->setStatusCode(200);
+        $response->headers->set('Content-Type', 'application/zip');
+        $response->headers->set('Content-Disposition', 'attachment; filename="'.$zipName.'"');
+        $response->headers->set('Content-Transfer-Encoding', 'binary');
+        $response->headers->set('Content-Length', filesize($zipName));
+        $response->headers->set('Pragma', 'public');
+        $response->headers->set('Expires', '0');
+        $response->headers->set('Cache-Control', 'must-revalidate, post-check=0, pre-check=0');
+        $response->headers->set('Cache-Control', 'private');
+        $response->setContent(file_get_contents($zipName));
+
+        @unlink($zipName);
+
+        return $response;
+
+    }
 
 
+    function buildPushPackage($websitePushID) {
         $pushPackage = new \ZipArchive;
-        $zipName = "curveu.pushpackage.zip";
+        $zipName = "web.com.curveu.zip";
         if ($pushPackage->open($zipName, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::OVERWRITE) === TRUE) {
 
             $icon16x16 = $this->container->getParameter('dab_push_notifications.safari.icon16x16');
@@ -117,15 +181,16 @@ class SafariController extends Controller
             $urlFormatString = $this->container->getParameter('dab_push_notifications.safari.urlFormatString');
             $webServiceURL = $this->container->getParameter('dab_push_notifications.safari.webServiceURL');
             $pk12Path = $this->container->getParameter('dab_push_notifications.safari.pk12');
+            $pem = $this->container->getParameter('dab_push_notifications.safari.pem');
             $passphrase = $this->container->getParameter('dab_push_notifications.safari.passphrase');
 
 
-            $icon16x16Hash = sha1_file($icon16x16);
-            $icon16x162xHash = sha1_file($icon16x162x);
-            $icon32x32Hash = sha1_file($icon32x32);
-            $icon32x322xHash = sha1_file($icon32x322x);
-            $icon128x128Hash = sha1_file($icon128x128);
-            $icon128x1282xHash = sha1_file($icon128x1282x);
+            $icon16x16Hash = sha1(file_get_contents($icon16x16));
+            $icon16x162xHash = sha1(file_get_contents($icon16x162x));
+            $icon32x32Hash = sha1(file_get_contents($icon32x32));
+            $icon32x322xHash = sha1(file_get_contents($icon32x322x));
+            $icon128x128Hash = sha1(file_get_contents($icon128x128));
+            $icon128x1282xHash = sha1(file_get_contents($icon128x1282x));
 
 
             $pushPackage->addEmptyDir("icon.iconset");
@@ -145,9 +210,12 @@ class SafariController extends Controller
             $websiteJSONDict['allowedDomains'] = $allowedDomains;
             $websiteJSONDict['urlFormatString'] = $urlFormatString;
             $websiteJSONDict['webServiceURL'] = $webServiceURL;
-            $websiteJSONDict['authenticationToken'] = "Something identifying the user goes here";
+            $websiteJSONDict['authenticationToken'] = "authenticationToken_2313";
 
-            $websiteDictContents = json_encode($websiteJSONDict);
+
+
+
+            $websiteDictContents = str_replace("\\/","/",$this->prettyPrint(json_encode($websiteJSONDict)));
             $websiteDictContentsHash = sha1($websiteDictContents);
 
             $pushPackage->addFromString('website.json', $websiteDictContents);
@@ -174,8 +242,8 @@ class SafariController extends Controller
             $cert_data = openssl_x509_read($certs['cert']);
             $private_key = openssl_pkey_get_private($certs['pkey'], $passphrase);
 
-            $tempManifest = "tmp".date('YmdHis').".json";
-            $tempManifestSigned = "tmp".date('YmdHis')."signed.json";
+            $tempManifest = "tmp".time().".json";
+            $tempManifestSigned = "tmp".time()."signed.json";
 
             $fp = fopen($tempManifest, "w");
             fwrite($fp, $manifestDictContents);
@@ -192,25 +260,69 @@ class SafariController extends Controller
             $pushPackage->addFromString('signature', $signature_der);
 
             $pushPackage->close();
+
+            @unlink($tempManifest);
+            @unlink($tempManifestSigned);
+
+            return $zipName;
         }
 
+        return null;
+    }
 
-        $response = new Response();
-        $response->setStatusCode(200);
-        $response->headers->set('Content-Type', 'application/zip');
-        $response->headers->set('Content-Disposition', 'attachment; filename="'.$zipName.'"');
-        $response->headers->set('Content-Transfer-Encoding', 'binary');
-        $response->headers->set('Content-Length', filesize($zipName));
-        $response->headers->set('Pragma', 'public');
-        $response->headers->set('Expires', '0');
-        $response->headers->set('Cache-Control', 'must-revalidate, post-check=0, pre-check=0');
-        $response->headers->set('Cache-Control', 'private');
-        $response->setContent(file_get_contents($zipName));
 
-        @unlink($zipName);
+    function prettyPrint( $json )
+    {
+        $result = '';
+        $level = 0;
+        $prev_char = '';
+        $in_quotes = false;
+        $ends_line_level = NULL;
+        $json_length = strlen( $json );
 
-        return $response;
+        for( $i = 0; $i < $json_length; $i++ ) {
+            $char = $json[$i];
+            $new_line_level = NULL;
+            $post = "";
+            if( $ends_line_level !== NULL ) {
+                $new_line_level = $ends_line_level;
+                $ends_line_level = NULL;
+            }
+            if( $char === '"' && $prev_char != '\\' ) {
+                $in_quotes = !$in_quotes;
+            } else if( ! $in_quotes ) {
+                switch( $char ) {
+                    case '}': case ']':
+                    $level--;
+                    $ends_line_level = NULL;
+                    $new_line_level = $level;
+                    break;
 
+                    case '{': case '[':
+                    $level++;
+                    case ',':
+                        $ends_line_level = $level;
+                        break;
+
+                    case ':':
+                        $post = " ";
+                        break;
+
+                    case " ": case "\t": case "\n": case "\r":
+                    $char = "";
+                    $ends_line_level = $new_line_level;
+                    $new_line_level = NULL;
+                    break;
+                }
+            }
+            if( $new_line_level !== NULL ) {
+                $result .= "\n".str_repeat( "\t", $new_line_level );
+            }
+            $result .= $char.$post;
+            $prev_char = $char;
+        }
+
+        return $result;
     }
 
 

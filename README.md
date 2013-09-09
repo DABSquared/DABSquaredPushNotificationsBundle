@@ -1,9 +1,10 @@
 # DABSquaredPushNotificationsBundle ![](https://secure.travis-ci.org/bassrock499/DABSquaredPushNotificationsBundle.png)
 
-A bundle to allow sending of push notifications to mobile devices.  Currently supports Android (C2DM, GCM), Blackberry and iOS devices. The Base framework is imported from https://github.com/richsage/RMSPushNotificationsBundle
+A bundle to allow sending of push notifications to mobile devices.  Currently supports Android (C2DM, GCM), Blackberry, Safari and iOS devices. The Base framework is imported from https://github.com/richsage/RMSPushNotificationsBundle
 
 Almost Ready for Use.. Any contributions are welcome. The goal here is to provide an interface for push notifications with device registration and user device pairing just like FOSCommentBundle.
 
+WORKS WITH SAFARI PUSH NOTIFICATIONS!!!
 
 Road Map:
 
@@ -14,9 +15,10 @@ V1.0:
   Auto-manage badge numbers.   WORKING, NEEED TO ADD DOCUMENTATION FOR HOW TO SUPPORT.
 
 V1.1:
-  Full Support for all types of Device Push Notifications
+  Safari Push Notifications - WORKING
 
 V2.0:
+  All other device push notifications working.
   Push Notification read receipts and statistics like UrbanAirship.
 
 
@@ -57,7 +59,7 @@ Below you'll find all configuration options; just use what you need:
               api_key: <string_android_gcm_api_key>
       ios:
           certificates:  #replace these certs with your own as well as app ids. The bundle will loop through all certs displayed here when sending a push based on the sandbox param. You can add as many certificates as you need. Also note that the bundle will send using certificates that match the internal_app_ids of the registered devices.
-              dev_prem: { sandbox: true, pem: %kernel.root_dir%/../pushcerts/premium/dev/certificate.pem, passphrase: ~, internal_app_id: 0000001}
+            dev_prem: { sandbox: true, pem: %kernel.root_dir%/../pushcerts/premium/dev/certificate.pem, passphrase: ~, internal_app_id: 0000001}
             dev_lite: { sandbox: true, pem: %kernel.root_dir%/../pushcerts/lite/dev/certificate.pem, passphrase: ~, internal_app_id: 0000002}
             prod_prem: { sandbox: false, pem: %kernel.root_dir%/../pushcerts/premium/prod/certificate.pem, passphrase: ~, internal_app_id: 0000001}
             prod_lite: { sandbox: false, pem: %kernel.root_dir%/../pushcerts/lite/prod/certificate.pem, passphrase: ~,internal_app_id: 0000002}
@@ -65,6 +67,21 @@ Below you'll find all configuration options; just use what you need:
           evaluation: <bool_bb_evaluation_mode>
           app_id: <string_bb_app_id>
           password: <string_bb_password>
+      safari:
+          pem: %kernel.root_dir%/../pushcerts/safari/safari_push.pem
+          pk12: %kernel.root_dir%/../pushcerts/safari/Certificates.p12
+          passphrase: ~
+          website_push_id: web.com.demo
+          icon16x16: %kernel.root_dir%/../pushcerts/safari/icon_16x16.png
+          icon16x16@2x: %kernel.root_dir%/../pushcerts/safari/icon_16x16@2x.png
+          icon32x32: %kernel.root_dir%/../pushcerts/safari/icon_32x32.png
+          icon32x32@2x: %kernel.root_dir%/../pushcerts/safari/icon_32x32@2x.png
+          icon128x128: %kernel.root_dir%/../pushcerts/safari/icon_128x128.png
+          icon128x128@2x: %kernel.root_dir%/../pushcerts/safari/icon_128x128@2x.png
+          websiteName: Demo Site
+          allowedDomains: ["https://demo.com","https://www.demo.com"]
+          urlFormatString: http://www.demo.com/%@
+          webServiceURL: https://www.demo.com
 ```
 
 

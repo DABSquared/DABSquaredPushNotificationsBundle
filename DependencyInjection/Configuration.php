@@ -26,6 +26,7 @@ class Configuration
             ->children()
                 ->scalarNode('db_driver')->cannotBeOverwritten()->isRequired()->end()
                 ->scalarNode('model_manager_name')->defaultNull()->end()
+                ->scalarNode('user_entity_namespace')->defaultNull()->end()
                 ->arrayNode('class')->isRequired()
                     ->children()
                         ->arrayNode('model')->isRequired()

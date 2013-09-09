@@ -59,5 +59,4 @@ class Device extends BaseDevice implements UserDeviceInterface
 }
 ```
 
-## That is it!
-[Return to the index.](index.md)
+[Step 5: Integration with iOS](4-integration_with_ios.md).

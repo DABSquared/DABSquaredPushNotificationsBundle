@@ -25,6 +25,8 @@
 
         <field name="message" type="string" />
 
+        <field name="title" type="string" />
+
         <field name="createdAt" type="date" />
 
         <field name="updatedAt" type="date" />

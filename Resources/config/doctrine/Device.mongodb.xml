@@ -31,11 +31,11 @@
 
         <field name="alertAllowed" type="boolean" />
 
-        <field name="deviceName" type="string" />
+        <field name="deviceName" type="string"  nullable="true"/>
 
-        <field name="deviceModel" type="string" />
+        <field name="deviceModel" type="string"  nullable="true"/>
 
-        <field name="deviceVersion" type="string" />
+        <field name="deviceVersion" type="string"  nullable="true"/>
 
         <field name="appName" type="string" nullable="true"/>
 

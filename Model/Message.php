@@ -49,6 +49,13 @@ abstract class Message implements MessageInterface
     protected $message = "";
 
     /**
+     * String $title
+     *
+     * @var string
+     */
+    protected $title = "";
+
+    /**
      * String sound
      *
      * @var string
@@ -147,10 +154,10 @@ abstract class Message implements MessageInterface
     }
 
     /**
-     * Sets the message. For iOS, this is the APS alert message
-     *
-     * @param $message
-     */
+ * Sets the message. For iOS, this is the APS alert message
+ *
+ * @param $message
+ */
     public function setMessage($message)
     {
         $this->message = $message;
@@ -165,6 +172,26 @@ abstract class Message implements MessageInterface
     public function getMessage()
     {
         return $this->message;
+    }
+
+    /**
+     *
+     * @param $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+
+    /**
+     * Returns the string title
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
     }
 
     /**
@@ -183,6 +210,17 @@ abstract class Message implements MessageInterface
 
         if($this->type == Types::OS_IOS) {
             $this->apsBody["aps"]["alert"] = $this->getMessage();
+
+            $payloadBody = $this->apsBody;
+            if (!empty($this->customData)) {
+                $payloadBody = array_merge($payloadBody, $this->customData);
+            }
+            return $payloadBody;
+        }if($this->type == Types::OS_SAFARI) {
+            $this->apsBody["aps"]["alert"] = array();
+            $this->apsBody["aps"]["alert"]['body'] = $this->getMessage();
+            $this->apsBody["aps"]["alert"]['title'] = $this->getTitle();
+            $this->apsBody["aps"]["alert"]['action'] = 'View';
 
             $payloadBody = $this->apsBody;
             if (!empty($this->customData)) {
@@ -214,6 +252,20 @@ abstract class Message implements MessageInterface
     public function setData($data)
     {
         if($this->type == Types::OS_IOS) {
+            if (!is_array($data)) {
+                throw new \InvalidArgumentException(sprintf('Messages custom data must be array, "%s" given.', gettype($data)));
+            }
+
+            if (array_key_exists("aps", $data)) {
+                unset($data["aps"]);
+            }
+
+            foreach ($data as $key => $value) {
+                $this->addCustomData($key, $value);
+            }
+            return $this;
+
+        }if($this->type == Types::OS_SAFARI) {
             if (!is_array($data)) {
                 throw new \InvalidArgumentException(sprintf('Messages custom data must be array, "%s" given.', gettype($data)));
             }
@@ -297,6 +349,8 @@ abstract class Message implements MessageInterface
     {
        if($this->type == Types::OS_IOS) {
            return  Types::OS_IOS;
+       }else  if($this->type == Types::OS_SAFARI) {
+           return  Types::OS_SAFARI;
        }else  if($this->type == Types::OS_ANDROID_GCM || $this->type == Types::OS_ANDROID_C2DM) {
            return ($this->isGCM ? Types::OS_ANDROID_GCM : Types::OS_ANDROID_C2DM);
        }else if($this->type == Types::OS_BLACKBERRY) {

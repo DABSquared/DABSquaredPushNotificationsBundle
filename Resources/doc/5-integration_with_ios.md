@@ -157,3 +157,6 @@ In the AppDelegate file do the following:
     #endif
 }
 ```
+
+[Step 6: Integration with Safari](4-integration_with_safari.md).
+

@@ -182,7 +182,7 @@ class iOSNotification implements OSNotificationServiceInterface
             stream_context_set_option($ctx, "ssl", "passphrase", $cert['passphrase']);
         }
 
-
+        $apns = null;
 
         try {
             $apns = stream_socket_client($apnURL, $err, $errstr, 2, STREAM_CLIENT_CONNECT, $ctx);

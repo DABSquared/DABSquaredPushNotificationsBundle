@@ -10,6 +10,7 @@ use FOS\RestBundle\View\View;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Bundle\FrameworkBundle\Templating\TemplateReference;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -40,13 +41,11 @@ class SafariController extends Controller
     /**
      * @ApiDoc(
      *  resource=true,
-     *  description="Register Website",
+     *  description="Logs an error to the monolog.",
      *  statusCodes={
      *         200="Returned when successful",
      *         401="Returned when their is an error"},
      *  filters={
-     *      {"name"="websitePushID", "dataType"="string", "required"="true"},
-     *      {"name"="deviceToken", "dataType"="string", "required"="true"},
      *  }
      * )
      *
@@ -58,21 +57,14 @@ class SafariController extends Controller
         /** @var $request \Symfony\Component\HttpFoundation\Request */
         $request = $this->get('request');
 
-
-
         /** @var $logger \Symfony\Component\HttpKernel\Log\LoggerInterface */
         $logger = $this->container->get('logger');
-
-        $logger->error("Push error!!!");
-
         $logs = json_decode($request->getContent());
-
         $logs = $logs->logs;
 
         foreach($logs as $log) {
             $logger->error("Push error: ".$log);
         }
-
 
         return new Response();
     }
@@ -81,7 +73,7 @@ class SafariController extends Controller
     /**
      * @ApiDoc(
      *  resource=true,
-     *  description="Register Website",
+     *  description="Register Safari Device",
      *  statusCodes={
      *         200="Returned when successful",
      *         401="Returned when their is an error"},
@@ -92,29 +84,64 @@ class SafariController extends Controller
      * )
      *
      * @Route("v1/devices/{deviceToken}/registrations/{websitePushID}", defaults={"_format": "json"})
-     * @Method("POST")
+     * @Method({"POST","GET","DELETE"})
      *
      */
     public function registerSafariDeviceAction($deviceToken,$websitePushID) {
         /** @var $request \Symfony\Component\HttpFoundation\Request */
         $request = $this->get('request');
+        $request->headers = $this->fixAuthHeader($request->headers);
 
-        $authenticationToken = $request->headers->get('content_type');
-
+        $authenticationToken = $request->headers->get("Authorization");
+        $userId = str_replace("ApplePushNotifications authenticationToken_", "", $authenticationToken);
 
         /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
         $deviceManager = $this->get('dab_push_notifications.manager.device');
 
         /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
-        $device = $deviceManager->findDeviceByTypeIdentifierAndAppId(Types::OS_IOS, $deviceToken, $websitePushID);
+        $device = $deviceManager->findDeviceByTypeIdentifierAndAppId(Types::OS_SAFARI, $deviceToken, $websitePushID);
 
-        if(!is_null($device)) {
-            $device->setBadgeNumber(0);
-            $deviceManager->saveDevice($device);
+        /** @var $logger \Symfony\Component\HttpKernel\Log\LoggerInterface */
+        $logger = $this->container->get('logger');
+        if($request->getContent()) {
+            $logger->notice(print_r($request->getContent(),true));
         }
 
-        return $this->showSuccessData(null, null);
 
+        if(!is_null($device) && $request->isMethod("DELETE")) {
+            $device->setStatus(DeviceStatus::DEVICE_STATUS_UNACTIVE);
+        } else if(!is_null($device)) {
+            $device->setBadgeNumber(0);
+            $device->setStatus(DeviceStatus::DEVICE_STATUS_ACTIVE);
+        }  else {
+            $device = $deviceManager->createDevice($device);
+            $device->setAppId($websitePushID);
+            $device->setDeviceIdentifier($deviceToken);
+            $device->setType(Types::OS_SAFARI);
+            $device->setDeviceToken($deviceToken);
+            $device->setDeviceVersion($request->headers->get("User-Agent"));
+            $device->setDeviceName("Safari: ".$userId);
+            $device->setStatus(DeviceStatus::DEVICE_STATUS_ACTIVE);
+            if($device instanceof UserDeviceInterface) {
+                $userEntityNamespace = $this->container->getParameter('dab_push_notifications.user_entity_namespace');
+                if(!is_null($userEntityNamespace)) {
+                    /** @var $em \Doctrine\ORM\EntityManager */
+                    $em = $this->container->get('doctrine')->getManager();
+                    /** @var $userRepository \Doctrine\ORM\EntityRepository */
+                    $userRepository = $em->getRepository($userEntityNamespace);
+                    $user = $userRepository->findOneBy(array(
+                        "id" => $userId
+                    ));
+                    if(!is_null($user)) {
+                        $device->setUser($user);
+                    }
+                }
+            }
+        }
+
+        $deviceManager->saveDevice($device);
+
+        return new Response();
     }
 
 
@@ -139,10 +166,18 @@ class SafariController extends Controller
         /** @var $request \Symfony\Component\HttpFoundation\Request */
         $request = $this->get('request');
 
-        $zipName = $this->buildPushPackage($websitePushID);
+        if($request->getContent()== null) {
+            return new Response();
+        }
+
+        $userJSON = json_decode($request->getContent());
+
+        $authenticationToken = "authenticationToken_".$userJSON->userId;
+
+        $zipName = $this->buildPushPackage($websitePushID,$authenticationToken);
 
         if(is_null($zipName)) {
-            return;
+            return new Response();
         }
 
         $response = new Response();
@@ -164,7 +199,7 @@ class SafariController extends Controller
     }
 
 
-    function buildPushPackage($websitePushID) {
+    function buildPushPackage($websitePushID, $authenticationToken) {
         $pushPackage = new \ZipArchive;
         $zipName = "web.com.curveu.zip";
         if ($pushPackage->open($zipName, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::OVERWRITE) === TRUE) {
@@ -210,7 +245,7 @@ class SafariController extends Controller
             $websiteJSONDict['allowedDomains'] = $allowedDomains;
             $websiteJSONDict['urlFormatString'] = $urlFormatString;
             $websiteJSONDict['webServiceURL'] = $webServiceURL;
-            $websiteJSONDict['authenticationToken'] = "authenticationToken_2313";
+            $websiteJSONDict['authenticationToken'] = "authenticationToken_1234";
 
 
 
@@ -270,6 +305,24 @@ class SafariController extends Controller
         return null;
     }
 
+
+    /**
+     * PHP does not include HTTP_AUTHORIZATION in the $_SERVER array, so this header is missing.
+     * We retrieve it from apache_request_headers()
+     *
+     * @param HeaderBag $headers
+     */
+    protected function fixAuthHeader(HeaderBag $headers)
+    {
+        if (!$headers->has('Authorization') && function_exists('apache_request_headers')) {
+            $all = apache_request_headers();
+            if (isset($all['Authorization'])) {
+                $headers->set('Authorization', $all['Authorization']);
+            }
+        }
+
+        return $headers;
+    }
 
     function prettyPrint( $json )
     {

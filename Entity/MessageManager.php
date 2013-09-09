@@ -100,4 +100,18 @@ class MessageManager extends BaseMessageManger
 
     }
 
+    public function findById($id) {
+        $qb = $this->repository
+            ->createQueryBuilder('m')
+            ->where('m.id = :id')
+            ->setParameter('id', $id);
+
+        $messages = $qb
+            ->getQuery()
+            ->execute();
+
+        return $messages;
+
+    }
+
 }

@@ -19,7 +19,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 class SendNotificationsCommand  extends ContainerAwareCommand{
     protected function configure() {
         $this->setName('dab:push:send')
-            ->setDescription('Send all unsent push notifications');
+            ->setDescription('Send all unsent push notifications')
+            ->setDefinition(array(
+                new InputArgument('messageId',
+                    InputArgument::OPTIONAL,
+                    'The message to send no matter the status.'),));
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
@@ -29,7 +33,18 @@ class SendNotificationsCommand  extends ContainerAwareCommand{
         /** @var $notificationManager \DABSquared\PushNotificationsBundle\Service\Notifications */
         $notificationManager = $this->getContainer()->get('dab_push_notifications');
 
-        $messages = $messageManager->findByStatus(MessageStatus::MESSAGE_STATUS_NOT_SENT);
+
+        $messageId = $input->getArgument('messageId');
+
+        $messages = array();
+
+        if($messageId) {
+            $messages = $messageManager->findById($messageId);
+        } else {
+          $messages  = $messageManager->findByStatus(MessageStatus::MESSAGE_STATUS_NOT_SENT);
+        }
+
+
 
         /** @var $message \DABSquared\PushNotificationsBundle\Model\Message */
         foreach($messages as $message) {

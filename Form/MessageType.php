@@ -21,7 +21,7 @@ class MessageType extends AbstractType
         $builder
             ->add('message', 'textarea', array())
             ->add('type', 'choice',array(
-                'choices' => array(Types::OS_IOS => 'iOS', Types::OS_BLACKBERRY => 'Blackberry' , Types::OS_WINDOWSMOBILE => 'Windows Mobile' , Types::OS_ANDROID_GCM => 'Android GCM' ,  Types::OS_ANDROID_C2DM => 'Android C2DM'),
+                'choices' => array(Types::OS_IOS => 'iOS',Types::OS_SAFARI => 'Safari', Types::OS_BLACKBERRY => 'Blackberry' , Types::OS_WINDOWSMOBILE => 'Windows Mobile' , Types::OS_ANDROID_GCM => 'Android GCM' ,  Types::OS_ANDROID_C2DM => 'Android C2DM'),
                 'preferred_choices' => array('iOS'),
                 'mapped' => false,
                 'label' => 'What devices to send messages to?',

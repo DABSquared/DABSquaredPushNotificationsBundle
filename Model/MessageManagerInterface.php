@@ -50,4 +50,6 @@ interface MessageManagerInterface
 
     public function findByStatus($status);
 
- }
+    public function findById($id);
+
+}

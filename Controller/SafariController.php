@@ -167,7 +167,7 @@ class SafariController extends Controller
         $request = $this->get('request');
 
         if($request->getContent()== null) {
-            return new Response();
+            return new Response("no content");
         }
 
         $userJSON = json_decode($request->getContent());
@@ -177,7 +177,7 @@ class SafariController extends Controller
         $zipName = $this->buildPushPackage($websitePushID,$authenticationToken);
 
         if(is_null($zipName)) {
-            return new Response();
+            return new Response("No zip name");
         }
 
         $response = new Response();
@@ -245,7 +245,7 @@ class SafariController extends Controller
             $websiteJSONDict['allowedDomains'] = $allowedDomains;
             $websiteJSONDict['urlFormatString'] = $urlFormatString;
             $websiteJSONDict['webServiceURL'] = $webServiceURL;
-            $websiteJSONDict['authenticationToken'] = "authenticationToken_1234";
+            $websiteJSONDict['authenticationToken'] = $authenticationToken;
 
 
 

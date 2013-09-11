@@ -158,5 +158,5 @@ In the AppDelegate file do the following:
 }
 ```
 
-[Step 6: Integration with Safari](4-integration_with_safari.md).
+[Step 6: Integration with Safari](6-integration_with_safari.md).
 

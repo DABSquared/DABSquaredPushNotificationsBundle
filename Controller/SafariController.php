@@ -293,10 +293,20 @@ class SafariController extends Controller
             $tempManifestSigned = "tmp".time()."signed.json";
 
             $fp = fopen($tempManifest, "w");
-            fwrite($fp, $manifestDictContents);
+            $wroteManifest = fwrite($fp, $manifestDictContents);
             fclose($fp);
 
-            openssl_pkcs7_sign($tempManifest, $tempManifestSigned, $cert_data, $private_key, array(), PKCS7_BINARY | PKCS7_DETACHED);
+            if(!$wroteManifest) {
+                $logger->error("Can't write temp manifest");
+            }
+
+            $signed = openssl_pkcs7_sign($tempManifest, $tempManifestSigned, $cert_data, $private_key, array(), PKCS7_BINARY | PKCS7_DETACHED);
+
+            if(!$signed) {
+                $logger->error("Can't sign manifest with openss_pkcs7");
+                return;
+            }
+
 
             $signedManifestString = file_get_contents($tempManifestSigned);
             $matches = array();

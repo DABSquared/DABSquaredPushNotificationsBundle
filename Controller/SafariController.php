@@ -188,7 +188,7 @@ class SafariController extends Controller
         $response = new Response();
         $response->setStatusCode(200);
         $response->headers->set('Content-Type', 'application/zip');
-        $response->headers->set('Content-Disposition', 'attachment; filename="'.$zipName.'"');
+        $response->headers->set('Content-Disposition', 'attachment; filename="web.com.push.zip"');
         $response->headers->set('Content-Transfer-Encoding', 'binary');
         $response->headers->set('Content-Length', filesize($zipName));
         $response->headers->set('Pragma', 'public');
@@ -206,11 +206,13 @@ class SafariController extends Controller
 
     function buildPushPackage($websitePushID, $authenticationToken) {
         $pushPackage = new \ZipArchive;
-        $zipName = "web.com.curveu.zip";
+        $zipName = "web.com.push.zip";
+        $zipPath = "/tmp/".$zipName;
+
         /** @var $logger \Symfony\Component\HttpKernel\Log\LoggerInterface */
         $logger = $this->container->get('logger');
 
-        $error = $pushPackage->open($zipName, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::OVERWRITE);
+        $error = $pushPackage->open($zipPath, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::OVERWRITE);
 
 
         if ($error === TRUE) {
@@ -323,7 +325,7 @@ class SafariController extends Controller
             @unlink($tempManifest);
             @unlink($tempManifestSigned);
 
-            return $zipName;
+            return $zipPath;
         } else {
             $logger->error("Can't create zip: ".$error);
         }

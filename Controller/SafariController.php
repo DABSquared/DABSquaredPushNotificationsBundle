@@ -289,8 +289,8 @@ class SafariController extends Controller
             $cert_data = openssl_x509_read($certs['cert']);
             $private_key = openssl_pkey_get_private($certs['pkey'], $passphrase);
 
-            $tempManifest = "tmp".time().".json";
-            $tempManifestSigned = "tmp".time()."signed.json";
+            $tempManifest = "/tmp/tmp".time().".json";
+            $tempManifestSigned = "/tmp/tmp".time()."signed.json";
 
             $fp = fopen($tempManifest, "w");
             $wroteManifest = fwrite($fp, $manifestDictContents);

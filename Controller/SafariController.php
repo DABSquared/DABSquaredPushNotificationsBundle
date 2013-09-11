@@ -166,7 +166,11 @@ class SafariController extends Controller
         /** @var $request \Symfony\Component\HttpFoundation\Request */
         $request = $this->get('request');
 
+        /** @var $logger \Symfony\Component\HttpKernel\Log\LoggerInterface */
+        $logger = $this->container->get('logger');
+
         if($request->getContent()== null) {
+            $logger->error("No content");
             return new Response("no content");
         }
 
@@ -177,6 +181,7 @@ class SafariController extends Controller
         $zipName = $this->buildPushPackage($websitePushID,$authenticationToken);
 
         if(is_null($zipName)) {
+            $logger->error("No zip name");
             return new Response("No zip name");
         }
 
@@ -202,7 +207,13 @@ class SafariController extends Controller
     function buildPushPackage($websitePushID, $authenticationToken) {
         $pushPackage = new \ZipArchive;
         $zipName = "web.com.curveu.zip";
-        if ($pushPackage->open($zipName, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::OVERWRITE) === TRUE) {
+        /** @var $logger \Symfony\Component\HttpKernel\Log\LoggerInterface */
+        $logger = $this->container->get('logger');
+
+        $error = $pushPackage->open($zipName, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::OVERWRITE);
+
+
+        if ($error === TRUE) {
 
             $icon16x16 = $this->container->getParameter('dab_push_notifications.safari.icon16x16');
             $icon16x162x = $this->container->getParameter('dab_push_notifications.safari.icon16x16@2x');
@@ -271,6 +282,7 @@ class SafariController extends Controller
             $pkcs12 = file_get_contents($pk12Path);
             $certs = array();
             if(!openssl_pkcs12_read($pkcs12, $certs, $passphrase)) {
+                $logger->error("Can't open certificate");
                 return;
             }
 
@@ -289,6 +301,8 @@ class SafariController extends Controller
             $signedManifestString = file_get_contents($tempManifestSigned);
             $matches = array();
             if (!preg_match('~Content-Disposition:[^\n]+\s*?([A-Za-z0-9+=/\r\n]+)\s*?-----~', $signedManifestString, $matches)) {
+                $logger->error("Can't sign manifest");
+
                 return;
             }
             $signature_der = base64_decode($matches[1]);
@@ -300,7 +314,10 @@ class SafariController extends Controller
             @unlink($tempManifestSigned);
 
             return $zipName;
+        } else {
+            $logger->error("Can't create zip: ".$error);
         }
+        $logger->error("Can't create zip");
 
         return null;
     }

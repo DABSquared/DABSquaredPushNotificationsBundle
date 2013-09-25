@@ -15,5 +15,6 @@ DABSquaredPushNotificationsBundle_Admin:
 
 > The defaults configuration may not be necessary unless you have
 > changed FOSRestBundle's default format.
+```
 
 [Step 4: Integration with FOSUserBundle](4-integrating_with_FOSUserBundle.md).

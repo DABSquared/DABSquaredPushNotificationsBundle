@@ -6,7 +6,7 @@ Step 6: Integration With Safari (Requires FOSUserBundle or Some Type Of User Sys
 
 Add the following bit of code replacing the values as necessary after a user has logged into your website.
 
-``` html
+``` javascript
 
 document.body.onload = function() {
         // Ensure that the user can receive Safari Push Notifications.

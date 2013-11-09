@@ -176,4 +176,8 @@ class BlackberryNotification implements OSNotificationServiceInterface
         $doc->appendChild($pap);
         return $doc->saveXML();
     }
+
+    public function sendMessages(array $messages){
+        throw new \Exception('Not implemented');
+    }
 }

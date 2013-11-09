@@ -113,4 +113,8 @@ class AndroidGCMNotification implements OSNotificationServiceInterface
     {
         return $this->responses;
     }
+
+    public function sendMessages(array $messages){
+        throw new \Exception('Not implemented');
+    }
 }

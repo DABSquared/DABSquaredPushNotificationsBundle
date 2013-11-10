@@ -60,7 +60,7 @@ class DeviceController extends Controller
      * )
      *
      * @Route("device/ios/register", defaults={"_format": "json"})
-     * @1Method("POST")
+     * @Method("POST")
      *
      */
     public function registeriOSDeviceAction()
@@ -68,20 +68,20 @@ class DeviceController extends Controller
         /** @var $request \Symfony\Component\HttpFoundation\Request */
         $request = $this->get('request');
 
-        $deviceToken = $request->get('device_token');
-        $deviceName = $request->get('device_name');
-        $deviceModel = $request->get('device_model');
-        $deviceVersion = $request->get('device_version');
-        $appName = $request->get('app_name');
-        $appVersion = $request->get('app_version');
+        $deviceToken = $request->request->get('device_token');
+        $deviceName = $request->request->get('device_name');
+        $deviceModel = $request->request->get('device_model');
+        $deviceVersion = $request->request->get('device_version');
+        $appName = $request->request->get('app_name');
+        $appVersion = $request->request->get('app_version');
 
-        $appId = $request->get('app_id');
-        $deviceIdentifier = $request->get('device_identifier');
+        $appId = $request->request->get('app_id');
+        $deviceIdentifier = $request->request->get('device_identifier');
 
-        $badgeAllowed = filter_var($request->get('badge_allowed'), FILTER_VALIDATE_BOOLEAN);
-        $soundAllowed = filter_var($request->get('sound_allowed'), FILTER_VALIDATE_BOOLEAN);
-        $alertAllowed = filter_var($request->get('alert_allowed'), FILTER_VALIDATE_BOOLEAN);
-        $isSandbox = filter_var($request->get('is_sandbox'), FILTER_VALIDATE_BOOLEAN);
+        $badgeAllowed = filter_var($request->request->get('badge_allowed'), FILTER_VALIDATE_BOOLEAN);
+        $soundAllowed = filter_var($request->request->get('sound_allowed'), FILTER_VALIDATE_BOOLEAN);
+        $alertAllowed = filter_var($request->request->get('alert_allowed'), FILTER_VALIDATE_BOOLEAN);
+        $isSandbox = filter_var($request->request->get('is_sandbox'), FILTER_VALIDATE_BOOLEAN);
 
         /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
         $deviceManager = $this->get('dab_push_notifications.manager.device');
@@ -137,8 +137,8 @@ class DeviceController extends Controller
         /** @var $request \Symfony\Component\HttpFoundation\Request */
         $request = $this->get('request');
 
-        $appId = $request->get('app_id');
-        $deviceIdentifier = $request->get('device_identifier');
+        $appId = $request->request->get('app_id');
+        $deviceIdentifier = $request->request->get('device_identifier');
 
         /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
         $deviceManager = $this->get('dab_push_notifications.manager.device');
@@ -178,8 +178,8 @@ class DeviceController extends Controller
         /** @var $request \Symfony\Component\HttpFoundation\Request */
         $request = $this->get('request');
 
-        $appId = $request->get('app_id');
-        $deviceIdentifier = $request->get('device_identifier');
+        $appId = $request->request->get('app_id');
+        $deviceIdentifier = $request->request->get('device_identifier');
 
         /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
         $deviceManager = $this->get('dab_push_notifications.manager.device');

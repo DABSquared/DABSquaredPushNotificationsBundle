@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Dabsquaredpushnotificationsbundle : Push Notifications Bundle For Symfony 2, Designed like FOSCommentBundle" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Dabsquaredpushnotificationsbundle</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/DABSquared/DABSquaredPushNotificationsBundle">View on GitHub</a>
+
+          <h1 id="project_title">Dabsquaredpushnotificationsbundle</h1>
+          <h2 id="project_tagline">Push Notifications Bundle For Symfony 2, Designed like FOSCommentBundle</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/DABSquared/DABSquaredPushNotificationsBundle/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/DABSquared/DABSquaredPushNotificationsBundle/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="dabsquaredpushnotificationsbundle-" class="anchor" href="#dabsquaredpushnotificationsbundle-"><span class="octicon octicon-link"></span></a>DABSquaredPushNotificationsBundle <img src="https://secure.travis-ci.org/bassrock499/DABSquaredPushNotificationsBundle.png" alt="">
+</h1>
+
+<p>A bundle to allow sending of push notifications to mobile devices.  Currently supports Android (C2DM, GCM), Blackberry, Safari and iOS devices. The Base framework is imported from <a href="https://github.com/richsage/RMSPushNotificationsBundle">https://github.com/richsage/RMSPushNotificationsBundle</a></p>
+
+<p>Any contributions are welcome. The goal here is to provide an interface for push notifications with device registration and user device pairing just like FOSCommentBundle, but with very little code to write.</p>
+
+<p><a href="http://knpbundles.com/DABSquared/DABSquaredPushNotificationsBundle"><img src="http://knpbundles.com/DABSquared/DABSquaredPushNotificationsBundle/badge" alt="knpbundles.com"></a></p>
+
+<h2>
+<a name="road-map" class="anchor" href="#road-map"><span class="octicon octicon-link"></span></a>Road Map</h2>
+
+<p>V1.0:</p>
+
+<ul>
+<li>Support Basic Device Registration for iOS Devices</li>
+<li>Be able to associate a device with a user much like FOSCommentBundle</li>
+<li>Be able to send messages to a particular device or user, using about 2-4 lines of code.</li>
+<li>Auto-manage badge numbers. </li>
+</ul><p>V1.1:</p>
+
+<ul>
+<li>Safari Push Notifications</li>
+</ul><p>V2.0:</p>
+
+<ul>
+<li>Support Device Registration for Android (Accepting Pull Requests)</li>
+<li>Support Device Registration for Blackberry (Accepting Pull Requests)</li>
+<li>Support Device Registration for Mac Apps (Accepting Pull Requests)</li>
+<li>Push Notification read receipts and statistics like UrbanAirship.
+
+<ul>
+<li>As of V1.0 this data is being reported back from iOS devices.</li>
+</ul>
+</li>
+<li>Create A Dashboard</li>
+</ul><h2>
+<a name="documentation" class="anchor" href="#documentation"><span class="octicon octicon-link"></span></a>Documentation</h2>
+
+<p>The bulk of the documentation is stored in the <code>Resources/doc/index.md</code>
+file in this bundle:</p>
+
+<p><a href="https://github.com/DABSquared/DABSquaredPushNotificationsBundle/blob/master/Resources/doc/index.md">Read the Documentation</a></p>
+
+<h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>All the installation instructions are located in <a href="https://github.com/DABSquared/DABSquaredPushNotificationsBundle/blob/master/Resources/doc/index.md">documentation</a>.</p>
+
+<h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>This bundle is under the MIT license. See the complete license in the bundle:</p>
+
+<pre><code>Resources/meta/LICENSE
+</code></pre>
+
+<h2>
+<a name="configuration" class="anchor" href="#configuration"><span class="octicon octicon-link"></span></a>Configuration</h2>
+
+<p>Below you'll find all configuration options; just use what you need:</p>
+
+<div class="highlight highlight-yaml"><pre>    <span class="l-Scalar-Plain">dab_push_notifications</span><span class="p-Indicator">:</span>
+      <span class="l-Scalar-Plain">android</span><span class="p-Indicator">:</span>
+          <span class="l-Scalar-Plain">c2dm</span><span class="p-Indicator">:</span>
+              <span class="l-Scalar-Plain">username</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">&lt;string_android_c2dm_username&gt;</span>
+              <span class="l-Scalar-Plain">password</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">&lt;string_android_c2dm_password&gt;</span>
+              <span class="l-Scalar-Plain">source</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">&lt;string_android_c2dm_source&gt;</span>
+          <span class="l-Scalar-Plain">gcm</span><span class="p-Indicator">:</span>
+              <span class="l-Scalar-Plain">api_key</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">&lt;string_android_gcm_api_key&gt;</span>
+      <span class="l-Scalar-Plain">ios</span><span class="p-Indicator">:</span>
+          <span class="l-Scalar-Plain">certificates</span><span class="p-Indicator">:</span>  <span class="c1">#replace these certs with your own as well as app ids. The bundle will loop through all certs displayed here when sending a push based on the sandbox param. You can add as many certificates as you need. Also note that the bundle will send using certificates that match the internal_app_ids of the registered devices.</span>
+            <span class="l-Scalar-Plain">dev_prem</span><span class="p-Indicator">:</span> <span class="p-Indicator">{</span> <span class="nv">sandbox</span><span class="p-Indicator">:</span> <span class="nv">true</span><span class="p-Indicator">,</span> <span class="nv">pem</span><span class="p-Indicator">:</span> <span class="err">%</span><span class="nv">kernel.root_dir%/../pushcerts/premium/dev/certificate.pem</span><span class="p-Indicator">,</span> <span class="nv">passphrase</span><span class="p-Indicator">:</span> <span class="nv">~</span><span class="p-Indicator">,</span> <span class="nv">internal_app_id</span><span class="p-Indicator">:</span> <span class="nv">0000001</span><span class="p-Indicator">}</span>
+            <span class="l-Scalar-Plain">dev_lite</span><span class="p-Indicator">:</span> <span class="p-Indicator">{</span> <span class="nv">sandbox</span><span class="p-Indicator">:</span> <span class="nv">true</span><span class="p-Indicator">,</span> <span class="nv">pem</span><span class="p-Indicator">:</span> <span class="err">%</span><span class="nv">kernel.root_dir%/../pushcerts/lite/dev/certificate.pem</span><span class="p-Indicator">,</span> <span class="nv">passphrase</span><span class="p-Indicator">:</span> <span class="nv">~</span><span class="p-Indicator">,</span> <span class="nv">internal_app_id</span><span class="p-Indicator">:</span> <span class="nv">0000002</span><span class="p-Indicator">}</span>
+            <span class="l-Scalar-Plain">prod_prem</span><span class="p-Indicator">:</span> <span class="p-Indicator">{</span> <span class="nv">sandbox</span><span class="p-Indicator">:</span> <span class="nv">false</span><span class="p-Indicator">,</span> <span class="nv">pem</span><span class="p-Indicator">:</span> <span class="err">%</span><span class="nv">kernel.root_dir%/../pushcerts/premium/prod/certificate.pem</span><span class="p-Indicator">,</span> <span class="nv">passphrase</span><span class="p-Indicator">:</span> <span class="nv">~</span><span class="p-Indicator">,</span> <span class="nv">internal_app_id</span><span class="p-Indicator">:</span> <span class="nv">0000001</span><span class="p-Indicator">}</span>
+            <span class="l-Scalar-Plain">prod_lite</span><span class="p-Indicator">:</span> <span class="p-Indicator">{</span> <span class="nv">sandbox</span><span class="p-Indicator">:</span> <span class="nv">false</span><span class="p-Indicator">,</span> <span class="nv">pem</span><span class="p-Indicator">:</span> <span class="err">%</span><span class="nv">kernel.root_dir%/../pushcerts/lite/prod/certificate.pem</span><span class="p-Indicator">,</span> <span class="nv">passphrase</span><span class="p-Indicator">:</span> <span class="nv">~</span><span class="p-Indicator">,</span><span class="nv">internal_app_id</span><span class="p-Indicator">:</span> <span class="nv">0000002</span><span class="p-Indicator">}</span>
+      <span class="l-Scalar-Plain">blackberry</span><span class="p-Indicator">:</span>
+          <span class="l-Scalar-Plain">evaluation</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">&lt;bool_bb_evaluation_mode&gt;</span>
+          <span class="l-Scalar-Plain">app_id</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">&lt;string_bb_app_id&gt;</span>
+          <span class="l-Scalar-Plain">password</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">&lt;string_bb_password&gt;</span>
+      <span class="l-Scalar-Plain">safari</span><span class="p-Indicator">:</span>
+          <span class="l-Scalar-Plain">pem</span><span class="p-Indicator">:</span> <span class="err">%</span><span class="l-Scalar-Plain">kernel.root_dir%/../pushcerts/safari/safari_push.pem</span>
+          <span class="l-Scalar-Plain">pk12</span><span class="p-Indicator">:</span> <span class="err">%</span><span class="l-Scalar-Plain">kernel.root_dir%/../pushcerts/safari/Certificates.p12</span>
+          <span class="l-Scalar-Plain">passphrase</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">~</span>
+          <span class="l-Scalar-Plain">website_push_id</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">web.com.demo</span>
+          <span class="l-Scalar-Plain">icon16x16</span><span class="p-Indicator">:</span> <span class="err">%</span><span class="l-Scalar-Plain">kernel.root_dir%/../pushcerts/safari/icon_16x16.png</span>
+          <span class="l-Scalar-Plain">icon16x16@2x</span><span class="p-Indicator">:</span> <span class="err">%</span><span class="l-Scalar-Plain">kernel.root_dir%/../pushcerts/safari/icon_16x16@2x.png</span>
+          <span class="l-Scalar-Plain">icon32x32</span><span class="p-Indicator">:</span> <span class="err">%</span><span class="l-Scalar-Plain">kernel.root_dir%/../pushcerts/safari/icon_32x32.png</span>
+          <span class="l-Scalar-Plain">icon32x32@2x</span><span class="p-Indicator">:</span> <span class="err">%</span><span class="l-Scalar-Plain">kernel.root_dir%/../pushcerts/safari/icon_32x32@2x.png</span>
+          <span class="l-Scalar-Plain">icon128x128</span><span class="p-Indicator">:</span> <span class="err">%</span><span class="l-Scalar-Plain">kernel.root_dir%/../pushcerts/safari/icon_128x128.png</span>
+          <span class="l-Scalar-Plain">icon128x128@2x</span><span class="p-Indicator">:</span> <span class="err">%</span><span class="l-Scalar-Plain">kernel.root_dir%/../pushcerts/safari/icon_128x128@2x.png</span>
+          <span class="l-Scalar-Plain">websiteName</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">Demo Site</span>
+          <span class="l-Scalar-Plain">allowedDomains</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="s">"https://demo.com"</span><span class="p-Indicator">,</span><span class="s">"https://www.demo.com"</span><span class="p-Indicator">]</span>
+          <span class="l-Scalar-Plain">urlFormatString</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">http://www.demo.com/%@</span>
+          <span class="l-Scalar-Plain">webServiceURL</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">https://www.demo.com</span>
+</pre></div>
+
+<h2>
+<a name="dabsquared-new-usage" class="anchor" href="#dabsquared-new-usage"><span class="octicon octicon-link"></span></a>DABSquared New Usage</h2>
+
+<p>Send to a User:</p>
+
+<div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">DABSquared\PushNotificationsBundle\Message\iOSMessage</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">PushDemoController</span> <span class="k">extends</span> <span class="nx">Controller</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">pushAction</span><span class="p">(</span><span class="nv">$aUser</span><span class="p">)</span>
+    <span class="p">{</span>
+
+        <span class="k">foreach</span><span class="p">(</span><span class="nv">$aUser</span><span class="o">-&gt;</span><span class="na">getDevices</span><span class="p">()</span> <span class="k">as</span> <span class="nv">$device</span><span class="p">)</span> <span class="p">{</span>
+
+            <span class="nv">$message</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Message</span><span class="p">();</span>
+            <span class="nv">$message</span><span class="o">-&gt;</span><span class="na">setMessage</span><span class="p">(</span><span class="s1">'Oh my! A push notification!'</span><span class="p">);</span>
+            <span class="nv">$message</span><span class="o">-&gt;</span><span class="na">setDevice</span><span class="p">(</span><span class="nv">$device</span><span class="p">);</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">container</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">'dab_push_notifications'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">send</span><span class="p">(</span><span class="nv">$message</span><span class="p">);</span>
+
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="k">new</span> <span class="nx">Response</span><span class="p">(</span><span class="s1">'Push notification send!'</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Send to a Device:</p>
+
+<div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">DABSquared\PushNotificationsBundle\Message\iOSMessage</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">PushDemoController</span> <span class="k">extends</span> <span class="nx">Controller</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">pushAction</span><span class="p">(</span><span class="nv">$aDevice</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$message</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Message</span><span class="p">();</span>
+        <span class="nv">$message</span><span class="o">-&gt;</span><span class="na">setMessage</span><span class="p">(</span><span class="s1">'Oh my! A push notification!'</span><span class="p">);</span>
+        <span class="nv">$message</span><span class="o">-&gt;</span><span class="na">setDevice</span><span class="p">(</span><span class="nv">$aDevice</span><span class="p">);</span>
+
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">container</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">'dab_push_notifications'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">send</span><span class="p">(</span><span class="nv">$message</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="k">new</span> <span class="nx">Response</span><span class="p">(</span><span class="s1">'Push notification send!'</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Dabsquaredpushnotificationsbundle maintained by <a href="https://github.com/DABSquared">DABSquared</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>

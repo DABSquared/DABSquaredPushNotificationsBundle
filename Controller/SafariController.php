@@ -42,6 +42,7 @@ class SafariController extends Controller
      * @ApiDoc(
      *  resource=true,
      *  description="Logs an error to the monolog.",
+     *  section="Safari Push Notifications",
      *  statusCodes={
      *         200="Returned when successful",
      *         401="Returned when their is an error"},
@@ -74,6 +75,7 @@ class SafariController extends Controller
      * @ApiDoc(
      *  resource=true,
      *  description="Register Safari Device",
+     *  section="Safari Push Notifications",
      *  statusCodes={
      *         200="Returned when successful",
      *         401="Returned when their is an error"},
@@ -149,6 +151,7 @@ class SafariController extends Controller
      * @ApiDoc(
      *  resource=true,
      *  description="Download Payload For Safari Push",
+     *  section="Safari Push Notifications",
      *  statusCodes={
      *         200="Returned when successful",
      *         401="Returned when their is an error"},

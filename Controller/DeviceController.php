@@ -37,7 +37,6 @@ class DeviceController extends Controller
 
     /**
      * @ApiDoc(
-     *  resource=true,
      *  description="Registers an iOS Device",
      *  section="iOS Push Notifications",
      *  statusCodes={
@@ -119,7 +118,6 @@ class DeviceController extends Controller
 
     /**
      * @ApiDoc(
-     *  resource=true,
      *  description="Unregisters an iOS Device",
      *  section="iOS Push Notifications",
      *  statusCodes={
@@ -161,7 +159,6 @@ class DeviceController extends Controller
 
     /**
      * @ApiDoc(
-     *  resource=true,
      *  description="App Open",
      *  section="iOS Push Notifications",
      *  statusCodes={

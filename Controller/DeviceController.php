@@ -39,6 +39,7 @@ class DeviceController extends Controller
      * @ApiDoc(
      *  resource=true,
      *  description="Registers an iOS Device",
+     *  section="iOS Push Notifications",
      *  statusCodes={
      *         200="Returned when successful",
      *         401="Returned when their is an error"},
@@ -120,6 +121,7 @@ class DeviceController extends Controller
      * @ApiDoc(
      *  resource=true,
      *  description="Unregisters an iOS Device",
+     *  section="iOS Push Notifications",
      *  statusCodes={
      *         200="Returned when successful",
      *         401="Returned when their is an error"},
@@ -161,6 +163,7 @@ class DeviceController extends Controller
      * @ApiDoc(
      *  resource=true,
      *  description="App Open",
+     *  section="iOS Push Notifications",
      *  statusCodes={
      *         200="Returned when successful",
      *         401="Returned when their is an error"},

@@ -481,6 +481,7 @@ abstract class Message implements MessageInterface
     public function setDevice($device)
     {
         $this->device = $device;
+
         $this->setTargetOS($device->getType());
 
     }

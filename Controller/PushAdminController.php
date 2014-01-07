@@ -53,16 +53,11 @@ class PushAdminController extends Controller
         /** @var $request \Symfony\Component\HttpFoundation\Request */
         $request = Request::createFromGlobals();
 
-        if (is_object($user)) {
-            if (!$user->hasRole('ROLE_SUPER_ADMIN')) {
-                throw new AccessDeniedException();
-            }
-        }
         /*************************************
          * End Standard Security Checks
          ************************************/
 
-        $form = $this->createForm(new \DABSquared\PushNotificationsBundle\Form\MessageType());
+        $form = $this->createForm(new \DABSquared\PushNotificationsBundle\Form\MessageType($this->container->getParameter('dab_push_notifications.model.device.class')));
 
         if($request->isMethod("POST")) {
             $form->bind($request);
@@ -131,25 +126,10 @@ class PushAdminController extends Controller
         /** @var $request \Symfony\Component\HttpFoundation\Request */
         $request = Request::createFromGlobals();
 
-        $utilityController = new \DABSquared\CurveuBundle\Controller\UtilityController();
-        $response = $utilityController->securityCheckUser($user, $this);
-        if (!is_null($response)) {
-            return $response;
-        }
-
-        if (is_object($user)) {
-            if (!$user->hasRole('ROLE_SUPER_ADMIN')) {
-                throw new AccessDeniedException();
-            }
-        } else {
-            return $this->redirect($this->generateUrl('CurveUBundle_homepage'));
-        }
         /*************************************
          * End Standard Security Checks
          ************************************/
 
-        /** @var $deviceRepository \DABSquared\PushBundle\Entity\DeviceRepository */
-        $deviceRepository = $em->getRepository('DABSquaredPushBundle:Device');
         $deviceName = $this->get('request')->query->get('term');
 
         /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */

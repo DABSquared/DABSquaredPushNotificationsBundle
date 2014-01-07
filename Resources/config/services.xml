@@ -16,6 +16,13 @@
         <service id="dab_push_notifications" class="%dab_push_notifications.class%">
         </service>
 
+        <service
+                id     = "dab_push_notifications.form.message"
+                class  = "DABSquared\PushNotifcationsBundle\Form\MessageType"
+                public = "true">
+            <argument type="string">%dab_push_notifications.model.device.class%</argument>
+        </service>
+
     </services>
 
 </container>

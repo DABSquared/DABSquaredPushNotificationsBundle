@@ -14,6 +14,13 @@ use Doctrine\ORM\EntityRepository;
 
 class MessageType extends AbstractType
 {
+
+    private $deviceClass;
+
+    public function __construct($deviceClass){
+        $this->deviceClass = $deviceClass;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $factory = $builder->getFormFactory();
@@ -35,11 +42,11 @@ class MessageType extends AbstractType
                 'attr'=>array('placeholder'=>'Device Name'),
             )) ;
 
+        $deviceClass = $this->deviceClass;
 
-
-        $refreshDevice = function ($form, $device) use ($factory) {
+        $refreshDevice = function ($form, $device) use ($factory, $deviceClass) {
             $form->add($factory->createNamed('device','entity',null, array(
-                'class'         => 'DABSquaredPushBundle:Device',
+                'class'         => $deviceClass,
                 'auto_initialize' => false,
                 'label' => '',
                 'required'  => false,

@@ -139,3 +139,7 @@ class PushDemoController extends Controller
 }
 ```
 
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/DABSquared/dabsquaredpushnotificationsbundle/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+

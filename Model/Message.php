@@ -478,7 +478,7 @@ abstract class Message implements MessageInterface
     /**
      * @param \DABSquared\PushNotificationsBundle\Model\DeviceInterface $device
      */
-    public function setDevice($device)
+    public function setDevice(\DABSquared\PushNotificationsBundle\Model\DeviceInterface $device)
     {
         $this->device = $device;
 

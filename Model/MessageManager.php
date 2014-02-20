@@ -36,11 +36,11 @@ abstract class MessageManager implements MessageManagerInterface
     }
 
     /**
-     * Creates an empty device instance
+     * Creates an empty message instance
      *
-     * @return Device
+     * @return Message
      */
-    public function createMessage($message)
+    public function createMessage()
     {
         $class = $this->getClass();
         $message = new $class;
@@ -53,11 +53,13 @@ abstract class MessageManager implements MessageManagerInterface
     }
 
     /**
+     * /**
      * Saves a message to the persistence backend used. Each backend
      * must implement the abstract doSaveMessage method which will
      * perform the saving of the comment to the backend.
      *
-     * @param  MessageInterface         $message
+     * @param MessageInterface $message
+     * @throws \InvalidArgumentException
      */
     public function saveMessage(MessageInterface $message)
     {

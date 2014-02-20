@@ -109,32 +109,52 @@ interface DeviceInterface
     public function setDeviceVersion($deviceVersion);
 
     /**
-     * @return string The device version
+     * @return string The device identifier
      */
     public function getDeviceIdentifier();
 
     /**
-     * @param string $deviceVersion
+     * @param string $deviceIdentifier
      */
     public function setDeviceIdentifier($deviceIdentifier);
 
     /**
-     * @return string The device version
+     * @return string The app id
      */
     public function getAppId();
 
     /**
-     * @param string $deviceVersion
+     * @param string $appId
      */
     public function setAppId($appId);
+
+    /**
+     * @param string $type
+     */
+    public function setType($type);
+
+    /**
+     * @return int
+     */
+    public function getType();
+
+    /**
+     * @param int $badgeNumber
+     */
+    public function setBadgeNumber($badgeNumber);
+
+    /**
+     * @return int
+     */
+    public function getBadgeNumber();
 
 
     public function getMessages();
 
     public function setMessages($messages);
 
-    public function addMessage($message);
+    public function addMessage(\DABSquared\PushNotificationsBundle\Model\MessageInterface $message);
 
-    public function removeMessage($message);
+    public function removeMessage(\DABSquared\PushNotificationsBundle\Model\MessageInterface $message);
 
 }

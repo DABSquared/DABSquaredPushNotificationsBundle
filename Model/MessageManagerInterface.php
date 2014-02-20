@@ -37,7 +37,7 @@ interface MessageManagerInterface
      *
      * @return Message
      */
-    public function createMessage($message);
+    public function createMessage();
 
 
     /**

@@ -10,6 +10,8 @@ use DABSquared\PushNotificationsBundle\Exception\InvalidMessageTypeException,
 
 use Buzz\Browser;
 use DABSquared\PushNotificationsBundle\Message\MessageStatus;
+use DABSquared\PushNotificationsBundle\Model\DeviceManagerInterface;
+use DABSquared\PushNotificationsBundle\Model\MessageManagerInterface;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 
 class iOSNotification implements OSNotificationServiceInterface
@@ -48,11 +50,11 @@ class iOSNotification implements OSNotificationServiceInterface
     /**
      * Constructor
      *
-     * @param $sandbox
-     * @param $pem
-     * @param $passphrase
+     * @param $certificates
+     * @param \DABSquared\PushNotificationsBundle\Model\MessageManagerInterface $messageManager
+     * @param \DABSquared\PushNotificationsBundle\Model\DeviceManagerInterface $deviceManager
      */
-    public function __construct($certificates, \DABSquared\PushNotificationsBundle\Model\MessageManager $messageManager, \DABSquared\PushNotificationsBundle\Model\DeviceManager $deviceManager)
+    public function __construct($certificates, MessageManagerInterface $messageManager, DeviceManagerInterface $deviceManager)
     {
         $this->certificates = $certificates;
         $this->messageManager = $messageManager;
@@ -166,12 +168,10 @@ class iOSNotification implements OSNotificationServiceInterface
     }
 
     /**
-     * Write data to the apn stream that is associated with the given apn URL
-     *
-     * @param string $apnURL
-     * @param string $payload
-     * @throws \RuntimeException
-     * @return mixed
+     * @param $apnURL
+     * @param $cert
+     * @param array $payloads
+     * @param array $messages
      */
     protected function writeApnStreamMessages($apnURL, $cert,array $payloads, array $messages)
     {
@@ -217,17 +217,20 @@ class iOSNotification implements OSNotificationServiceInterface
             $i++;
         }
 
-        fclose($apns);
+        if(is_resource($apns)) {
+            fclose($apns);
+        }
+
     }
 
 
     /**
      * Write data to the apn stream that is associated with the given apn URL
      *
-     * @param string $apnURL
-     * @param string $payload
-     * @throws \RuntimeException
-     * @return mixed
+     * @param $apnURL
+     * @param $payload
+     * @param $cert
+     * @param Message $message
      */
     protected function writeApnStream($apnURL, $payload, $cert, \DABSquared\PushNotificationsBundle\Model\Message $message)
     {
@@ -241,7 +244,9 @@ class iOSNotification implements OSNotificationServiceInterface
         try {
             $apns = stream_socket_client($apnURL, $err, $errstr, 2, STREAM_CLIENT_CONNECT, $ctx);
             fwrite($apns, $payload);
-            fclose($apns);
+            if(is_resource($apns)) {
+                fclose($apns);
+            }
         } catch (\ErrorException $er) {
             $message->setStatus(MessageStatus::MESSAGE_STATUS_STREAM_ERROR);
             $this->messageManager->saveMessage($message);
@@ -258,12 +263,13 @@ class iOSNotification implements OSNotificationServiceInterface
     /**
      * Creates the full payload for the notification
      *
-     * @param $messageId
-     * @param $token
-     * @param $message /DABSquared/PushNotificationsBundle/Model/Message
+     * @param MessageInterface $message
+     * @param $cert
      * @return string
+     * @throws \LogicException
+     * @throws \InvalidArgumentException
      */
-    protected function createPayload(\DABSquared\PushNotificationsBundle\Model\Message $message, $cert)
+    protected function createPayload(MessageInterface $message, $cert)
     {
         $messageBody = $message->getMessageBody();
         $newBadge = $message->getDevice()->getBadgeNumber()+1;
@@ -299,11 +305,8 @@ class iOSNotification implements OSNotificationServiceInterface
         else {
             $jsonBody = json_encode($messageBody, JSON_FORCE_OBJECT);
         }
-        //$token = preg_replace("/[^0-9A-Fa-f]/", "", $token);
-        //$payload = chr(1) . pack("N", 0) . pack("n", 32) . pack("H*", $token) . pack("n", strlen($jsonBody)) . $jsonBody;
 
         $payload = chr(0) . chr(0) . chr(32) . pack('H*', str_replace(' ', '', $message->getDevice()->getDeviceToken())) . chr(0) . chr(strlen($jsonBody)) . $jsonBody;
-        var_dump($payload);
 
         return $payload;
     }

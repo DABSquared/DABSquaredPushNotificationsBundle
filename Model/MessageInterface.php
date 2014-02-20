@@ -28,10 +28,11 @@ interface MessageInterface
 
     public function setData($data);
 
-    public function setDevice($device);
+    public function setDevice(\DABSquared\PushNotificationsBundle\Model\DeviceInterface $device);
 
     public function getMessageBody();
 
+    /** @return \DABSquared\PushNotificationsBundle\Model\DeviceInterface */
     public function getDevice();
 
     public function getTargetOS();

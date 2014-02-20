@@ -3,6 +3,7 @@
 namespace DABSquared\PushNotificationsBundle\Model;
 
 use DABSquared\PushNotificationsBundle\Device\DeviceStatus;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Created by JetBrains PhpStorm.
@@ -120,7 +121,7 @@ abstract class Device implements DeviceInterface
     public function __construct()
     {
         $this->createdAt = new \DateTime();
-        $this->messages = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->messages = new ArrayCollection();
     }
 
 
@@ -308,12 +309,12 @@ abstract class Device implements DeviceInterface
         $this->messages = $messages;
     }
 
-    public function addMessage($message) {
+    public function addMessage(\DABSquared\PushNotificationsBundle\Model\MessageInterface $message) {
         $message->setDevice($this);
         $this->messages[] = $message;
     }
 
-    public function removeMessage($message)
+    public function removeMessage(\DABSquared\PushNotificationsBundle\Model\MessageInterface $message)
     {
         $this->messages->removeElement($message);
     }

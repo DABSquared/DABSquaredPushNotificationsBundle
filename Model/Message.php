@@ -26,7 +26,7 @@ abstract class Message implements MessageInterface
 
 
     /**
-     * @var mixed
+     * @var \DABSquared\PushNotificationsBundle\Model\DeviceInterface
      */
     protected $device;
 
@@ -476,7 +476,7 @@ abstract class Message implements MessageInterface
     }
 
     /**
-     * @param mixed $device
+     * @param \DABSquared\PushNotificationsBundle\Model\DeviceInterface $device
      */
     public function setDevice($device)
     {
@@ -487,7 +487,7 @@ abstract class Message implements MessageInterface
     }
 
     /**
-     * @return \DABSquared\PushNotificationsBundle\Model\Device
+     * @return \DABSquared\PushNotificationsBundle\Model\DeviceInterface
      */
     public function getDevice()
     {

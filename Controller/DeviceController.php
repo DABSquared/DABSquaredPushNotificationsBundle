@@ -111,6 +111,7 @@ class DeviceController extends Controller
         $device->setAppVersion($appVersion);
         $device->setDeviceToken($deviceToken);
         $device->setState($isSandbox ? Device::STATE_SANDBOX : Device::STATE_PRODUCTION);
+        $device->setStatus(DeviceStatus::DEVICE_STATUS_ACTIVE);
         $deviceManager->saveDevice($device);
 
         return $this->showSuccessData(null, null);

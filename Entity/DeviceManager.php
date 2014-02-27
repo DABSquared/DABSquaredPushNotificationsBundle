@@ -105,11 +105,9 @@ class DeviceManager extends BaseDeviceManger
             return null;
         }
 
-        if(count($devices) != 1) {
+        if(count($devices) == 0) {
             return null;
         }
-
-
 
         return $devices[0];
 

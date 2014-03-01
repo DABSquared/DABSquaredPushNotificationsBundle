@@ -167,6 +167,7 @@ class DeviceController extends Controller
      *  filters={
      *      {"name"="app_id", "dataType"="string", "required"="true"},
      *      {"name"="device_identifier", "dataType"="string", "required"="true"},
+     *      {"name"="device_token", "dataType"="string", "required"="true"},
      *  }
      * )
      *
@@ -180,12 +181,13 @@ class DeviceController extends Controller
 
         $appId = $request->request->get('app_id');
         $deviceIdentifier = $request->request->get('device_identifier');
+        $deviceToken = $request->request->get('device_token');
 
         /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
         $deviceManager = $this->get('dab_push_notifications.manager.device');
 
         /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
-        $device = $deviceManager->findDeviceByTypeIdentifierAndAppId(Types::OS_IOS, $deviceIdentifier, $appId);
+        $device = $deviceManager->findDeviceByTypeIdentifierAndAppIdAndDeviceToken(Types::OS_IOS, $deviceIdentifier, $appId, $deviceToken);
 
         if(!is_null($device)) {
             $device->setBadgeNumber(0);

@@ -22,6 +22,8 @@ interface MessageInterface
 
     public function setSound($sound);
 
+    public function setContentAvailable($contentAvailable);
+
     public function setMessage($message);
 
     public function setStatus($status);

@@ -63,6 +63,13 @@ abstract class Message implements MessageInterface
     protected $sound = null;
 
     /**
+     * boolean contentAvailable
+     *
+     * @var boolean
+     */
+    protected $contentAvailable = false;
+
+    /**
      * Custom data
      *
      * @var array
@@ -333,6 +340,13 @@ abstract class Message implements MessageInterface
     {
         if($this->type == Types::OS_IOS) {
             $this->apsBody["aps"]["sound"] = $sound;
+        }
+    }
+
+    public function setContentAvailable($contentAvailable)
+    {
+        if($this->type == Types::OS_IOS && $contentAvailable) {
+            $this->apsBody["aps"]["content-available"] = 1;
         }
     }
 

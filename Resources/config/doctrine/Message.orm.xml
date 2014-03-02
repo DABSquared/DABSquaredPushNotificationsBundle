@@ -27,7 +27,7 @@
 
         <field name="title" type="text" />
 
-        <field name="sound" type="text" />
+        <field name="sound" type="text" nullable="true"  />
 
         <field name="contentAvailable" type="boolean" />
 

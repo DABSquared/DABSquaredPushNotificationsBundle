@@ -218,6 +218,14 @@ abstract class Message implements MessageInterface
         if($this->type == Types::OS_IOS) {
             $this->apsBody["aps"]["alert"] = $this->getMessage();
 
+            if(!is_null($this->sound)) {
+                $this->apsBody["aps"]["sound"] = $this->sound;
+            }
+
+            if($this->contentAvailable) {
+                $this->apsBody["aps"]["content-available"] = 1;
+            }
+
             $payloadBody = $this->apsBody;
             if (!empty($this->customData)) {
                 $payloadBody = array_merge($payloadBody, $this->customData);
@@ -338,16 +346,12 @@ abstract class Message implements MessageInterface
 
     public function setSound($sound)
     {
-        if($this->type == Types::OS_IOS) {
-            $this->apsBody["aps"]["sound"] = $sound;
-        }
+        $this->sound = $sound;
     }
 
     public function setContentAvailable($contentAvailable)
     {
-        if($this->type == Types::OS_IOS && $contentAvailable) {
-            $this->apsBody["aps"]["content-available"] = 1;
-        }
+        $this->contentAvailable = $contentAvailable;
     }
 
     public function setTargetOS($type) {

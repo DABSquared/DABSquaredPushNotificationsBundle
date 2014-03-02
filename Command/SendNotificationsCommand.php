@@ -14,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Routing\Exception\InvalidParameterException;
 
 
 class SendNotificationsCommand  extends ContainerAwareCommand{
@@ -38,8 +39,14 @@ class SendNotificationsCommand  extends ContainerAwareCommand{
 
         $messages = array();
 
-        if($messageId) {
+        if(!is_null($messageId)) {
             $messages = $messageManager->findById($messageId);
+            /** @var $message \DABSquared\PushNotificationsBundle\Model\Message */
+            foreach($messages as $message) {
+                if($message->getStatus() == MessageStatus::MESSAGE_STATUS_NOT_SENT) {
+                    throw new InvalidParameterException("This message has already been sent");
+                }
+            }
         } else {
           $messages  = $messageManager->findByStatus(MessageStatus::MESSAGE_STATUS_NOT_SENT);
         }
@@ -53,6 +60,10 @@ class SendNotificationsCommand  extends ContainerAwareCommand{
         }
 
         $notificationManager->sendMessages($messages);
+
+        if(!is_null($messageId)) {
+            die();
+        }
 
 
 

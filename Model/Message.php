@@ -104,13 +104,6 @@ abstract class Message implements MessageInterface
      */
     protected $collapseKey = self::DEFAULT_COLLAPSE_KEY;
 
-    /**
-     * Whether this is a GCM message
-     *
-     * @var bool
-     */
-    protected $isGCM = false;
-
 
     /**
      * Options for GCM messages
@@ -244,7 +237,7 @@ abstract class Message implements MessageInterface
             return $payloadBody;
         }else if($this->type == Types::OS_ANDROID_GCM || $this->type == Types::OS_ANDROID_C2DM) {
             $data = array(
-                "registration_id" => $this->identifier,
+                "registration_id" => $this->device->getDeviceidentifier(),
                 "collapse_key"    => $this->collapseKey,
                 "data.message"    => $this->message,
             );
@@ -260,9 +253,10 @@ abstract class Message implements MessageInterface
     }
 
     /**
-     * Sets any custom data for the APS body
-     *
-     * @param array $data
+     * Sets any custom data for the message
+     * @param $data
+     * @return $this
+     * @throws \InvalidArgumentException
      */
     public function setData($data)
     {
@@ -369,8 +363,10 @@ abstract class Message implements MessageInterface
            return  Types::OS_IOS;
        }else  if($this->type == Types::OS_SAFARI) {
            return  Types::OS_SAFARI;
-       }else  if($this->type == Types::OS_ANDROID_GCM || $this->type == Types::OS_ANDROID_C2DM) {
-           return ($this->isGCM ? Types::OS_ANDROID_GCM : Types::OS_ANDROID_C2DM);
+       }else  if($this->type == Types::OS_ANDROID_C2DM) {
+           return Types::OS_ANDROID_C2DM;
+       }else  if($this->type == Types::OS_ANDROID_GCM) {
+           return Types::OS_ANDROID_GCM;
        }else if($this->type == Types::OS_BLACKBERRY) {
             return Types::OS_BLACKBERRY;
        }

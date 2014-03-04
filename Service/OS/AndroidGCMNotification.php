@@ -69,9 +69,6 @@ class AndroidGCMNotification implements OSNotificationServiceInterface
         if ($message->getTargetOS() != Types::OS_ANDROID_GCM) {
             throw new InvalidMessageTypeException(sprintf("Message type '%s' not supported by GCM", get_class($message)));
         }
-        if (!$message->isGCM()) {
-            throw new InvalidMessageTypeException("Non-GCM messages not supported by the Android GCM sender");
-        }
 
         $headers = array(
             "Authorization: key=" . $this->apiKey,
@@ -79,21 +76,39 @@ class AndroidGCMNotification implements OSNotificationServiceInterface
         );
         $data = array_merge(
             $message->getGCMOptions(),
-            array("data" => $message->getData())
+            array("data" => $message->getMessageBody())
         );
 
+        $device = $message->getDevice();
         // Chunk number of registration IDs according to the maximum allowed by GCM
-        $chunks = array_chunk($message->getGCMIdentifiers(), $this->registrationIdMaxCount);
+        $chunks = array_chunk(array($device->getDeviceIdentifier()), $this->registrationIdMaxCount);
 
         // Perform the calls (in parallel)
         $this->responses = array();
         foreach ($chunks as $registrationIDs) {
             $data["registration_ids"] = $registrationIDs;
-            $this->responses[] = $this->browser->post($this->apiURL, $headers, json_encode($data));
+            // Open connection
+            $ch = curl_init();
+            // Set the url, number of POST vars, POST data
+            curl_setopt( $ch, CURLOPT_URL, $this->apiURL );
+
+            curl_setopt( $ch, CURLOPT_POST, true );
+            curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+            curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, 0);
+
+            curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $data ) );
+
+            // Execute post
+            $result = curl_exec($ch);
+            //TODO: Parse the response
+            // Close connection
+            curl_close($ch);
         }
-        $this->browser->getClient()->flush();
 
         // Determine success
+        //TODO: Parse the response
         foreach ($this->responses as $response) {
             $message = json_decode($response->getContent());
             if ($message === null || $message->success == 0 || $message->failure > 0) {
@@ -112,5 +127,11 @@ class AndroidGCMNotification implements OSNotificationServiceInterface
     public function getResponses()
     {
         return $this->responses;
+    }
+
+    public function sendMessages(array $messages){
+        foreach($messages as $message) {
+            $this->send($message);
+        }
     }
 }

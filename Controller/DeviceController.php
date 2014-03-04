@@ -198,6 +198,79 @@ class DeviceController extends Controller
 
     }
 
+
+
+    /**
+     * @ApiDoc(
+     *  description="Registers an GCM Device by registration ID",
+     *  section="Google Cloud Messaging (GCM)",
+     *  statusCodes={
+     *         200="Returned when successful",
+     *         401="Returned when their is an error"},
+     *  filters={
+     *      {"name"="registration_id", "dataType"="string", "required"="true"},
+     *      {"name"="device_name", "dataType"="string", "required"="false"},
+     *      {"name"="device_model", "dataType"="string", "required"="false"},
+     *      {"name"="device_version", "dataType"="string", "required"="false"},
+     *      {"name"="app_name", "dataType"="string", "required"="false"},
+     *      {"name"="app_version", "dataType"="string", "required"="false"},
+     *      {"name"="app_id", "dataType"="string", "required"="false"}
+     *  }
+     * )
+     *
+     * @Route("device/gcm/register", defaults={"_format": "json"})
+     * @Method("POST")
+     *
+     */
+    public function registerGCMRegistrationIDAction()
+    {
+        /** @var $request \Symfony\Component\HttpFoundation\Request */
+        $request = $this->get('request');
+
+        $registrationId = $request->request->get('registration_id');
+        $deviceToken = $request->request->get('device_token') ?: $registrationId;
+        $deviceName = $request->request->get('device_name');
+        $deviceModel = $request->request->get('device_model');
+        $deviceVersion = $request->request->get('device_version');
+        $appName = $request->request->get('app_name');
+        $appVersion = $request->request->get('app_version');
+
+        $appId = $request->request->get('app_id');
+        $deviceIdentifier = $request->request->get('device_identifier') ?: $registrationId;
+
+        /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
+        $deviceManager = $this->get('dab_push_notifications.manager.device');
+
+        /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
+        $device = $deviceManager->findDeviceByTypeIdentifierAndAppId(Types::OS_ANDROID_GCM, $deviceIdentifier, $appId);
+
+        if(is_null($device)) {
+            $device = $deviceManager->createDevice($device);
+            $device->setAppId($appId ?: "");
+            $device->setDeviceIdentifier($deviceIdentifier);
+        }
+
+        if($device instanceof UserDeviceInterface) {
+            $user = $this->get('security.context')->getToken()->getUser();
+            $device->setUser($user);
+        }
+
+        $device->setDeviceModel($deviceModel ?: "");
+        $device->setDeviceName($deviceName ?: "");
+        $device->setDeviceVersion($deviceVersion ?: "");
+        $device->setBadgeAllowed(false);
+        $device->setSoundAllowed(false);
+        $device->setAlertAllowed(false);
+        $device->setType(Types::OS_ANDROID_GCM);
+        $device->setAppName($appName ?: "");
+        $device->setAppVersion($appVersion ?: "");
+        $device->setDeviceToken($deviceToken);
+        $device->setState(Device::STATE_PRODUCTION);
+        $deviceManager->saveDevice($device);
+
+        return $this->showSuccessData(null, null);
+    }
+
     /********************************* Helper Methods ***************************************/
 
     public function showErrorMessage($userMessage)

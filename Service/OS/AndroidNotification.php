@@ -70,18 +70,46 @@ class AndroidNotification implements OSNotificationServiceInterface
         }
 
         if ($this->getAuthToken()) {
-            $headers[] = "Authorization: GoogleLogin auth=" . $this->authToken;
             $data = $message->getMessageBody();
 
-            $buzz = new Browser();
-            $buzz->getClient()->setVerifyPeer(false);
-            $response = $buzz->post("https://android.apis.google.com/c2dm/send", $headers, http_build_query($data));
-            return preg_match("/^id=/", $response->getContent()) > 0;
+            $headers = array(
+                "Content-Type: application/json",
+                "Authorization: GoogleLogin auth=" . $this->authToken
+            );
+
+            $ch = curl_init();
+            // Set the url, number of POST vars, POST data
+            curl_setopt( $ch, CURLOPT_URL, "https://android.apis.google.com/c2dm/send");
+
+            curl_setopt( $ch, CURLOPT_POST, true );
+            curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+            curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $data ) );
+
+            // Execute post
+            $response = curl_exec($ch);
+            $info = curl_getinfo($ch);
+
+            if (empty($info['http_code']) || $info['http_code'] != 200) {
+                return false;
+            }
+            // Close connection
+            curl_close($ch);
+
+            return preg_match("/^id=/", $response) > 0;
         }
 
         return false;
     }
 
+
+    public function sendMessages(array $messages){
+        foreach($messages as $message) {
+           $this->send($message);
+        }
+     }
 
     /**
      * Gets a valid authentication token
@@ -98,14 +126,34 @@ class AndroidNotification implements OSNotificationServiceInterface
             "service"       => "ac2dm"
         );
 
-        $buzz = new Browser();
-        $buzz->getClient()->setVerifyPeer(false);
-        $response = $buzz->post("https://www.google.com/accounts/ClientLogin", array(), http_build_query($data));
-        if ($response->getStatusCode() !== 200) {
+        $headers = array(
+            "Content-Type: application/json",
+        );
+
+        $ch = curl_init();
+        // Set the url, number of POST vars, POST data
+        curl_setopt( $ch, CURLOPT_URL, "https://www.google.com/accounts/ClientLogin");
+
+        curl_setopt( $ch, CURLOPT_POST, true );
+        curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+        curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, 0);
+
+        curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $data ) );
+
+        // Execute post
+        $response = curl_exec($ch);
+        $info = curl_getinfo($ch);
+
+        if (empty($info['http_code']) || $info['http_code'] != 200) {
             return false;
         }
 
-        preg_match("/Auth=([a-z0-9_\-]+)/i", $response->getContent(), $matches);
+        // Close connection
+        curl_close($ch);
+
+        preg_match("/Auth=([a-z0-9_\-]+)/i", $response, $matches);
         $this->authToken = $matches[1];
         return true;
     }

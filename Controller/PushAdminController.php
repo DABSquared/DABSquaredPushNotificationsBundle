@@ -41,15 +41,6 @@ class PushAdminController extends Controller
          *  Performing standard Security Checks
          *************************************/
 
-        /** @var $user \DABSquared\UserBundle\Entity\User */
-        $user = $this->get('security.context')->getToken()->getUser();
-
-        /** @var $em \Doctrine\ORM\EntityManager */
-        $em = $this->get('doctrine')->getManager();
-
-        /** @var $session \Symfony\Component\HttpFoundation\Session\Session */
-        $session = $this->getRequest()->getSession();
-
         /** @var $request \Symfony\Component\HttpFoundation\Request */
         $request = Request::createFromGlobals();
 
@@ -63,8 +54,8 @@ class PushAdminController extends Controller
             $form->bind($request);
 
             $types = $form['type']->getData();
-            $device = $form['device']->getViewData();
-            $messageText = $form['message']->getViewData();
+            $device = $form['device']->getData();
+            $messageText = $form['message']->getData();
 
             /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
             $deviceManager = $this->get('dab_push_notifications.manager.device');
@@ -110,25 +101,6 @@ class PushAdminController extends Controller
      * @Method({"GET"})
      */
     public function getDeviceListAction() {
-        /*************************************
-         *  Performing standard Security Checks
-         *************************************/
-
-        /** @var $user \DABSquared\UserBundle\Entity\User */
-        $user = $this->get('security.context')->getToken()->getUser();
-
-        /** @var $em \Doctrine\ORM\EntityManager */
-        $em = $this->get('doctrine')->getManager();
-
-        /** @var $session \Symfony\Component\HttpFoundation\Session\Session */
-        $session = $this->getRequest()->getSession();
-
-        /** @var $request \Symfony\Component\HttpFoundation\Request */
-        $request = Request::createFromGlobals();
-
-        /*************************************
-         * End Standard Security Checks
-         ************************************/
 
         $deviceName = $this->get('request')->query->get('term');
 
@@ -146,7 +118,7 @@ class PushAdminController extends Controller
 
         $allDevices = array();
 
-        /** @var $device \DABSquared\PushBundle\Entity\Device */
+        /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
         foreach($devices as $device) {
             $aDevice = array();
 

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}DABSquaredPushNotificationsBundle{% endblock %}</title>
+    <link href="{{ asset("bundles/dabsquaredpushnotifications/css/bootstrap.css") }}" rel="stylesheet" />
+</head>
+<body>
+<div class="navbar">
+    <div class="navbar-inner">
+        <a class="brand" href="{{ path("create_push_messages") }}">DABSquaredPushNotificationsBundle</a>
+    </div>
+</div>
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
+
+{% block javascripts %}
+    <script src="{{ asset("bundles/dabsquaredpushnotifications/js/jquery.js") }}" type="text/javascript"></script>
+    <script src="{{ asset("bundles/dabsquaredpushnotifications/js/bootstrap.js") }}" type="text/javascript"></script>
+{% endblock %}
+</body>
+</html>

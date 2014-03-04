@@ -148,6 +148,10 @@ interface DeviceInterface
      */
     public function getBadgeNumber();
 
+    /**
+     * @param int $status
+     */
+    public function setStatus($status);
 
     public function getMessages();
 

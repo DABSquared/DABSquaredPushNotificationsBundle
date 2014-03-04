@@ -2,12 +2,10 @@
 
 namespace DABSquared\PushNotificationsBundle\Service\OS;
 
+use DABSquared\PushNotificationsBundle\Device\DeviceStatus;
 use DABSquared\PushNotificationsBundle\Exception\InvalidMessageTypeException,
-    DABSquared\PushNotificationsBundle\Model\Message,
     DABSquared\PushNotificationsBundle\Model\MessageInterface,
     DABSquared\PushNotificationsBundle\Device\Types;
-use Buzz\Browser,
-    Buzz\Client\MultiCurl;
 
 class AndroidGCMNotification implements OSNotificationServiceInterface
 {
@@ -26,18 +24,16 @@ class AndroidGCMNotification implements OSNotificationServiceInterface
     protected $apiKey;
 
     /**
+     * @var \DABSquared\PushNotificationsBundle\Model\DeviceManager
+     */
+    protected $deviceManager;
+
+    /**
      * Max registration count
      *
      * @var integer
      */
     protected $registrationIdMaxCount = 1000;
-
-    /**
-     * Browser object
-     *
-     * @var \Buzz\Browser
-     */
-    protected $browser;
 
     /**
      * Collection of the responses from the GCM communication
@@ -51,10 +47,10 @@ class AndroidGCMNotification implements OSNotificationServiceInterface
      *
      * @param $apiKey
      */
-    public function __construct($apiKey)
+    public function __construct($apiKey, \DABSquared\PushNotificationsBundle\Model\DeviceManager $deviceManager)
     {
         $this->apiKey = $apiKey;
-        $this->browser = new Browser(new MultiCurl());
+        $this->deviceManager = $deviceManager;
     }
 
     /**
@@ -101,17 +97,24 @@ class AndroidGCMNotification implements OSNotificationServiceInterface
             curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $data ) );
 
             // Execute post
-            $result = curl_exec($ch);
-            //TODO: Parse the response
+            $this->responses[] = curl_exec($ch);
             // Close connection
             curl_close($ch);
         }
 
         // Determine success
-        //TODO: Parse the response
         foreach ($this->responses as $response) {
-            $message = json_decode($response->getContent());
+            $message = json_decode($response);
             if ($message === null || $message->success == 0 || $message->failure > 0) {
+                if (count($message->results)) {
+                    foreach ($message->results as $result) {
+                        $error = $result->error;
+                        if ($error == "InvalidRegistration" || $error == "NotRegistered") {
+                            // remove devices which do not have a valid registration or are no longer registered
+                            $device->setStatus(DeviceStatus::DEVICE_STATUS_UNACTIVE);
+                        }
+                     }
+                 }
                 return false;
             }
         }

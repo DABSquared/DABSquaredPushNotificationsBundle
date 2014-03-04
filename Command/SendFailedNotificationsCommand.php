@@ -17,14 +17,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Routing\Exception\InvalidParameterException;
 
 
-class SendNotificationsCommand  extends ContainerAwareCommand{
+class SendFailedNotificationsCommand  extends ContainerAwareCommand{
     protected function configure() {
-        $this->setName('dab:push:send')
-            ->setDescription('Send all unsent push notifications.')
-            ->setDefinition(array(
-                new InputArgument('messageId',
-                    InputArgument::OPTIONAL,
-                    'The message to send'),));
+        $this->setName('dab:push:send:failed');
+        $this->setDescription('Send all unsent push notifications.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
@@ -33,39 +29,6 @@ class SendNotificationsCommand  extends ContainerAwareCommand{
 
         /** @var $notificationManager \DABSquared\PushNotificationsBundle\Service\Notifications */
         $notificationManager = $this->getContainer()->get('dab_push_notifications');
-
-
-        $messageId = $input->getArgument('messageId');
-
-        $messages = array();
-
-        if(!is_null($messageId)) {
-            $messages = $messageManager->findById($messageId);
-            /** @var $message \DABSquared\PushNotificationsBundle\Model\Message */
-            foreach($messages as $message) {
-                if($message->getStatus() == MessageStatus::MESSAGE_STATUS_NOT_SENT) {
-                    throw new InvalidParameterException("This message has already been sent");
-                }
-            }
-        } else {
-          $messages  = $messageManager->findByStatus(MessageStatus::MESSAGE_STATUS_NOT_SENT);
-        }
-
-
-
-        /** @var $message \DABSquared\PushNotificationsBundle\Model\Message */
-        foreach($messages as $message) {
-            $message->setStatus(MessageStatus::MESSAGE_STATUS_SENDING);
-            $messageManager->saveMessage($message);
-        }
-
-        $notificationManager->sendMessages($messages);
-
-        if(!is_null($messageId)) {
-            die();
-        }
-
-
 
         /***** Lets try and send old messages now. ********/
 

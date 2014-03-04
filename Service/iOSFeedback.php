@@ -7,38 +7,21 @@ use DABSquared\PushNotificationsBundle\Device\iOS\Feedback;
 class iOSFeedback
 {
     /**
-     * Sandbox mode or not
+     * Array for certificates
      *
-     * @var bool
+     * @var array
      */
-    protected $sandbox;
-
-    /**
-     * Path to PEM file
-     *
-     * @var string
-     */
-    protected $pem;
-
-    /**
-     * Passphrase for PEM file
-     *
-     * @var string
-     */
-    protected $passphrase;
+    protected $certificates;
 
     /**
      * Constructor
      *
-     * @param $sandbox
-     * @param $pem
-     * @param $passphrase
+     * @param $certificates
      */
-    public function __construct($sandbox, $pem, $passphrase)
+    public function __construct($certificates)
     {
-        $this->sandbox = $sandbox;
-        $this->pem = $pem;
-        $this->passphrase = $passphrase;
+        $this->certificates = $certificates;
+
     }
 
     /**

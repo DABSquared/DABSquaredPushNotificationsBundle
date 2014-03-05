@@ -30,9 +30,6 @@ class iOSFeedbackCommand  extends ContainerAwareCommand{
         $iosFeedback->getDeviceUUIDs();
 
 
-        $messageId = $input->getArgument('messageId');
-
-
 
 
 

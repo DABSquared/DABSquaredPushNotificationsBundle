@@ -24,14 +24,27 @@ class iOSFeedback
 
     }
 
+    public function getDeviceUUIDS($appId = null, $sandbox = null) {
+        $deviceUUIDS = array();
+
+        foreach($this->certificates as $cert) {
+
+
+            //$cert['sandbox'] == true   $cert['internal_app_id']
+
+        }
+    }
+
+
     /**
      * Gets an array of device UUID unregistration details
      * from the APN feedback service
      *
-     * @throws \RuntimeException
+     * @param $cert
      * @return array
+     * @throws \RuntimeException
      */
-    public function getDeviceUUIDs()
+    private function getDeviceUUIDsForCertificate($cert)
     {
         if (!strlen($this->pem)) {
             throw new \RuntimeException("PEM not provided");

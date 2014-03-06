@@ -43,7 +43,7 @@ class SendNotificationsCommand  extends ContainerAwareCommand{
             $messages = $messageManager->findById($messageId);
             /** @var $message \DABSquared\PushNotificationsBundle\Model\Message */
             foreach($messages as $message) {
-                if($message->getStatus() == MessageStatus::MESSAGE_STATUS_NOT_SENT) {
+                if($message->getStatus() == MessageStatus::MESSAGE_STATUS_SENT) {
                     throw new InvalidParameterException("This message has already been sent");
                 }
             }

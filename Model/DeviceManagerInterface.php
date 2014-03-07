@@ -54,13 +54,41 @@ interface DeviceManagerInterface
 
 
     /**
+     * @param $type
+     * @param $deviceIdentifier
+     * @param $appId
+     * @param $deviceToken
+     * @return \DABSquared\PushNotificationsBundle\Model\DeviceInterface
      */
     public function findDeviceByTypeIdentifierAndAppIdAndDeviceToken($type,$deviceIdentifier, $appId, $deviceToken);
+
+
+    /**
+     * @param $type
+     * @param $deviceIdentifier
+     * @param $appId
+     * @return \DABSquared\PushNotificationsBundle\Model\DeviceInterface
+     */
     public function findDeviceByTypeIdentifierAndAppId($type,$deviceIdentifier, $appId);
+
+
+    /**
+     * @param $searchTerm
+     * @return \DABSquared\PushNotificationsBundle\Model\DeviceInterface
+     */
     public function findDeviceWithName($searchTerm);
 
+    /**
+     * @param $id
+     * @return \DABSquared\PushNotificationsBundle\Model\DeviceInterface
+     */
     public function findDeviceWithId($id);
 
+    /**
+     * @param $type
+     * @param $status
+     * @return array
+     */
     public function findDevicesWithTypeAndStatus($type, $status);
 
 }

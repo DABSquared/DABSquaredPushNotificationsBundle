@@ -48,8 +48,16 @@ interface MessageManagerInterface
     public function getClass();
 
 
+    /**
+     * @param $status
+     * @return \DABSquared\PushNotificationsBundle\Model\MessageInterface
+     */
     public function findByStatus($status);
 
+    /**
+     * @param $id
+     * @return \DABSquared\PushNotificationsBundle\Model\MessageInterface
+     */
     public function findById($id);
 
 }

@@ -24,15 +24,35 @@ class iOSFeedback
 
     }
 
-    public function getDeviceUUIDS($appId = null, $sandbox = null) {
-        $deviceUUIDS = array();
+    public function getDeviceFeedback($appId = null, $sandbox = null) {
+        $feedbacks = array();
 
         foreach($this->certificates as $cert) {
+            $isSandbox = $cert['sandbox'];
+            $internalAppId = $cert['internal_app_id'];
 
+            if(!is_null($appId)) {
+                if($appId != $internalAppId) {
+                    continue;
+                }
+            }
 
-            //$cert['sandbox'] == true   $cert['internal_app_id']
+            if(!is_null($sandbox)) {
+                if($sandbox) {
+                    if($sandbox && !$isSandbox) {
+                        continue;
+                    }
+                } else {
+                    if(!$sandbox && $isSandbox) {
+                        continue;
+                    }
+                }
+            }
 
+            $certFeedbacks = $this->getDeviceFeedbackCertificate($cert);
+            $feedbacks = array_merge($feedbacks,$certFeedbacks);
         }
+        return $feedbacks;
     }
 
 
@@ -44,19 +64,23 @@ class iOSFeedback
      * @return array
      * @throws \RuntimeException
      */
-    private function getDeviceUUIDsForCertificate($cert)
+    private function getDeviceFeedbackCertificate($cert)
     {
-        if (!strlen($this->pem)) {
+        $isSandbox = $cert['sandbox'];
+        $internalAppId = $cert['internal_app_id'];
+        $pem = $cert['pem'];
+
+        if (!strlen($pem)) {
             throw new \RuntimeException("PEM not provided");
         }
 
         $feedbackURL = "ssl://feedback.push.apple.com:2196";
-        if ($this->sandbox) {
+        if ($isSandbox) {
             $feedbackURL = "ssl://feedback.sandbox.push.apple.com:2196";
         }
         $data = "";
 
-        $ctx = $this->getStreamContext();
+        $ctx = $this->getStreamContext($cert);
         $fp = stream_socket_client($feedbackURL, $err, $errstr, 60, STREAM_CLIENT_CONNECT|STREAM_CLIENT_PERSISTENT, $ctx);
         while (!feof($fp)) {
             $data .= fread($fp, 4096);
@@ -69,7 +93,7 @@ class iOSFeedback
         $feedbacks = array();
         $items = str_split($data, 38);
         foreach ($items as $item) {
-            $feedback = new Feedback();
+            $feedback = new Feedback($isSandbox, $internalAppId);
             $feedbacks[] = $feedback->unpack($item);
         }
         return $feedbacks;
@@ -79,15 +103,19 @@ class iOSFeedback
      * Gets a stream context set up for SSL
      * using our PEM file and passphrase
      *
+     * @param $cert
      * @return resource
      */
-    protected function getStreamContext()
+    protected function getStreamContext($cert)
     {
+        $pem = $cert['pem'];
+        $passphrase = $cert['passphrase'];
+
         $ctx = stream_context_create();
 
-        stream_context_set_option($ctx, "ssl", "local_cert", $this->pem);
-        if (strlen($this->passphrase)) {
-            stream_context_set_option($ctx, "ssl", "passphrase", $this->passphrase);
+        stream_context_set_option($ctx, "ssl", "local_cert", $pem);
+        if (strlen($passphrase)) {
+            stream_context_set_option($ctx, "ssl", "passphrase", $passphrase);
         }
 
         return $ctx;

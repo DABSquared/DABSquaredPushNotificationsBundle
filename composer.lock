@@ -3,67 +3,8 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "105b298fc1ca9874a70cbe9933d5f4b6",
+    "hash": "2dfb2efb8975bc0fa00d2454acf450e3",
     "packages": [
-        {
-            "name": "dflydev/markdown",
-            "version": "v1.0.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/dflydev/dflydev-markdown.git",
-                "reference": "6baed9b50f29c980795b6656d43722aadb126f7e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/dflydev/dflydev-markdown/zipball/6baed9b50f29c980795b6656d43722aadb126f7e",
-                "reference": "6baed9b50f29c980795b6656d43722aadb126f7e",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "dflydev\\markdown": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Dragonfly Development Inc.",
-                    "email": "info@dflydev.com",
-                    "homepage": "http://dflydev.com"
-                },
-                {
-                    "name": "Beau Simensen",
-                    "email": "beau@dflydev.com",
-                    "homepage": "http://beausimensen.com"
-                },
-                {
-                    "name": "Michel Fortin",
-                    "homepage": "http://michelf.com"
-                },
-                {
-                    "name": "John Gruber",
-                    "homepage": "http://daringfireball.net"
-                }
-            ],
-            "description": "PHP Markdown & Extra",
-            "homepage": "http://github.com/dflydev/dflydev-markdown",
-            "keywords": [
-                "markdown"
-            ],
-            "time": "2013-09-23 12:00:18"
-        },
         {
             "name": "doctrine/annotations",
             "version": "v1.1.2",
@@ -525,12 +466,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfSymfony/FOSRestBundle.git",
-                "reference": "2e2e1e98908060f53960cc3172261134c4db4ede"
+                "reference": "e443de2a62472d64415f2cfa6ab496c4d98c6038"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/2e2e1e98908060f53960cc3172261134c4db4ede",
-                "reference": "2e2e1e98908060f53960cc3172261134c4db4ede",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/e443de2a62472d64415f2cfa6ab496c4d98c6038",
+                "reference": "e443de2a62472d64415f2cfa6ab496c4d98c6038",
                 "shasum": ""
             },
             "require": {
@@ -594,7 +535,164 @@
             "keywords": [
                 "rest"
             ],
-            "time": "2014-02-09 15:56:45"
+            "time": "2014-03-05 19:43:05"
+        },
+        {
+            "name": "jms/aop-bundle",
+            "version": "1.0.1",
+            "target-dir": "JMS/AopBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/schmittjoh/JMSAopBundle.git",
+                "reference": "93f41ab85ed409430bc3bab2e0b7c7677f152aa8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/schmittjoh/JMSAopBundle/zipball/93f41ab85ed409430bc3bab2e0b7c7677f152aa8",
+                "reference": "93f41ab85ed409430bc3bab2e0b7c7677f152aa8",
+                "shasum": ""
+            },
+            "require": {
+                "jms/cg": "1.*",
+                "symfony/framework-bundle": "2.*"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "JMS\\AopBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache"
+            ],
+            "authors": [
+                {
+                    "name": "Johannes M. Schmitt",
+                    "email": "schmittjoh@gmail.com",
+                    "homepage": "http://jmsyst.com",
+                    "role": "Developer of wrapped JMSSerializerBundle"
+                }
+            ],
+            "description": "Adds AOP capabilities to Symfony2",
+            "keywords": [
+                "annotations",
+                "aop"
+            ],
+            "time": "2013-07-29 09:34:26"
+        },
+        {
+            "name": "jms/cg",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "git://github.com/schmittjoh/cg-library.git",
+                "reference": "1.0.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/schmittjoh/cg-library/zipball/1.0.0",
+                "reference": "1.0.0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "CG\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache"
+            ],
+            "authors": [
+                {
+                    "name": "Johannes M. Schmitt",
+                    "email": "schmittjoh@gmail.com",
+                    "homepage": "http://jmsyst.com",
+                    "role": "Developer of wrapped JMSSerializerBundle"
+                }
+            ],
+            "description": "Toolset for generating PHP code",
+            "keywords": [
+                "code generation"
+            ],
+            "time": "2012-01-02 12:40:52"
+        },
+        {
+            "name": "jms/di-extra-bundle",
+            "version": "dev-master",
+            "target-dir": "JMS/DiExtraBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/schmittjoh/JMSDiExtraBundle.git",
+                "reference": "4361495ea88d2eccb5c43749168a2c88f3e6476b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/schmittjoh/JMSDiExtraBundle/zipball/4361495ea88d2eccb5c43749168a2c88f3e6476b",
+                "reference": "4361495ea88d2eccb5c43749168a2c88f3e6476b",
+                "shasum": ""
+            },
+            "require": {
+                "jms/aop-bundle": ">=1.0.0,<1.2-dev",
+                "jms/metadata": "1.*",
+                "symfony/finder": "~2.1",
+                "symfony/framework-bundle": "~2.1",
+                "symfony/process": "~2.1"
+            },
+            "require-dev": {
+                "doctrine/doctrine-bundle": "*",
+                "doctrine/orm": "*",
+                "jms/security-extra-bundle": "1.*",
+                "phpcollection/phpcollection": ">=0.1,<0.3-dev",
+                "sensio/framework-extra-bundle": "*",
+                "symfony/browser-kit": "*",
+                "symfony/class-loader": "*",
+                "symfony/form": "*",
+                "symfony/security-bundle": "*",
+                "symfony/twig-bundle": "*",
+                "symfony/validator": "*",
+                "symfony/yaml": "*"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.4-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "JMS\\DiExtraBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache"
+            ],
+            "authors": [
+                {
+                    "name": "Johannes M. Schmitt",
+                    "email": "schmittjoh@gmail.com",
+                    "homepage": "http://jmsyst.com",
+                    "role": "Developer of wrapped JMSSerializerBundle"
+                }
+            ],
+            "description": "Allows to configure dependency injection using annotations",
+            "homepage": "http://jmsyst.com/bundles/JMSDiExtraBundle",
+            "keywords": [
+                "annotations",
+                "dependency injection"
+            ],
+            "time": "2014-01-10 21:31:29"
         },
         {
             "name": "jms/metadata",
@@ -824,22 +922,73 @@
             "time": "2013-12-05 14:36:11"
         },
         {
+            "name": "michelf/php-markdown",
+            "version": "1.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/michelf/php-markdown.git",
+                "reference": "96d8150406f67e683ef4acc09fef91785fef1266"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/michelf/php-markdown/zipball/96d8150406f67e683ef4acc09fef91785fef1266",
+                "reference": "96d8150406f67e683ef4acc09fef91785fef1266",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-lib": "1.4.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Michelf": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Michel Fortin",
+                    "email": "michel.fortin@michelf.ca",
+                    "homepage": "http://michelf.ca/",
+                    "role": "Developer"
+                },
+                {
+                    "name": "John Gruber",
+                    "homepage": "http://daringfireball.net/"
+                }
+            ],
+            "description": "PHP Markdown",
+            "homepage": "http://michelf.ca/projects/php-markdown/",
+            "keywords": [
+                "markdown"
+            ],
+            "time": "2013-11-29 17:09:24"
+        },
+        {
             "name": "nelmio/api-doc-bundle",
             "version": "dev-master",
             "target-dir": "Nelmio/ApiDocBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nelmio/NelmioApiDocBundle.git",
-                "reference": "ee68eabe0cfd4529aa473d853020fa2cc70ee85a"
+                "reference": "eca9d25ca7541b5522fde1d3640d3c22b43504d6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nelmio/NelmioApiDocBundle/zipball/ee68eabe0cfd4529aa473d853020fa2cc70ee85a",
-                "reference": "ee68eabe0cfd4529aa473d853020fa2cc70ee85a",
+                "url": "https://api.github.com/repos/nelmio/NelmioApiDocBundle/zipball/eca9d25ca7541b5522fde1d3640d3c22b43504d6",
+                "reference": "eca9d25ca7541b5522fde1d3640d3c22b43504d6",
                 "shasum": ""
             },
             "require": {
-                "dflydev/markdown": "~1.0",
+                "michelf/php-markdown": "~1.4",
                 "symfony/console": "~2.1",
                 "symfony/framework-bundle": "~2.1",
                 "symfony/twig-bundle": "~2.1"
@@ -896,7 +1045,7 @@
                 "documentation",
                 "rest"
             ],
-            "time": "2014-02-11 15:44:12"
+            "time": "2014-02-19 21:34:43"
         },
         {
             "name": "phpcollection/phpcollection",
@@ -1034,63 +1183,6 @@
                 "psr-3"
             ],
             "time": "2012-12-21 11:40:51"
-        },
-        {
-            "name": "sensio/framework-extra-bundle",
-            "version": "v3.0.0",
-            "target-dir": "Sensio/Bundle/FrameworkExtraBundle",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/sensiolabs/SensioFrameworkExtraBundle.git",
-                "reference": "2016a90bd032248e7d6e9da29def4959821127c8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/SensioFrameworkExtraBundle/zipball/2016a90bd032248e7d6e9da29def4959821127c8",
-                "reference": "2016a90bd032248e7d6e9da29def4959821127c8",
-                "shasum": ""
-            },
-            "require": {
-                "doctrine/common": "~2.2",
-                "symfony/framework-bundle": "~2.4"
-            },
-            "require-dev": {
-                "symfony/expression-language": "~2.4",
-                "symfony/security-bundle": "~2.4"
-            },
-            "suggest": {
-                "symfony/expression-language": "",
-                "symfony/security-bundle": ""
-            },
-            "type": "symfony-bundle",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Sensio\\Bundle\\FrameworkExtraBundle": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
-                }
-            ],
-            "description": "This bundle provides a way to configure your controllers with annotations",
-            "keywords": [
-                "annotations",
-                "controllers"
-            ],
-            "time": "2013-12-03 07:53:39"
         },
         {
             "name": "symfony/icu",
@@ -1353,16 +1445,16 @@
         },
         {
             "name": "willdurand/negotiation",
-            "version": "1.2.2",
+            "version": "1.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/willdurand/Negotiation.git",
-                "reference": "84c855a0a9318b29b2535ca88a86e899d7ac4bda"
+                "reference": "d1347ba8208a449c5aa0bf13cd7b65298c59257e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/willdurand/Negotiation/zipball/84c855a0a9318b29b2535ca88a86e899d7ac4bda",
-                "reference": "84c855a0a9318b29b2535ca88a86e899d7ac4bda",
+                "url": "https://api.github.com/repos/willdurand/Negotiation/zipball/d1347ba8208a449c5aa0bf13cd7b65298c59257e",
+                "reference": "d1347ba8208a449c5aa0bf13cd7b65298c59257e",
                 "shasum": ""
             },
             "require": {
@@ -1399,7 +1491,7 @@
                 "header",
                 "negotiation"
             ],
-            "time": "2014-02-11 15:51:10"
+            "time": "2014-02-28 14:39:44"
         }
     ],
     "packages-dev": [
@@ -1727,163 +1819,6 @@
                 "sql"
             ],
             "time": "2014-01-12 16:20:24"
-        },
-        {
-            "name": "jms/aop-bundle",
-            "version": "1.0.1",
-            "target-dir": "JMS/AopBundle",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/schmittjoh/JMSAopBundle.git",
-                "reference": "93f41ab85ed409430bc3bab2e0b7c7677f152aa8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/JMSAopBundle/zipball/93f41ab85ed409430bc3bab2e0b7c7677f152aa8",
-                "reference": "93f41ab85ed409430bc3bab2e0b7c7677f152aa8",
-                "shasum": ""
-            },
-            "require": {
-                "jms/cg": "1.*",
-                "symfony/framework-bundle": "2.*"
-            },
-            "type": "symfony-bundle",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.1.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "JMS\\AopBundle": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache"
-            ],
-            "authors": [
-                {
-                    "name": "Johannes M. Schmitt",
-                    "email": "schmittjoh@gmail.com",
-                    "homepage": "http://jmsyst.com",
-                    "role": "Developer of wrapped JMSSerializerBundle"
-                }
-            ],
-            "description": "Adds AOP capabilities to Symfony2",
-            "keywords": [
-                "annotations",
-                "aop"
-            ],
-            "time": "2013-07-29 09:34:26"
-        },
-        {
-            "name": "jms/cg",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "git://github.com/schmittjoh/cg-library.git",
-                "reference": "1.0.0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/schmittjoh/cg-library/zipball/1.0.0",
-                "reference": "1.0.0",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "CG\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache"
-            ],
-            "authors": [
-                {
-                    "name": "Johannes M. Schmitt",
-                    "email": "schmittjoh@gmail.com",
-                    "homepage": "http://jmsyst.com",
-                    "role": "Developer of wrapped JMSSerializerBundle"
-                }
-            ],
-            "description": "Toolset for generating PHP code",
-            "keywords": [
-                "code generation"
-            ],
-            "time": "2012-01-02 12:40:52"
-        },
-        {
-            "name": "jms/di-extra-bundle",
-            "version": "dev-master",
-            "target-dir": "JMS/DiExtraBundle",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/schmittjoh/JMSDiExtraBundle.git",
-                "reference": "4361495ea88d2eccb5c43749168a2c88f3e6476b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/JMSDiExtraBundle/zipball/4361495ea88d2eccb5c43749168a2c88f3e6476b",
-                "reference": "4361495ea88d2eccb5c43749168a2c88f3e6476b",
-                "shasum": ""
-            },
-            "require": {
-                "jms/aop-bundle": ">=1.0.0,<1.2-dev",
-                "jms/metadata": "1.*",
-                "symfony/finder": "~2.1",
-                "symfony/framework-bundle": "~2.1",
-                "symfony/process": "~2.1"
-            },
-            "require-dev": {
-                "doctrine/doctrine-bundle": "*",
-                "doctrine/orm": "*",
-                "jms/security-extra-bundle": "1.*",
-                "phpcollection/phpcollection": ">=0.1,<0.3-dev",
-                "sensio/framework-extra-bundle": "*",
-                "symfony/browser-kit": "*",
-                "symfony/class-loader": "*",
-                "symfony/form": "*",
-                "symfony/security-bundle": "*",
-                "symfony/twig-bundle": "*",
-                "symfony/validator": "*",
-                "symfony/yaml": "*"
-            },
-            "type": "symfony-bundle",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.4-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "JMS\\DiExtraBundle": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache"
-            ],
-            "authors": [
-                {
-                    "name": "Johannes M. Schmitt",
-                    "email": "schmittjoh@gmail.com",
-                    "homepage": "http://jmsyst.com",
-                    "role": "Developer of wrapped JMSSerializerBundle"
-                }
-            ],
-            "description": "Allows to configure dependency injection using annotations",
-            "homepage": "http://jmsyst.com/bundles/JMSDiExtraBundle",
-            "keywords": [
-                "annotations",
-                "dependency injection"
-            ],
-            "time": "2014-01-10 21:31:29"
         },
         {
             "name": "kriswallsmith/assetic",

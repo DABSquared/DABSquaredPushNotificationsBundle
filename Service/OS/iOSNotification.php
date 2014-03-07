@@ -185,7 +185,7 @@ class iOSNotification implements OSNotificationServiceInterface
         $apns = null;
 
         try {
-            $apns = stream_socket_client($apnURL, $err, $errstr, 2, STREAM_CLIENT_CONNECT, $ctx);
+            $apns = stream_socket_client($apnURL, $err, $errstr, 60, STREAM_CLIENT_CONNECT, $ctx);
         } catch (\ErrorException $er) {
             /* @var \DABSquared\PushNotificationsBundle\Model\Message $message*/
             foreach ($messages as $message) {
@@ -242,7 +242,7 @@ class iOSNotification implements OSNotificationServiceInterface
         }
 
         try {
-            $apns = stream_socket_client($apnURL, $err, $errstr, 2, STREAM_CLIENT_CONNECT, $ctx);
+            $apns = stream_socket_client($apnURL, $err, $errstr, 60, STREAM_CLIENT_CONNECT, $ctx);
             fwrite($apns, $payload);
             if(is_resource($apns)) {
                 fclose($apns);

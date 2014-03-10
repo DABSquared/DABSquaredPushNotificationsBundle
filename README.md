@@ -11,22 +11,7 @@ Any contributions are welcome. The goal here is to provide an interface for push
 Road Map
 -------------
 
-V1.0:
-  * Support Basic Device Registration for iOS Devices
-  * Be able to associate a device with a user much like FOSCommentBundle
-  * Be able to send messages to a particular device or user, using about 2-4 lines of code.
-  * Auto-manage badge numbers. 
-
-V1.1:
-  * Safari Push Notifications
-
-V2.0:
-  * Support Device Registration for Android (Accepting Pull Requests)
-  * Support Device Registration for Blackberry (Accepting Pull Requests)
-  * Support Device Registration for Mac Apps (Accepting Pull Requests)
-  * Push Notification read receipts and statistics like UrbanAirship.
-    * As of V1.0 this data is being reported back from iOS devices.
-  * Create A Dashboard
+See Issue #7
 
 
 Documentation

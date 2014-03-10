@@ -1,15 +1,14 @@
 {
-    "name": "dabsquared/dabsquared-push-notifications-bundle",
+    "name": "snakewa/dabsquared-push-notifications-bundle",
     "type": "symfony-bundle",
     "description": "Push notifications/messages for mobile devices",
     "keywords": ["push", "notification", "bundle", "gcm", "c2dm", "ios", "apns", "blackberry"],
-    "homepage": "https://github.com/DABSquared/DABSquaredPushNotificationsBundle",
+    "homepage": "https://github.com/snakewa/DABSquaredPushNotificationsBundle",
     "license": "MIT",
     "authors": [
         {
-            "name": "Daniel Brooks",
-            "email": "daniel.brooks@curveu.com",
-            "homepage": "http://www.dabsquared.com"
+            "name": "Tim Ma",
+            "email": "snakewa@gmail.com",
         }
     ],
     "require": {

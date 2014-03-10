@@ -187,6 +187,7 @@ class iOSNotification implements OSNotificationServiceInterface
         try {
             $apns = stream_socket_client($apnURL, $err, $errstr, 60, STREAM_CLIENT_CONNECT, $ctx);
         } catch (\ErrorException $er) {
+            var_dump($er);
             /* @var \DABSquared\PushNotificationsBundle\Model\Message $message*/
             foreach ($messages as $message) {
                 $message->setStatus(MessageStatus::MESSAGE_STATUS_STREAM_ERROR);
@@ -204,6 +205,7 @@ class iOSNotification implements OSNotificationServiceInterface
             try {
                 fwrite($apns, $payload);
             } catch (\ErrorException $er) {
+                var_dump($er);
                 $messages[$i]->setStatus(MessageStatus::MESSAGE_STATUS_STREAM_ERROR);
                 $this->messageManager->saveMessage($messages[$i]);
                 $i++;
@@ -248,6 +250,7 @@ class iOSNotification implements OSNotificationServiceInterface
                 fclose($apns);
             }
         } catch (\ErrorException $er) {
+            var_dump($er->getMessage());
             $message->setStatus(MessageStatus::MESSAGE_STATUS_STREAM_ERROR);
             $this->messageManager->saveMessage($message);
             return;

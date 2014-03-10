@@ -109,4 +109,8 @@ class AndroidNotification implements OSNotificationServiceInterface
         $this->authToken = $matches[1];
         return true;
     }
+
+    public function sendMessages(array $messages){
+        throw new \Exception('Not implemented');
+    }
 }

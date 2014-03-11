@@ -2,11 +2,14 @@
 
 namespace DABSquared\PushNotificationsBundle\Controller;
 
-use DABSquared\PushNotificationsBundle\Device\DeviceStatus;
-use DABSquared\PushNotificationsBundle\Model\UserDeviceInterface;
-use FOS\Rest\Util\Codes;
-use FOS\RestBundle\View\RouteRedirectView;
-use FOS\RestBundle\View\View;
+
+
+
+use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\Request\ParamFetcher;
+use FOS\RestBundle\Controller\Annotations\RequestParam;
+use FOS\RestBundle\Controller\Annotations\QueryParam;
+
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Bundle\FrameworkBundle\Templating\TemplateReference;
 use Symfony\Component\Form\FormInterface;
@@ -15,15 +18,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use DABSquared\PushNotificationsBundle\Device\Types;
+use DABSquared\PushNotificationsBundle\Device\DeviceStatus;
 use DABSquared\PushNotificationsBundle\Model\Device;
-
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use DABSquared\PushNotificationsBundle\Model\UserDeviceInterface;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 /**
  * Created by JetBrains PhpStorm.
@@ -37,51 +40,41 @@ class DeviceController extends Controller
 
     /**
      * @ApiDoc(
-     *  description="Registers an iOS Device",
-     *  section="iOS Push Notifications",
-     *  statusCodes={
-     *         200="Returned when successful",
-     *         401="Returned when their is an error"},
-     *  filters={
-     *      {"name"="device_token", "dataType"="boolean", "required"="true"},
-     *      {"name"="badge_allowed", "dataType"="boolean", "required"="true"},
-     *      {"name"="sound_allowed", "dataType"="boolean", "required"="true"},
-     *      {"name"="alert_allowed", "dataType"="boolean", "required"="true"},
-     *      {"name"="is_sandbox", "dataType"="boolean", "required"="true"},
-     *      {"name"="device_name", "dataType"="string", "required"="true"},
-     *      {"name"="device_model", "dataType"="string", "required"="true"},
-     *      {"name"="device_version", "dataType"="string", "required"="true"},
-     *      {"name"="app_name", "dataType"="string", "required"="false"},
-     *      {"name"="app_version", "dataType"="string", "required"="false"},
-     *      {"name"="app_id", "dataType"="string", "required"="true"},
-     *      {"name"="device_identifier", "dataType"="string", "required"="true"},
-
-     *  }
+     *  description="Registers an iOS Device By Device Token",
+     *  section="DABSquared Push Notifications (iOS)"
      * )
      *
      * @Route("device/ios/register", defaults={"_format": "json"})
      * @Method("POST")
-     *
+     * @Rest\View()
+     * @RequestParam(name="device_token", description="The device token returned from Apple.", strict=true)
+     * @RequestParam(name="badge_allowed", requirements="[0-1]", description="Whether or not the user has allowed badges on the app.", strict=true)
+     * @RequestParam(name="sound_allowed", requirements="[0-1]", description="Whether or not the user has allowed sounds on the app.", strict=true)
+     * @RequestParam(name="alert_allowed", requirements="[0-1]", description="Whether or not the user has allowed alerts on the app.", strict=true)
+     * @RequestParam(name="is_sandbox", requirements="[0-1]", description="Whether or not the app's certificate is using apple's sandbox.", strict=true)
+     * @RequestParam(name="device_name", description="The name of the registering device.", strict=true)
+     * @RequestParam(name="device_model", description="The model of the registering device.", strict=true)
+     * @RequestParam(name="device_version", description="The iOS version of the registering device.", strict=true)
+     * @RequestParam(name="app_name", description="The name of the app registering.", strict=false)
+     * @RequestParam(name="app_version", description="The version of the app that is registering.", strict=false)
+     * @RequestParam(name="app_id", description="The internal app id that is registered in the Symfony 2 config.", strict=true)
+     * @RequestParam(name="device_identifier", description="The vendor device identifier of the iOS device.", strict=true)
      */
-    public function registeriOSDeviceAction()
-    {
-        /** @var $request \Symfony\Component\HttpFoundation\Request */
-        $request = $this->get('request');
+    public function registeriOSDeviceAction(ParamFetcher $paramFetcher) {
+        $deviceToken = $paramFetcher->get('device_token');
+        $deviceName = $paramFetcher->get('device_name');
+        $deviceModel = $paramFetcher->get('device_model');
+        $deviceVersion = $paramFetcher->get('device_version');
+        $appName = $paramFetcher->get('app_name');
+        $appVersion = $paramFetcher->get('app_version');
 
-        $deviceToken = $request->request->get('device_token');
-        $deviceName = $request->request->get('device_name');
-        $deviceModel = $request->request->get('device_model');
-        $deviceVersion = $request->request->get('device_version');
-        $appName = $request->request->get('app_name');
-        $appVersion = $request->request->get('app_version');
+        $appId = $paramFetcher->get('app_id');
+        $deviceIdentifier = $paramFetcher->get('device_identifier');
 
-        $appId = $request->request->get('app_id');
-        $deviceIdentifier = $request->request->get('device_identifier');
-
-        $badgeAllowed = filter_var($request->request->get('badge_allowed'), FILTER_VALIDATE_BOOLEAN);
-        $soundAllowed = filter_var($request->request->get('sound_allowed'), FILTER_VALIDATE_BOOLEAN);
-        $alertAllowed = filter_var($request->request->get('alert_allowed'), FILTER_VALIDATE_BOOLEAN);
-        $isSandbox = filter_var($request->request->get('is_sandbox'), FILTER_VALIDATE_BOOLEAN);
+        $badgeAllowed = filter_var($paramFetcher->get('badge_allowed'), FILTER_VALIDATE_BOOLEAN);
+        $soundAllowed = filter_var($paramFetcher->get('sound_allowed'), FILTER_VALIDATE_BOOLEAN);
+        $alertAllowed = filter_var($paramFetcher->get('alert_allowed'), FILTER_VALIDATE_BOOLEAN);
+        $isSandbox = filter_var($paramFetcher->get('is_sandbox'), FILTER_VALIDATE_BOOLEAN);
 
         /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
         $deviceManager = $this->get('dab_push_notifications.manager.device');
@@ -113,32 +106,88 @@ class DeviceController extends Controller
         $device->setStatus(DeviceStatus::DEVICE_STATUS_ACTIVE);
         $deviceManager->saveDevice($device);
 
-        return $this->showSuccessData(null, null);
+        return null;
     }
+
+
+    /**
+     * @ApiDoc(
+     *  description="Registers an Android GCM Device By Registration ID",
+     *  section="DABSquared Push Notifications (GCM)"
+     * )
+     *
+     * @Route("device/gcm/register", defaults={"_format": "json"})
+     * @Method("POST")
+     * @Rest\View()
+     * @RequestParam(name="device_token", description="The registration id returned from GCM", strict=true)
+     * @RequestParam(name="device_identifier", description="The vendor device identifier of the Android device.", strict=true)
+     * @RequestParam(name="is_sandbox", requirements="[0-1]", description="Whether or not the app's certificate is using apple's sandbox.", strict=true)
+     * @RequestParam(name="device_name", description="The name of the registering device.", strict=true)
+     * @RequestParam(name="device_model", description="The model of the registering device.", strict=true)
+     * @RequestParam(name="device_version", description="The iOS version of the registering device.", strict=true)
+     * @RequestParam(name="app_name", description="The name of the app registering.", strict=true)
+     * @RequestParam(name="app_version", description="The version of the app that is registering.", strict=true)
+     * @RequestParam(name="app_id", description="The internal app id that is registered in the Symfony 2 config.", strict=true)
+     */
+    public function registerGCMRegistrationIDAction(ParamFetcher $paramFetcher) {
+        $deviceToken = $paramFetcher->get('device_token');
+        $deviceName = $paramFetcher->get('device_name');
+        $deviceModel = $paramFetcher->get('device_model');
+        $deviceVersion = $paramFetcher->get('device_version');
+        $deviceIdentifier = $paramFetcher->get('device_identifier');
+        $appName = $paramFetcher->get('app_name');
+        $appVersion = $paramFetcher->get('app_version');
+        $appId = $paramFetcher->get('app_id');
+
+        /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
+        $deviceManager = $this->get('dab_push_notifications.manager.device');
+
+        /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
+        $device = $deviceManager->findDeviceByTypeIdentifierAndAppIdAndDeviceToken(Types::OS_ANDROID_GCM, $deviceIdentifier, $appId, $deviceToken);
+
+        if(is_null($device)) {
+            $device = $deviceManager->createDevice($device);
+        }
+
+        if($device instanceof UserDeviceInterface) {
+            $user = $this->get('security.context')->getToken()->getUser();
+            $device->setUser($user);
+        }
+
+        $device->setDeviceModel($deviceModel);
+        $device->setDeviceName($deviceName);
+        $device->setDeviceVersion($deviceVersion);
+        $device->setDeviceToken($deviceToken);
+        $device->setBadgeAllowed(false);
+        $device->setSoundAllowed(false);
+        $device->setAlertAllowed(false);
+        $device->setType(Types::OS_ANDROID_GCM);
+        $device->setAppName($appName);
+        $device->setAppVersion($appVersion);
+        $device->setAppId($appId);
+        $device->setState(Device::STATE_PRODUCTION);
+        $deviceManager->saveDevice($device);
+
+        return null;
+    }
+
+
 
     /**
      * @ApiDoc(
      *  description="Unregisters an iOS Device",
-     *  section="iOS Push Notifications",
-     *  statusCodes={
-     *         200="Returned when successful",
-     *         401="Returned when their is an error"},
-     *  filters={
-     *      {"name"="app_id", "dataType"="string", "required"="true"},
-     *      {"name"="device_identifier", "dataType"="string", "required"="true"},
-     *  }
+     *  section="DABSquared Push Notifications (iOS)"
      * )
      *
      * @Route("device/ios/unregister", defaults={"_format": "json"})
      * @Method("POST")
-     *
+     * @Rest\View()
+     * @RequestParam(name="device_identifier", description="The vendor device identifier of the iOS device.", strict=true)
+     * @RequestParam(name="app_id", description="The internal app id that is registered in the Symfony 2 config.", strict=true)
      */
-    public function unregisteriOSDevice() {
-        /** @var $request \Symfony\Component\HttpFoundation\Request */
-        $request = $this->get('request');
-
-        $appId = $request->request->get('app_id');
-        $deviceIdentifier = $request->request->get('device_identifier');
+    public function unregisteriOSDevice(ParamFetcher $paramFetcher) {
+        $appId = $paramFetcher->get('app_id');
+        $deviceIdentifier = $paramFetcher->get('device_identifier');
 
         /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
         $deviceManager = $this->get('dab_push_notifications.manager.device');
@@ -152,36 +201,57 @@ class DeviceController extends Controller
             $deviceManager->saveDevice($device);
         }
 
-        return $this->showSuccessData(null, null);
-
+        return null;
     }
-
 
     /**
      * @ApiDoc(
-     *  description="App Open",
-     *  section="iOS Push Notifications",
-     *  statusCodes={
-     *         200="Returned when successful",
-     *         401="Returned when their is an error"},
-     *  filters={
-     *      {"name"="app_id", "dataType"="string", "required"="true"},
-     *      {"name"="device_identifier", "dataType"="string", "required"="true"},
-     *      {"name"="device_token", "dataType"="string", "required"="true"},
-     *  }
+     *  description="Unregisters an Android GCM Device",
+     *  section="DABSquared Push Notifications (GCM)"
+     * )
+     *
+     * @Route("device/gcm/unregister", defaults={"_format": "json"})
+     * @Method("POST")
+     * @Rest\View()
+     * @RequestParam(name="device_identifier", description="The vendor device identifier of the Android device.", strict=true)
+     * @RequestParam(name="app_id", description="The internal app id that is registered in the Symfony 2 config.", strict=true)
+     */
+    public function unregisterGCMDevice(ParamFetcher $paramFetcher) {
+        $appId = $paramFetcher->get('app_id');
+        $deviceIdentifier = $paramFetcher->get('device_identifier');
+
+        /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
+        $deviceManager = $this->get('dab_push_notifications.manager.device');
+
+        /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
+        $device = $deviceManager->findDeviceByTypeIdentifierAndAppId(Types::OS_ANDROID_GCM, $deviceIdentifier, $appId);
+
+        if(!is_null($device)) {
+            $device->setStatus(DeviceStatus::DEVICE_STATUS_UNACTIVE);
+            $device->setBadgeNumber(0);
+            $deviceManager->saveDevice($device);
+        }
+
+        return null;
+    }
+
+    /**
+     * @ApiDoc(
+     *  description="Registers that an iOS app opened",
+     *  section="DABSquared Push Notifications (Deprecated)"
      * )
      *
      * @Route("device/app_open", defaults={"_format": "json"})
      * @Method("POST")
-     *
+     * @Rest\View()
+     * @RequestParam(name="device_token", description="The device token returned from Apple.", strict=true)
+     * @RequestParam(name="app_id", description="The internal app id that is registered in the Symfony 2 config.", strict=true)
+     * @RequestParam(name="device_token", description="The registration id returned from GCM", strict=true)
      */
-    public function appOpen() {
-        /** @var $request \Symfony\Component\HttpFoundation\Request */
-        $request = $this->get('request');
-
-        $appId = $request->request->get('app_id');
-        $deviceIdentifier = $request->request->get('device_identifier');
-        $deviceToken = $request->request->get('device_token');
+    public function appOpen(ParamFetcher $paramFetcher) {
+        $appId = $paramFetcher->get('app_id');
+        $deviceIdentifier =$paramFetcher->get('device_identifier');
+        $deviceToken = $paramFetcher->get('device_token');
 
         /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
         $deviceManager = $this->get('dab_push_notifications.manager.device');
@@ -194,114 +264,70 @@ class DeviceController extends Controller
             $deviceManager->saveDevice($device);
         }
 
-        return $this->showSuccessData(null, null);
-
+        return null;
     }
-
-
 
     /**
      * @ApiDoc(
-     *  description="Registers an GCM Device by registration ID",
-     *  section="Google Cloud Messaging (GCM)",
-     *  statusCodes={
-     *         200="Returned when successful",
-     *         401="Returned when their is an error"},
-     *  filters={
-     *      {"name"="registration_id", "dataType"="string", "required"="true"},
-     *      {"name"="device_name", "dataType"="string", "required"="false"},
-     *      {"name"="device_model", "dataType"="string", "required"="false"},
-     *      {"name"="device_version", "dataType"="string", "required"="false"},
-     *      {"name"="app_name", "dataType"="string", "required"="false"},
-     *      {"name"="app_version", "dataType"="string", "required"="false"},
-     *      {"name"="app_id", "dataType"="string", "required"="false"}
-     *  }
+     *  description="Registers that an iOS app opened",
+     *  section="DABSquared Push Notifications (iOS)"
      * )
      *
-     * @Route("device/gcm/register", defaults={"_format": "json"})
+     * @Route("device/ios/app_open", defaults={"_format": "json"})
      * @Method("POST")
-     *
+     * @Rest\View()
+     * @RequestParam(name="device_token", description="The device token returned from Apple.", strict=true)
+     * @RequestParam(name="app_id", description="The internal app id that is registered in the Symfony 2 config.", strict=true)
+     * @RequestParam(name="device_token", description="The registration id returned from GCM", strict=true)
      */
-    public function registerGCMRegistrationIDAction()
-    {
-        /** @var $request \Symfony\Component\HttpFoundation\Request */
-        $request = $this->get('request');
-
-        $registrationId = $request->request->get('registration_id');
-        $deviceToken = $request->request->get('device_token') ?: $registrationId;
-        $deviceName = $request->request->get('device_name');
-        $deviceModel = $request->request->get('device_model');
-        $deviceVersion = $request->request->get('device_version');
-        $appName = $request->request->get('app_name');
-        $appVersion = $request->request->get('app_version');
-
-        $appId = $request->request->get('app_id');
-        $deviceIdentifier = $request->request->get('device_identifier') ?: $registrationId;
+    public function appiOSOpen(ParamFetcher $paramFetcher) {
+        $appId = $paramFetcher->get('app_id');
+        $deviceIdentifier =$paramFetcher->get('device_identifier');
+        $deviceToken = $paramFetcher->get('device_token');
 
         /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
         $deviceManager = $this->get('dab_push_notifications.manager.device');
 
         /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
-        $device = $deviceManager->findDeviceByTypeIdentifierAndAppId(Types::OS_ANDROID_GCM, $deviceIdentifier, $appId);
+        $device = $deviceManager->findDeviceByTypeIdentifierAndAppIdAndDeviceToken(Types::OS_IOS, $deviceIdentifier, $appId, $deviceToken);
 
-        if(is_null($device)) {
-            $device = $deviceManager->createDevice($device);
-            $device->setAppId($appId ?: "");
-            $device->setDeviceIdentifier($deviceIdentifier);
+        if(!is_null($device)) {
+            $device->setBadgeNumber(0);
+            $deviceManager->saveDevice($device);
         }
 
-        if($device instanceof UserDeviceInterface) {
-            $user = $this->get('security.context')->getToken()->getUser();
-            $device->setUser($user);
+        return null;
+    }
+
+    /**
+     * @ApiDoc(
+     *  description="Registers that a GCM app opened",
+     *  section="DABSquared Push Notifications (GCM)"
+     * )
+     *
+     * @Route("device/gcm/app_open", defaults={"_format": "json"})
+     * @Method("POST")
+     * @Rest\View()
+     * @RequestParam(name="device_token", description="The device token returned from Apple.", strict=true)
+     * @RequestParam(name="app_id", description="The internal app id that is registered in the Symfony 2 config.", strict=true)
+     * @RequestParam(name="device_token", description="The registration id returned from GCM", strict=true)
+     */
+    public function appGCMOpen(ParamFetcher $paramFetcher) {
+        $appId = $paramFetcher->get('app_id');
+        $deviceIdentifier =$paramFetcher->get('device_identifier');
+        $deviceToken = $paramFetcher->get('device_token');
+
+        /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
+        $deviceManager = $this->get('dab_push_notifications.manager.device');
+
+        /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
+        $device = $deviceManager->findDeviceByTypeIdentifierAndAppIdAndDeviceToken(Types::OS_ANDROID_GCM, $deviceIdentifier, $appId, $deviceToken);
+
+        if(!is_null($device)) {
+            $device->setBadgeNumber(0);
+            $deviceManager->saveDevice($device);
         }
 
-        $device->setDeviceModel($deviceModel ?: "");
-        $device->setDeviceName($deviceName ?: "");
-        $device->setDeviceVersion($deviceVersion ?: "");
-        $device->setBadgeAllowed(false);
-        $device->setSoundAllowed(false);
-        $device->setAlertAllowed(false);
-        $device->setType(Types::OS_ANDROID_GCM);
-        $device->setAppName($appName ?: "");
-        $device->setAppVersion($appVersion ?: "");
-        $device->setDeviceToken($deviceToken);
-        $device->setState(Device::STATE_PRODUCTION);
-        $deviceManager->saveDevice($device);
-
-        return $this->showSuccessData(null, null);
+        return null;
     }
-
-    /********************************* Helper Methods ***************************************/
-
-    public function showErrorMessage($userMessage)
-    {
-
-        $response = array();
-        $response['status'] = 401;
-        $response['userMessage'] = $userMessage;
-        $response['message'] = "Error";
-
-        $view = View::create()
-            ->setData($response);
-
-        return $this->get('fos_rest.view_handler')->handle($view);
-    }
-
-
-    public function showSuccessData($data, $userMessage)
-    {
-
-        $response = array();
-        $response['status'] = 200;
-        $response['userMessage'] = $userMessage;
-        $response['message'] = "Success";
-        $response['data'] = $data;
-
-        $view = View::create()
-            ->setData($response);
-
-
-        return $this->get('fos_rest.view_handler')->handle($view);
-    }
-
 }

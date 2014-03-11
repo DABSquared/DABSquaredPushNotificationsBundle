@@ -2,29 +2,29 @@
 
 namespace DABSquared\PushNotificationsBundle\Controller;
 
-use DABSquared\PushNotificationsBundle\Device\DeviceStatus;
-use DABSquared\PushNotificationsBundle\Model\UserDeviceInterface;
-use FOS\Rest\Util\Codes;
-use FOS\RestBundle\View\RouteRedirectView;
-use FOS\RestBundle\View\View;
+use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\Request\ParamFetcher;
+use FOS\RestBundle\Controller\Annotations\RequestParam;
+use FOS\RestBundle\Controller\Annotations\QueryParam;
+
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Bundle\FrameworkBundle\Templating\TemplateReference;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use DABSquared\PushNotificationsBundle\Device\Types;
+use DABSquared\PushNotificationsBundle\Device\DeviceStatus;
 use DABSquared\PushNotificationsBundle\Model\Device;
+use DABSquared\PushNotificationsBundle\Model\UserDeviceInterface;
+
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 /**
  * Created by JetBrains PhpStorm.
@@ -40,13 +40,8 @@ class SafariController extends Controller
 
     /**
      * @ApiDoc(
-     *  description="Logs an error to the monolog.",
-     *  section="Safari Push Notifications",
-     *  statusCodes={
-     *         200="Returned when successful",
-     *         401="Returned when their is an error"},
-     *  filters={
-     *  }
+     *  description="Logs a safari registration error to monolog.",
+     *  section="DABSquared Push Notifications (Safari)"
      * )
      *
      * @Route("v1/log", defaults={"_format": "json"})
@@ -72,15 +67,8 @@ class SafariController extends Controller
 
     /**
      * @ApiDoc(
-     *  description="Register Safari Device",
-     *  section="Safari Push Notifications",
-     *  statusCodes={
-     *         200="Returned when successful",
-     *         401="Returned when their is an error"},
-     *  filters={
-     *      {"name"="websitePushID", "dataType"="string", "required"="true"},
-     *      {"name"="deviceToken", "dataType"="string", "required"="true"},
-     *  }
+     *  description="Registers A Safari Device",
+     *  section="DABSquared Push Notifications (Safari)"
      * )
      *
      * @Route("v1/devices/{deviceToken}/registrations/{websitePushID}", defaults={"_format": "json"})
@@ -148,14 +136,7 @@ class SafariController extends Controller
     /**
      * @ApiDoc(
      *  description="Download Payload For Safari Push",
-     *  section="Safari Push Notifications",
-     *  statusCodes={
-     *         200="Returned when successful",
-     *         401="Returned when their is an error"},
-     *  filters={
-     *      {"name"="app_id", "dataType"="string", "required"="true"},
-     *      {"name"="device_identifier", "dataType"="string", "required"="true"},
-     *  }
+     *  section="DABSquared Push Notifications (Safari)"
      * )
      *
      * @Route("v1/pushPackages/{websitePushID}", defaults={"_format": "json"})

@@ -31,6 +31,16 @@ use FOS\RestBundle\View\View;
 class PushAdminController extends Controller
 {
 
+    /**
+     * @Route("push/dashboard", name="dabsquared_push_notifications_dashboard")
+     * @Method({"GET"})
+     * @Template("DABSquaredPushNotificationsBundle:Dashboard:dashboard.html.twig")
+     */
+    public function dashboardAction() {
+        return array();
+    }
+
+
 
     /**
      * @Route("push/messages", name="create_push_messages")

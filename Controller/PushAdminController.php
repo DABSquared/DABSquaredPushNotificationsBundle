@@ -28,8 +28,23 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 use FOS\RestBundle\View\View;
 
+use JMS\DiExtraBundle\Annotation as DI;
+
+
 class PushAdminController extends Controller
 {
+
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     * @DI\Inject("doctrine.orm.entity_manager")
+     */
+    private $em;
+
+    /**
+     * @var \Symfony\Component\HttpFoundation\Session\Session
+     * @DI\Inject("session")
+     */
+    private $session;
 
     /**
      * @Route("push/dashboard", name="dabsquared_push_notifications_dashboard")
@@ -37,6 +52,20 @@ class PushAdminController extends Controller
      * @Template("DABSquaredPushNotificationsBundle:Dashboard:dashboard.html.twig")
      */
     public function dashboardAction() {
+        $session = $this->get('session');
+        $session->set('dab_push_selected_nav', 'dashboard');
+        return array();
+    }
+
+
+    /**
+     * @Route("push/lookmessages", name="dabsquared_push_notifications_messages")
+     * @Method({"GET"})
+     * @Template("DABSquaredPushNotificationsBundle:Messages:messages.html.twig")
+     */
+    public function messagesAction() {
+        $session = $this->get('session');
+        $session->set('dab_push_selected_nav', 'messages');
         return array();
     }
 
@@ -47,16 +76,8 @@ class PushAdminController extends Controller
      * @Method({"GET","POST"})
      */
     public function pushMessagesAction() {
-        /*************************************
-         *  Performing standard Security Checks
-         *************************************/
-
         /** @var $request \Symfony\Component\HttpFoundation\Request */
         $request = Request::createFromGlobals();
-
-        /*************************************
-         * End Standard Security Checks
-         ************************************/
 
         $form = $this->createForm(new \DABSquared\PushNotificationsBundle\Form\MessageType($this->container->getParameter('dab_push_notifications.model.device.class')));
 

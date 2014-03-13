@@ -25,6 +25,9 @@
                 <li class="{% if dab_push_selected_nav == 'dashboard' %}active{% endif %}">
                     <a href="{{ path('dabsquared_push_notifications_dashboard') }}">Dashboard</a>
                 </li>
+                <li class="{% if dab_push_selected_nav == 'devices' %}active{% endif %}">
+                    <a href="{{ path('dabsquared_push_notifications_devices') }}">Devices</a>
+                </li>
                 <li class="{% if dab_push_selected_nav == 'messages' %}active{% endif %}">
                     <a href="{{ path('dabsquared_push_notifications_messages') }}">Messages</a>
                 </li>

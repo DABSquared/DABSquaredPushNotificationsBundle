@@ -1,0 +1,87 @@
+{% extends "DABSquaredPushNotificationsBundle::base.html.twig" %}
+{% import "DABSquaredPushNotificationsBundle::macros.html.twig" as macros %}
+
+
+
+{% block content %}
+    <ul class="breadcrumb">
+        <li><a href="{{ path("dabsquared_push_notifications_devices") }}">Devices</a></li>
+        <li class="active">"{{ device.deviceName }}"</li>
+    </ul>
+
+    <div class="page-header">
+        <h1>Device "{{ device.deviceName }}" <small>(ID: {{ device.id }})</small></h1>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <tr>
+                        <th width="20%">Name</th>
+                        <td>{{ device.deviceName }}</td>
+                    </tr>
+                    <tr>
+                        <th width="20%">Model</th>
+                        <td>{{ device.deviceModel }}</td>
+                    </tr>
+                    <tr>
+                        <th width="20%">Version</th>
+                        <td>{{ device.deviceVersion }}</td>
+                    </tr>
+                    <tr>
+                        <th width="20%">Identifier</th>
+                        <td>{{ device.deviceIdentifier }}</td>
+                    </tr>
+                    <tr>
+                        <th width="20%">Token</th>
+                        <td>{{ device.deviceToken }}</td>
+                    </tr>
+                    <tr>
+                        <th width="20%">State</th>
+                        <td>{{ macros.state(device) }}</td>
+                    </tr>
+                    <tr>
+                        <th width="20%">Status</th>
+                        <td>{{ macros.status(device) }}</td>
+                    </tr>
+                    <tr>
+                        <th width="20%">Type</th>
+                        <td>{{ macros.type(device) }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th{% if pagination.isSorted('m.id') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'ID', 'm.id') }}</th>
+                        <th{% if pagination.isSorted('m.message') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Message', 'm.message') }}</th>
+
+                    </tr>
+                    </thead>
+
+                    {% for message in pagination %}
+                        <tr>
+                            <td>{{ message.id }}</td>
+                            <td>{{ message.message }}</td>
+
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <div class="navigation">
+                {{ knp_pagination_render(pagination) }}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -60,4 +60,10 @@ interface MessageManagerInterface
      */
     public function findById($id);
 
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function findAllQueryByDeviceId($id);
+
 }

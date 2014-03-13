@@ -104,4 +104,12 @@ class MessageManager extends BaseMessageManager
 
     }
 
+    public function findAllQueryByDeviceId($id) {
+        $qb = $this->repository
+            ->createQueryBuilder('m')
+            ->field('device')->equals($id);
+
+        return $qb;
+    }
+
 }

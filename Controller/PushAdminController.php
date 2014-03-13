@@ -53,6 +53,12 @@ class PushAdminController extends Controller
     private $deviceManger;
 
     /**
+     * @var \DABSquared\PushNotificationsBundle\Model\MessageManager
+     * @DI\Inject("dab_push_notifications.manager.message")
+     */
+    private $messageManger;
+
+    /**
      * @var \Knp\Component\Pager\Paginator
      * @DI\Inject("knp_paginator")
      */
@@ -65,13 +71,42 @@ class PushAdminController extends Controller
      */
     public function dashboardAction() {
         $this->session->set('dab_push_selected_nav', 'dashboard');
+
+        return array();
+    }
+
+    /**
+     * @Route("push/devices", name="dabsquared_push_notifications_devices")
+     * @Method({"GET"})
+     * @Template("DABSquaredPushNotificationsBundle:Devices:devices.html.twig")
+     */
+    public function devicesAction() {
+        $this->session->set('dab_push_selected_nav', 'devices');
         $allDevicesQuery = $this->deviceManger->findAllDevicesQuery();
         $pagination = $this->paginator->paginate(
             $allDevicesQuery,
             $this->get('request')->query->get('page', 1)/*page number*/,
-            10/*limit per page*/
+            20/*limit per page*/
         );
         return array('pagination' => $pagination);
+    }
+
+    /**
+     * @Route("push/device/{id}", name="dabsquared_push_notifications_device")
+     * @Method({"GET"})
+     * @Template("DABSquaredPushNotificationsBundle:Devices:device.html.twig")
+     */
+    public function deviceAction($id) {
+        $this->session->set('dab_push_selected_nav', 'devices');
+        $device = $this->deviceManger->findDeviceWithId($id);
+        $allMessagesQuery = $this->messageManger->findAllQueryByDeviceId($id);
+
+        $pagination = $this->paginator->paginate(
+            $allMessagesQuery,
+            $this->get('request')->query->get('page', 1)/*page number*/,
+            10/*limit per page*/
+        );
+        return array('pagination' => $pagination, 'device' => $device);
     }
 
 

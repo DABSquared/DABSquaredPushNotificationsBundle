@@ -1,0 +1,67 @@
+{% macro state(device) -%}
+    {% if device.state == 0 -%}
+        <span class="label label-warning">Sandbox</span>
+    {%- else  -%}
+        <span class="label label-success">Production</span>
+    {%- endif %}
+{%- endmacro %}
+
+{% macro status(device) -%}
+    {% if device.status == "dab_push_notifications.device.status.active" -%}
+        <span class="label label-success">Active</span>
+    {%- elseif device.status == "dab_push_notifications.device.status.unactive"  -%}
+        <span class="label label-warning">Unactive</span>
+    {%- else -%}
+        <span class="label label-danger">Unknown</span>
+    {% endif %}
+{%- endmacro %}
+
+{% macro type(device) -%}
+    {% if device.type == "dab_push_notifications.os.android.c2dm" -%}
+        <span class="label label-success">Android C2DM</span>
+    {%- elseif device.type == "dab_push_notifications.os.android.gcm"  -%}
+        <span class="label label-success">Android GCM</span>
+    {%- elseif device.type == "dab_push_notifications.os.ios"  -%}
+        <span class="label label-success">iOS</span>
+    {%- elseif device.type == "dab_push_notifications.os.safari"  -%}
+        <span class="label label-success">Safari</span>
+    {%- elseif device.type == "dab_push_notifications.os.blackberry"  -%}
+        <span class="label label-success">Blackberry</span>
+    {%- elseif device.type == "dab_push_notifications.os.windowsmobile"  -%}
+        <span class="label label-success">Windows Mobile</span>
+    {%- else -%}
+        <span class="label label-danger">Unknown</span>
+    {% endif %}
+{%- endmacro %}
+
+{% macro messages_count(device) -%}
+        <span class="label label-success">{{ device.messages | length }}</span>
+{%- endmacro %}
+
+{% macro sound_enabled(device) -%}
+    {% if device.badgeAllowed -%}
+        <span class="label label-success">Yes</span>
+    {%- else -%}
+        <span class="label label-danger">No</span>
+    {% endif %}
+{%- endmacro %}
+
+{% macro alert_enabled(device) -%}
+    {% if device.alertAllowed -%}
+        <span class="label label-success">Yes</span>
+    {%- else -%}
+        <span class="label label-danger">No</span>
+    {% endif %}
+{%- endmacro %}
+
+{% macro badge_enabled(device) -%}
+    {% if device.badgeAllowed -%}
+        <span class="label label-success">Yes</span>
+    {%- else -%}
+        <span class="label label-danger">No</span>
+    {% endif %}
+{%- endmacro %}
+
+{% macro badge_count(device) -%}
+      <span class="label label-success">{{ device.badgeNumber }}</span>
+{%- endmacro %}

@@ -1,0 +1,46 @@
+{% extends "DABSquaredPushNotificationsBundle::base.html.twig" %}
+{% import "DABSquaredPushNotificationsBundle::macros.html.twig" as macros %}
+
+ {% block content %}
+     <div class="count">
+         {{ pagination.getTotalItemCount }} Devices
+     </div>
+
+     <div class="table-responsive">
+         <table class="table table-bordered table-striped">
+             <thead>
+             <tr>
+                 <th{% if pagination.isSorted('d.id') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'ID', 'd.id') }}</th>
+                 <th{% if pagination.isSorted('d.deviceName') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Device Name', 'd.deviceName') }}</th>
+                 <th{% if pagination.isSorted('d.state') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'State', 'd.state') }}</th>
+                 <th{% if pagination.isSorted('d.status') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Status', 'd.status') }}</th>
+                 <th{% if pagination.isSorted('d.type') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Type', 'd.type') }}</th>
+                 <th{% if pagination.isSorted('d.badgeNumber') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Badge Number', 'd.badgeNumber') }}</th>
+                 <th{% if pagination.isSorted('d.alertAllowed') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Alerts Allowed', 'd.alertAllowed') }}</th>
+                 <th{% if pagination.isSorted('d.soundAllowed') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Sound Allowed', 'd.soundAllowed') }}</th>
+                 <th{% if pagination.isSorted('d.badgeAllowed') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Badge Allowed', 'd.badgeAllowed') }}</th>
+                 <th>Messages Sent</th>
+             </tr>
+             </thead>
+
+             {% for device in pagination %}
+                 <tr>
+                     <td><a href="{{ path('dabsquared_push_notifications_device', {"id": device.id}) }}">{{ device.id }}</a></td>
+                     <td>{{ device.deviceName }}</td>
+                     <td>{{ macros.state(device) }}</td>
+                     <td>{{ macros.status(device) }}</td>
+                     <td>{{ macros.type(device) }}</td>
+                     <td>{{ macros.badge_count(device) }}</td>
+                     <td>{{ macros.alert_enabled(device) }}</td>
+                     <td>{{ macros.sound_enabled(device) }}</td>
+                     <td>{{ macros.badge_enabled(device) }}</td>
+                     <td>{{ macros.messages_count(device) }}</td>
+                 </tr>
+             {% endfor %}
+         </table>
+     </div>
+
+     <div class="navigation">
+         {{ knp_pagination_render(pagination) }}
+     </div>
+ {% endblock %}

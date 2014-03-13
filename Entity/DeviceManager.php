@@ -192,4 +192,10 @@ class DeviceManager extends BaseDeviceManger
         return $devices;
     }
 
+    public function findAllDevicesQuery() {
+        $qb = $this->repository
+            ->createQueryBuilder('d');
+        return $qb;
+    }
+
 }

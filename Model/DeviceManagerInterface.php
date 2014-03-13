@@ -52,6 +52,11 @@ interface DeviceManagerInterface
 
     /*** Find Methods  *********/
 
+    /**
+     * @return mixed
+     */
+    public function findAllDevicesQuery();
+
 
     /**
      * @param $type

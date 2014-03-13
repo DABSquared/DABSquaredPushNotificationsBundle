@@ -1,5 +1,27 @@
 {% extends "DABSquaredPushNotificationsBundle::base.html.twig" %}
 
  {% block content %}
-     Some content
+     <div class="count">
+         {{ pagination.getTotalItemCount }} Devices
+     </div>
+     <table class="table table-bordered table-striped">
+         <thead>
+             <tr>
+                 {# sorting of properties based on query components #}
+                 <th{% if pagination.isSorted('d.id') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'ID', 'd.id') }}</th>
+                 <th{% if pagination.isSorted('d.deviceName') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Device Name', 'd.deviceName') }}</th>
+             </tr>
+         </thead>
+
+         {% for device in pagination %}
+             <tr>
+                 <td>{{ device.id }}</td>
+                 <td>{{ device.deviceName }}</td>
+             </tr>
+         {% endfor %}
+     </table>
+
+     <div class="navigation">
+         {{ knp_pagination_render(pagination) }}
+     </div>
  {% endblock %}

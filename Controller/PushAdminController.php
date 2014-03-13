@@ -47,14 +47,31 @@ class PushAdminController extends Controller
     private $session;
 
     /**
+     * @var \DABSquared\PushNotificationsBundle\Model\DeviceManager
+     * @DI\Inject("dab_push_notifications.manager.device")
+     */
+    private $deviceManger;
+
+    /**
+     * @var \Knp\Component\Pager\Paginator
+     * @DI\Inject("knp_paginator")
+     */
+    private $paginator;
+
+    /**
      * @Route("push/dashboard", name="dabsquared_push_notifications_dashboard")
      * @Method({"GET"})
      * @Template("DABSquaredPushNotificationsBundle:Dashboard:dashboard.html.twig")
      */
     public function dashboardAction() {
-        $session = $this->get('session');
-        $session->set('dab_push_selected_nav', 'dashboard');
-        return array();
+        $this->session->set('dab_push_selected_nav', 'dashboard');
+        $allDevicesQuery = $this->deviceManger->findAllDevicesQuery();
+        $pagination = $this->paginator->paginate(
+            $allDevicesQuery,
+            $this->get('request')->query->get('page', 1)/*page number*/,
+            10/*limit per page*/
+        );
+        return array('pagination' => $pagination);
     }
 
 
@@ -64,8 +81,7 @@ class PushAdminController extends Controller
      * @Template("DABSquaredPushNotificationsBundle:Messages:messages.html.twig")
      */
     public function messagesAction() {
-        $session = $this->get('session');
-        $session->set('dab_push_selected_nav', 'messages');
+        $this->session->set('dab_push_selected_nav', 'messages');
         return array();
     }
 

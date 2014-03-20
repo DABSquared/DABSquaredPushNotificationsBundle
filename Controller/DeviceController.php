@@ -186,7 +186,7 @@ class DeviceController extends Controller
      * @RequestParam(name="device_identifier", description="The vendor device identifier of the iOS device.", strict=true)
      * @RequestParam(name="app_id", description="The internal app id that is registered in the Symfony 2 config.", strict=true)
      */
-    public function unregisteriOSDevice(ParamFetcher $paramFetcher) {
+    public function unregisteriOSDeviceAction(ParamFetcher $paramFetcher) {
         $appId = $paramFetcher->get('app_id');
         $deviceIdentifier = $paramFetcher->get('device_identifier');
 
@@ -217,7 +217,7 @@ class DeviceController extends Controller
      * @RequestParam(name="device_identifier", description="The vendor device identifier of the Android device.", strict=true)
      * @RequestParam(name="app_id", description="The internal app id that is registered in the Symfony 2 config.", strict=true)
      */
-    public function unregisterGCMDevice(ParamFetcher $paramFetcher) {
+    public function unregisterGCMDeviceAction(ParamFetcher $paramFetcher) {
         $appId = $paramFetcher->get('app_id');
         $deviceIdentifier = $paramFetcher->get('device_identifier');
 
@@ -248,7 +248,7 @@ class DeviceController extends Controller
      * @RequestParam(name="device_identifier", description="The device identifier you defined.", strict=true)
      * @RequestParam(name="app_id", description="The internal app id that is registered in the Symfony 2 config.", strict=true)
      */
-    public function appOpen(ParamFetcher $paramFetcher) {
+    public function appOpenAction(ParamFetcher $paramFetcher) {
         $appId = $paramFetcher->get('app_id');
         $deviceIdentifier =$paramFetcher->get('device_identifier');
 
@@ -285,7 +285,7 @@ class DeviceController extends Controller
      * @RequestParam(name="device_identifier", description="The device identifier you defined.", strict=true)
      * @RequestParam(name="app_id", description="The internal app id that is registered in the Symfony 2 config.", strict=true)
      */
-    public function appiOSOpen(ParamFetcher $paramFetcher) {
+    public function appiOSOpenAction(ParamFetcher $paramFetcher) {
         $appId = $paramFetcher->get('app_id');
         $deviceIdentifier =$paramFetcher->get('device_identifier');
 
@@ -324,7 +324,7 @@ class DeviceController extends Controller
      * @RequestParam(name="device_identifier", description="The device identifier you defined.", strict=true)
      * @RequestParam(name="app_id", description="The internal app id that is registered in the Symfony 2 config.", strict=true)
      */
-    public function appiOSTerminated(ParamFetcher $paramFetcher) {
+    public function appiOSTerminatedAction(ParamFetcher $paramFetcher) {
         $appId = $paramFetcher->get('app_id');
         $deviceIdentifier =$paramFetcher->get('device_identifier');
 
@@ -359,7 +359,7 @@ class DeviceController extends Controller
      * @RequestParam(name="device_identifier", description="The device identifier you defined.", strict=true)
      * @RequestParam(name="app_id", description="The internal app id that is registered in the Symfony 2 config.", strict=true)
      */
-    public function appiOSBackgrounded(ParamFetcher $paramFetcher) {
+    public function appiOSBackgroundedAction(ParamFetcher $paramFetcher) {
         $appId = $paramFetcher->get('app_id');
         $deviceIdentifier =$paramFetcher->get('device_identifier');
 
@@ -395,7 +395,7 @@ class DeviceController extends Controller
      * @RequestParam(name="app_id", description="The internal app id that is registered in the Symfony 2 config.", strict=true)
      * @RequestParam(name="device_token", description="The registration id returned from GCM", strict=true)
      */
-    public function appGCMOpen(ParamFetcher $paramFetcher) {
+    public function appGCMOpenAction(ParamFetcher $paramFetcher) {
         $appId = $paramFetcher->get('app_id');
         $deviceIdentifier =$paramFetcher->get('device_identifier');
         $deviceToken = $paramFetcher->get('device_token');

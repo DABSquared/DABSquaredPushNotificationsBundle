@@ -33,6 +33,7 @@ class Configuration
                             ->children()
                                 ->scalarNode('device')->isRequired()->end()
                                 ->scalarNode('message')->isRequired()->end()
+                                ->scalarNode('appevent')->isRequired()->end()
                             ->end()
                         ->end()
                     ->end()

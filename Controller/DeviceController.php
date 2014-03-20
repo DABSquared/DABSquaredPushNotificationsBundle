@@ -5,6 +5,7 @@ namespace DABSquared\PushNotificationsBundle\Controller;
 
 
 
+use DABSquared\PushNotificationsBundle\Model\AppEventInterface;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Request\ParamFetcher;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
@@ -246,7 +247,7 @@ class DeviceController extends Controller
      * @Rest\View()
      * @RequestParam(name="device_token", description="The device token returned from Apple.", strict=true)
      * @RequestParam(name="app_id", description="The internal app id that is registered in the Symfony 2 config.", strict=true)
-     * @RequestParam(name="device_token", description="The registration id returned from GCM", strict=true)
+     * @RequestParam(name="device_token", description="The registration id returned from Apple", strict=true)
      */
     public function appOpen(ParamFetcher $paramFetcher) {
         $appId = $paramFetcher->get('app_id');
@@ -256,12 +257,19 @@ class DeviceController extends Controller
         /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
         $deviceManager = $this->get('dab_push_notifications.manager.device');
 
+        /** @var $appEventManager \DABSquared\PushNotificationsBundle\Model\AppEventManager */
+        $appEventManager = $this->get('dab_push_notifications.manager.appevent');
+
         /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
         $device = $deviceManager->findDeviceByTypeIdentifierAndAppIdAndDeviceToken(Types::OS_IOS, $deviceIdentifier, $appId, $deviceToken);
 
         if(!is_null($device)) {
             $device->setBadgeNumber(0);
             $deviceManager->saveDevice($device);
+            $appEvent = $appEventManager->createAppEvent();
+            $appEvent->setType(AppEventInterface::APP_OPEN);
+            $appEvent->setDevice($device);
+            $appEventManager->saveAppEvent($appEvent);
         }
 
         return null;
@@ -278,7 +286,7 @@ class DeviceController extends Controller
      * @Rest\View()
      * @RequestParam(name="device_token", description="The device token returned from Apple.", strict=true)
      * @RequestParam(name="app_id", description="The internal app id that is registered in the Symfony 2 config.", strict=true)
-     * @RequestParam(name="device_token", description="The registration id returned from GCM", strict=true)
+     * @RequestParam(name="device_token", description="The registration id returned from Apple", strict=true)
      */
     public function appiOSOpen(ParamFetcher $paramFetcher) {
         $appId = $paramFetcher->get('app_id');
@@ -288,12 +296,93 @@ class DeviceController extends Controller
         /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
         $deviceManager = $this->get('dab_push_notifications.manager.device');
 
+        /** @var $appEventManager \DABSquared\PushNotificationsBundle\Model\AppEventManager */
+        $appEventManager = $this->get('dab_push_notifications.manager.appevent');
+
         /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
         $device = $deviceManager->findDeviceByTypeIdentifierAndAppIdAndDeviceToken(Types::OS_IOS, $deviceIdentifier, $appId, $deviceToken);
 
         if(!is_null($device)) {
             $device->setBadgeNumber(0);
             $deviceManager->saveDevice($device);
+            $appEvent = $appEventManager->createAppEvent();
+            $appEvent->setType(AppEventInterface::APP_OPEN);
+            $appEvent->setDevice($device);
+            $appEventManager->saveAppEvent($appEvent);
+        }
+
+        return null;
+    }
+
+    /**
+     * @ApiDoc(
+     *  description="Registers that an iOS app terminated",
+     *  section="DABSquared Push Notifications (iOS)"
+     * )
+     *
+     * @Route("device/ios/app_terminated", defaults={"_format": "json"})
+     * @Method("POST")
+     * @Rest\View()
+     * @RequestParam(name="device_token", description="The device token returned from Apple.", strict=true)
+     * @RequestParam(name="app_id", description="The internal app id that is registered in the Symfony 2 config.", strict=true)
+     * @RequestParam(name="device_token", description="The registration id returned from Apple", strict=true)
+     */
+    public function appiOSTerminated(ParamFetcher $paramFetcher) {
+        $appId = $paramFetcher->get('app_id');
+        $deviceIdentifier =$paramFetcher->get('device_identifier');
+        $deviceToken = $paramFetcher->get('device_token');
+
+        /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
+        $deviceManager = $this->get('dab_push_notifications.manager.device');
+
+        /** @var $appEventManager \DABSquared\PushNotificationsBundle\Model\AppEventManager */
+        $appEventManager = $this->get('dab_push_notifications.manager.appevent');
+
+        /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
+        $device = $deviceManager->findDeviceByTypeIdentifierAndAppIdAndDeviceToken(Types::OS_IOS, $deviceIdentifier, $appId, $deviceToken);
+
+        if(!is_null($device)) {
+            $appEvent = $appEventManager->createAppEvent();
+            $appEvent->setType(AppEventInterface::APP_TERMINATED);
+            $appEvent->setDevice($device);
+            $appEventManager->saveAppEvent($appEvent);
+        }
+
+        return null;
+    }
+
+    /**
+     * @ApiDoc(
+     *  description="Registers that an iOS app backgrounded",
+     *  section="DABSquared Push Notifications (iOS)"
+     * )
+     *
+     * @Route("device/ios/app_backgrounded", defaults={"_format": "json"})
+     * @Method("POST")
+     * @Rest\View()
+     * @RequestParam(name="device_token", description="The device token returned from Apple.", strict=true)
+     * @RequestParam(name="app_id", description="The internal app id that is registered in the Symfony 2 config.", strict=true)
+     * @RequestParam(name="device_token", description="The registration id returned from Apple", strict=true)
+     */
+    public function appiOSBackgrounded(ParamFetcher $paramFetcher) {
+        $appId = $paramFetcher->get('app_id');
+        $deviceIdentifier =$paramFetcher->get('device_identifier');
+        $deviceToken = $paramFetcher->get('device_token');
+
+        /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
+        $deviceManager = $this->get('dab_push_notifications.manager.device');
+
+        /** @var $appEventManager \DABSquared\PushNotificationsBundle\Model\AppEventManager */
+        $appEventManager = $this->get('dab_push_notifications.manager.appevent');
+
+        /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
+        $device = $deviceManager->findDeviceByTypeIdentifierAndAppIdAndDeviceToken(Types::OS_IOS, $deviceIdentifier, $appId, $deviceToken);
+
+        if(!is_null($device)) {
+            $appEvent = $appEventManager->createAppEvent();
+            $appEvent->setType(AppEventInterface::APP_BACKGROUNDED);
+            $appEvent->setDevice($device);
+            $appEventManager->saveAppEvent($appEvent);
         }
 
         return null;

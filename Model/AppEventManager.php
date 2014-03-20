@@ -38,7 +38,7 @@ abstract class AppEventManager implements AppEventManagerInterface
     /**
      * Creates an empty device instance
      *
-     * @return Device
+     * @return AppEvent
      */
     public function createAppEvent()
     {

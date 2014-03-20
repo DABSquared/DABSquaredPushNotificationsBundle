@@ -43,6 +43,7 @@ class Configuration
                             ->children()
                                 ->scalarNode('device')->cannotBeEmpty()->defaultValue('dab_push_notifications.manager.device.default')->end()
                                 ->scalarNode('message')->cannotBeEmpty()->defaultValue('dab_push_notifications.manager.message.default')->end()
+                                ->scalarNode('appevent')->cannotBeEmpty()->defaultValue('dab_push_notifications.manager.appevent.default')->end()
                             ->end()
                         ->end()
                     ->end()

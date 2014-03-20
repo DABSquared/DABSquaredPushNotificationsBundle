@@ -14,9 +14,6 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 abstract class Device implements DeviceInterface
 {
-
-
-
     /**
      * Device database id
      *
@@ -81,9 +78,14 @@ abstract class Device implements DeviceInterface
     protected $deviceModel;
 
     /**
-     * @var mixed
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $messages;
+
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $appEvents;
 
     /**
      * @var string
@@ -100,7 +102,6 @@ abstract class Device implements DeviceInterface
      */
     protected $deviceIdentifier;
 
-
     /**
      * @var string
      */
@@ -111,10 +112,14 @@ abstract class Device implements DeviceInterface
      */
     protected $appVersion;
 
-
+    /**
+     * @var \DateTime
+     */
     protected $createdAt;
 
-
+    /**
+     * @var \DateTime
+     */
     protected $updatedAt;
 
 
@@ -125,6 +130,10 @@ abstract class Device implements DeviceInterface
     }
 
 
+    public function __toString()
+    {
+        return 'Device #'.$this->getId(). 'Device Token:'.$this->getDeviceToken();
+    }
 
     /**
      * @return \DateTime
@@ -141,12 +150,6 @@ abstract class Device implements DeviceInterface
     public function setCreatedAt(\DateTime $createdAt)
     {
         $this->createdAt = $createdAt;
-    }
-
-
-    public function __toString()
-    {
-        return 'Device #'.$this->getId(). 'Device Token:'.$this->getDeviceToken();
     }
 
     /**
@@ -300,23 +303,62 @@ abstract class Device implements DeviceInterface
         return $this->type;
     }
 
-
+    /**
+     * @return ArrayCollection
+     */
     public function getMessages() {
         return $this->messages;
     }
 
-    public function setMessages($messages) {
+    /**
+     * @param ArrayCollection $messages
+     */
+    public function setMessages(\Doctrine\Common\Collections\ArrayCollection $messages) {
         $this->messages = $messages;
     }
 
+    /**
+     * @param MessageInterface $message
+     */
     public function addMessage(\DABSquared\PushNotificationsBundle\Model\MessageInterface $message) {
         $message->setDevice($this);
         $this->messages[] = $message;
     }
 
-    public function removeMessage(\DABSquared\PushNotificationsBundle\Model\MessageInterface $message)
-    {
+    /**
+     * @param MessageInterface $message
+     */
+    public function removeMessage(\DABSquared\PushNotificationsBundle\Model\MessageInterface $message) {
         $this->messages->removeElement($message);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getAppEvents() {
+        return $this->messages;
+    }
+
+    /**
+     * @param ArrayCollection $appEvents
+     */
+    public function setAppEvents(\Doctrine\Common\Collections\ArrayCollection $appEvents) {
+        $this->appEvents = $appEvents;
+    }
+
+    /**
+     * @param AppEventInterface $appEvent
+     */
+    public function addAppEvent(\DABSquared\PushNotificationsBundle\Model\AppEventInterface $appEvent) {
+        $appEvent->setDevice($this);
+        $this->appEvents[] = $appEvent;
+    }
+
+    /**
+     * @param AppEventInterface $appEvent
+     */
+    public function removeAppEvent(\DABSquared\PushNotificationsBundle\Model\AppEventInterface $appEvent) {
+        $this->appEvents->removeElement($appEvent);
     }
 
     /**
@@ -349,6 +391,7 @@ abstract class Device implements DeviceInterface
     {
         return $this->deviceIdentifier;
     }
+
     /**
      * @param string $appName
      */

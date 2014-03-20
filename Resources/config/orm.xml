@@ -15,9 +15,11 @@
     <parameters>
         <parameter key="dab_push_notifications.model.device.class">DABSquared\PushNotificationsBundle\Entity\Device</parameter>
         <parameter key="dab_push_notifications.model.message.class">DABSquared\PushNotificationsBundle\Entity\Message</parameter>
+        <parameter key="dab_push_notifications.model.appevent.class">DABSquared\PushNotificationsBundle\Entity\AppEvent</parameter>
 
         <parameter key="dab_push_notifications.manager.device.default.class">DABSquared\PushNotificationsBundle\Entity\DeviceManager</parameter>
         <parameter key="dab_push_notifications.manager.message.default.class">DABSquared\PushNotificationsBundle\Entity\MessageManager</parameter>
+        <parameter key="dab_push_notifications.manager.appevent.default.class">DABSquared\PushNotificationsBundle\Entity\AppEventManager</parameter>
     </parameters>
 
     <services>
@@ -35,6 +37,13 @@
             <argument type="service" id="dab_push_notifications.entity_manager" />
             <argument>%dab_push_notifications.model.message.class%</argument>
         </service>
+
+        <service id="dab_push_notifications.manager.appevent.default" class="%dab_push_notifications.manager.appevent.default.class%">
+            <argument type="service" id="event_dispatcher" />
+            <argument type="service" id="dab_push_notifications.entity_manager" />
+            <argument>%dab_push_notifications.model.appevent.class%</argument>
+        </service>
+
     </services>
 
 </container>

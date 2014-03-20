@@ -13,13 +13,19 @@ interface DeviceInterface
 {
 
     const STATE_SANDBOX = 0;
-
     const STATE_PRODUCTION = 1;
+
+    public function __toString();
 
     /**
      * @return mixed database ID for this device
      */
     public function getId();
+
+    /**
+     * @param \DateTime $createdAt
+     */
+    public function setCreatedAt(\DateTime $createdAt);
 
     /**
      * @return \DateTime
@@ -77,7 +83,6 @@ interface DeviceInterface
      */
     public function setAlertAllowed($alertAllowed);
 
-
     /**
      * @return string The device name
      */
@@ -129,6 +134,26 @@ interface DeviceInterface
     public function setAppId($appId);
 
     /**
+     * @param string $appVersion
+     */
+    public function setAppVersion($appVersion);
+
+    /**
+     * @return string
+     */
+    public function getAppVersion();
+
+    /**
+     * @param string $appName
+     */
+    public function setAppName($appName);
+
+    /**
+     * @return string
+     */
+    public function getAppName();
+
+    /**
      * @param string $type
      */
     public function setType($type);
@@ -153,12 +178,49 @@ interface DeviceInterface
      */
     public function setStatus($status);
 
+    /**
+     * @return string
+     */
+    public function getStatus();
+
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
     public function getMessages();
 
-    public function setMessages($messages);
+    /**
+     * @param \Doctrine\Common\Collections\ArrayCollection $messages
+     */
+    public function setMessages(\Doctrine\Common\Collections\ArrayCollection $messages);
 
+    /**
+     * @param MessageInterface $message
+     */
     public function addMessage(\DABSquared\PushNotificationsBundle\Model\MessageInterface $message);
 
+    /**
+     * @param MessageInterface $message
+     */
     public function removeMessage(\DABSquared\PushNotificationsBundle\Model\MessageInterface $message);
+
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getAppEvents();
+
+    /**
+     * @param \Doctrine\Common\Collections\ArrayCollection $appEvents
+     */
+    public function setAppEvents(\Doctrine\Common\Collections\ArrayCollection $appEvents);
+
+    /**
+     * @param AppEventInterface $appEvent
+     */
+    public function addAppEvent(\DABSquared\PushNotificationsBundle\Model\AppEventInterface $appEvent);
+
+    /**
+     * @param AppEventInterface $appEvent
+     */
+    public function removeAppEvent(\DABSquared\PushNotificationsBundle\Model\AppEventInterface $appEvent);
 
 }

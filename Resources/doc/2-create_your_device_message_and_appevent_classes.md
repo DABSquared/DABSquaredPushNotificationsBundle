@@ -1,12 +1,11 @@
 Step 2: Create your Device and Message classes
 ==============================================
 
-The DABSquaredPushNotificationsBundle supports both Doctrine ODM (mongodb) and Doctrine ORM by
-default. However, you must provide a concrete Device and Message class. Follow
+The DABSquaredPushNotificationsBundle supports Doctrine ORM by
+default. However, you must provide a concrete Device, Message and AppEvent class. Follow
 the appropriate instructions to set up the classes:
 
-- [Doctrine ORM](2a-mapping_orm.md)
-- [Doctrine ODM (mongodb)](2b-mapping_mongodb.md)
+- [Doctrine ORM](2-mapping_orm.md)
 
 ### Continue to the next step!
 When you're done. Continue with importing the routing:

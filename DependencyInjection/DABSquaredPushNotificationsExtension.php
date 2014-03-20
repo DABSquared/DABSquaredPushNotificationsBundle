@@ -19,10 +19,9 @@ class DABSquaredPushNotificationsExtension extends Extension
 
     /**
      * Loads any resources/services we need
-     *
      * @param array $configs
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
-     * @return void
+     * @param ContainerBuilder $container
+     * @throws \InvalidArgumentException
      */
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -46,22 +45,14 @@ class DABSquaredPushNotificationsExtension extends Extension
 
         $container->setParameter('dab_push_notifications.model.device.class', $config['class']['model']['device']);
         $container->setParameter('dab_push_notifications.model.message.class', $config['class']['model']['message']);
+        $container->setParameter('dab_push_notifications.model.appevent.class', $config['class']['model']['appevent']);
+
         $container->setParameter('dab_push_notifications.model_manager_name', $config['model_manager_name']);
         $container->setParameter('dab_push_notifications.user_entity_namespace', $config['user_entity_namespace']);
 
-
-        // handle the MongoDB document manager name in a specific way as it does not have a registry to make it easy
-        // TODO: change it if https://github.com/symfony/DoctrineMongoDBBundle/pull/31 is merged
-        if ('mongodb' === $config['db_driver']) {
-            if (null === $config['model_manager_name']) {
-                $container->setAlias('dab_push_notifications.document_manager', new Alias('doctrine.odm.mongodb.document_manager', false));
-            } else {
-                $container->setAlias('dab_push_notifications.document_manager', new Alias(sprintf('doctrine.odm.%s_mongodb.document_manager', $config['model_manager_name']), false));
-            }
-        }
-
         $container->setAlias('dab_push_notifications.manager.device', $config['service']['manager']['device']);
         $container->setAlias('dab_push_notifications.manager.message', $config['service']['manager']['message']);
+        $container->setAlias('dab_push_notifications.manager.appevent', $config['service']['manager']['appevent']);
 
         $this->setInitialParams();
         if (isset($config["android"])) {

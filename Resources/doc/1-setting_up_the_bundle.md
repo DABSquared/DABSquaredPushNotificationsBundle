@@ -29,4 +29,4 @@ public function registerBundles()
 
 ### Continue to the next step!
 When you're done. Continue by creating the appropriate Device and Message classes:
-[Step 2: Create your Device and Message classes](2-create_your_device_and_message_classes.md).
+[Step 2: Create your Device and Message classes](2-create_your_device_message_and_appevent_classes.md).

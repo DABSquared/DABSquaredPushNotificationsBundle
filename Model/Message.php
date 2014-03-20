@@ -23,8 +23,6 @@ abstract class Message implements MessageInterface
      */
     protected $id;
 
-
-
     /**
      * @var \DABSquared\PushNotificationsBundle\Model\DeviceInterface
      */
@@ -40,49 +38,39 @@ abstract class Message implements MessageInterface
      */
     protected $status = MessageStatus::MESSAGE_STATUS_NOT_SENT;
 
-
     /**
-     * String message
-     *
      * @var string
      */
     protected $message = "";
 
     /**
-     * String $title
-     *
      * @var string
      */
     protected $title = "";
 
     /**
-     * String sound
-     *
      * @var string
      */
     protected $sound = null;
 
     /**
-     * boolean contentAvailable
-     *
      * @var boolean
      */
     protected $contentAvailable = false;
 
     /**
-     * Custom data
-     *
+     * @var boolean
+     */
+    protected $isGCM = false;
+
+    /**
      * @var array
      */
-
-    //TODO: Implement Custom Data properly
     protected $customData = array();
-
 
     /********************************************************
      * iOS Specific Stuff
      ********************************************************/
-
 
     /**
      * The APS core body
@@ -90,8 +78,6 @@ abstract class Message implements MessageInterface
      * @var array
      */
     protected $apsBody = array();
-
-
 
     /********************************************************
      * Android Specific Stuff
@@ -104,7 +90,6 @@ abstract class Message implements MessageInterface
      */
     protected $collapseKey = self::DEFAULT_COLLAPSE_KEY;
 
-
     /**
      * Options for GCM messages
      *
@@ -112,11 +97,14 @@ abstract class Message implements MessageInterface
      */
     protected $gcmOptions = array();
 
-
-
+    /**
+     * @var \DateTime
+     */
     protected $createdAt;
 
-
+    /**
+     * @var \DateTime
+     */
     protected $updatedAt;
 
     /**
@@ -124,7 +112,6 @@ abstract class Message implements MessageInterface
      */
     public function __construct($type)
     {
-
         $this->type = $type;
 
         $this->apsBody = array(
@@ -135,13 +122,12 @@ abstract class Message implements MessageInterface
         $this->createdAt = new \DateTime();
     }
 
-
     /**
-     * @return \DateTime
+     * @return mixed
      */
-    public function getCreatedAt()
+    public function getId()
     {
-        return $this->createdAt;
+        return $this->id;
     }
 
     /**
@@ -154,10 +140,18 @@ abstract class Message implements MessageInterface
     }
 
     /**
- * Sets the message. For iOS, this is the APS alert message
- *
- * @param $message
- */
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Sets the message. For iOS, this is the APS alert message
+     *
+     * @param $message
+     */
     public function setMessage($message)
     {
         $this->message = $message;
@@ -224,7 +218,7 @@ abstract class Message implements MessageInterface
                 $payloadBody = array_merge($payloadBody, $this->customData);
             }
             return $payloadBody;
-        }if($this->type == Types::OS_SAFARI) {
+        } else if($this->type == Types::OS_SAFARI) {
             $this->apsBody["aps"]["alert"] = array();
             $this->apsBody["aps"]["alert"]['body'] = $this->getMessage();
             $this->apsBody["aps"]["alert"]['title'] = $this->getTitle();
@@ -235,7 +229,7 @@ abstract class Message implements MessageInterface
                 $payloadBody = array_merge($payloadBody, $this->customData);
             }
             return $payloadBody;
-        }else if($this->type == Types::OS_ANDROID_GCM || $this->type == Types::OS_ANDROID_C2DM) {
+        } else if($this->type == Types::OS_ANDROID_GCM || $this->type == Types::OS_ANDROID_C2DM) {
             $data = array(
                 "registration_id" => $this->device->getDeviceidentifier(),
                 "collapse_key"    => $this->collapseKey,
@@ -245,17 +239,16 @@ abstract class Message implements MessageInterface
                 $data = array_merge($data, $this->customData);
             }
             return $data;
-        }else if($this->type == Types::OS_BLACKBERRY) {
+        } else if($this->type == Types::OS_BLACKBERRY) {
             $this->setData($this->getMessage());
             return $this->customData;
         }
-
+        return array();
     }
 
     /**
-     * Sets any custom data for the message
+     *  Sets any custom data for the message
      * @param $data
-     * @return $this
      * @throws \InvalidArgumentException
      */
     public function setData($data)
@@ -272,9 +265,7 @@ abstract class Message implements MessageInterface
             foreach ($data as $key => $value) {
                 $this->addCustomData($key, $value);
             }
-            return $this;
-
-        }if($this->type == Types::OS_SAFARI) {
+        } else if($this->type == Types::OS_SAFARI) {
             if (!is_array($data)) {
                 throw new \InvalidArgumentException(sprintf('Messages custom data must be array, "%s" given.', gettype($data)));
             }
@@ -286,15 +277,12 @@ abstract class Message implements MessageInterface
             foreach ($data as $key => $value) {
                 $this->addCustomData($key, $value);
             }
-            return $this;
-
         } else if($this->type == Types::OS_ANDROID_GCM || $this->type == Types::OS_ANDROID_C2DM) {
             $this->customData = (is_array($data) ? $data : array($data));
         } else if($this->type == Types::OS_BLACKBERRY) {
              $this->customData = $data;
         }
     }
-
 
     /**
      * Returns any custom data
@@ -307,14 +295,13 @@ abstract class Message implements MessageInterface
     }
 
     /**
-     * Add custom data
-     *
      * @param string $key
      * @param mixed $value
+     * @throws \LogicException
+     * @throws \InvalidArgumentException
      */
     public function addCustomData($key, $value)
     {
-
         if($this->type == Types::OS_IOS) {
             if ($key == 'aps') {
                 throw new \LogicException('Can\'t replace "aps" data. Please call to setMessage, if your want replace message text.');
@@ -328,33 +315,52 @@ abstract class Message implements MessageInterface
                     ));
                 }
             }
-
             $this->customData[$key] = $value;
-
-            return $this;
         }
-
     }
 
-
-
+    /**
+     * @param string $sound
+     */
     public function setSound($sound)
     {
         $this->sound = $sound;
     }
 
+    /**
+     * @return string
+     */
+    public function getSound()
+    {
+        return $this->sound;
+    }
+
+    /**
+     * @param bool $contentAvailable
+     */
     public function setContentAvailable($contentAvailable)
     {
         $this->contentAvailable = $contentAvailable;
     }
 
-    public function setTargetOS($type) {
+    /**
+     * @return bool
+     */
+    public function getContentAvailable()
+    {
+        return $this->contentAvailable;
+    }
+
+    /**
+     * @param $type
+     */
+    public function setTargetOS($type)
+    {
         $this->type = $type;
     }
 
     /**
      * Returns the target OS for this message
-     *
      * @return string
      */
     public function getTargetOS()
@@ -370,6 +376,7 @@ abstract class Message implements MessageInterface
        }else if($this->type == Types::OS_BLACKBERRY) {
             return Types::OS_BLACKBERRY;
        }
+        return null;
     }
 
 
@@ -400,22 +407,17 @@ abstract class Message implements MessageInterface
     }
 
     /**
-     * Set whether this is a GCM message
-     * (default false)
-     *
-     * @param $gcm
+     * @param boolean $isGCM
      */
-    public function setGCM($gcm)
+    public function setIsGCM($isGCM)
     {
-        $this->isGCM = !!$gcm;
+        $this->isGCM = $isGCM;
     }
 
     /**
-     * Returns whether this is a GCM message
-     *
-     * @return mixed
+     * @return boolean
      */
-    public function isGCM()
+    public function getIsGCM()
     {
         return $this->isGCM;
     }
@@ -432,29 +434,11 @@ abstract class Message implements MessageInterface
 
     /**
      * Returns GCM options
-     *
      * @return array
      */
     public function getGCMOptions()
     {
         return $this->gcmOptions;
-    }
-
-
-    /**
-     * @param boolean $isGCM
-     */
-    public function setIsGCM($isGCM)
-    {
-        $this->isGCM = $isGCM;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getIsGCM()
-    {
-        return $this->isGCM;
     }
 
     /**
@@ -495,9 +479,7 @@ abstract class Message implements MessageInterface
     public function setDevice(\DABSquared\PushNotificationsBundle\Model\DeviceInterface $device)
     {
         $this->device = $device;
-
         $this->setTargetOS($device->getType());
-
     }
 
     /**
@@ -506,23 +488,6 @@ abstract class Message implements MessageInterface
     public function getDevice()
     {
         return $this->device;
-    }
-
-
-    /**
-     * @param mixed $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
     }
 
     /**
@@ -540,6 +505,5 @@ abstract class Message implements MessageInterface
     {
         return $this->status;
     }
-
 
 }

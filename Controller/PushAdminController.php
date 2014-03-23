@@ -49,16 +49,22 @@ class PushAdminController extends Controller
     private $session;
 
     /**
-     * @var \DABSquared\PushNotificationsBundle\Model\DeviceManager
+     * @var \DABSquared\PushNotificationsBundle\Model\DeviceManagerInterface
      * @DI\Inject("dab_push_notifications.manager.device")
      */
     private $deviceManager;
 
     /**
-     * @var \DABSquared\PushNotificationsBundle\Model\MessageManager
+     * @var \DABSquared\PushNotificationsBundle\Model\MessageManagerInterface
      * @DI\Inject("dab_push_notifications.manager.message")
      */
     private $messageManager;
+
+    /**
+     * @var \DABSquared\PushNotificationsBundle\Service\Notifications
+     * @DI\Inject("dab_push_notifications")
+     */
+    private $notificationManager;
 
     /**
      * @var \Knp\Component\Pager\Paginator
@@ -74,11 +80,9 @@ class PushAdminController extends Controller
     public function dashboardAction() {
         $this->session->set('dab_push_selected_nav', 'dashboard');
 
+        $apps = $this->notificationManager->getApps();
 
-
-
-
-        return array();
+        return array("apps" => $apps);
     }
 
     /**

@@ -25,18 +25,4 @@ interface OSNotificationServiceInterface
      */
     public function sendMessages(array $messages);
 
-    /**
-     * Returns the apps from the configuration
-     *
-     * @return array
-     */
-    public function getApps();
-
-    /**
-     * Returns the app name from the configuration
-     *
-     * @param $internalId
-     * @return null|string
-     */
-    public function getAppNameForInternalId($internalId);
 }

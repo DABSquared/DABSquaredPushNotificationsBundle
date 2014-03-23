@@ -69,7 +69,6 @@ class Configuration
                 ->arrayNode("apps")
                     ->isRequired()
                     ->requiresAtLeastOneElement()
-                    ->useAttributeAsKey('name')
                     ->prototype('array')
                         ->children()
                             ->scalarNode('name')->isRequired()->end()

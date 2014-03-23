@@ -56,7 +56,7 @@ class DABSquaredPushNotificationsExtension extends Extension
 
         $this->setInitialParams();
 
-        $this->setApps($config);
+        $this->setAppsConfig($config);
 
         if (isset($config["android"])) {
             $this->setAndroidConfig($config);

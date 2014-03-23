@@ -74,6 +74,10 @@ class PushAdminController extends Controller
     public function dashboardAction() {
         $this->session->set('dab_push_selected_nav', 'dashboard');
 
+
+
+
+
         return array();
     }
 

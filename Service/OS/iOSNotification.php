@@ -50,7 +50,7 @@ class iOSNotification implements OSNotificationServiceInterface
     /**
      * Constructor
      *
-     * @param $certificates
+     * @param array $certificates
      * @param \DABSquared\PushNotificationsBundle\Model\MessageManagerInterface $messageManager
      * @param \DABSquared\PushNotificationsBundle\Model\DeviceManagerInterface $deviceManager
      */
@@ -65,10 +65,10 @@ class iOSNotification implements OSNotificationServiceInterface
     /**
      * Send a notification message
      *
-     * @param \DABSquared\PushNotificationsBundle\Model\MessageInterface $message
-     * @throws \RuntimeException
+     * @param MessageInterface $message
+     * @return bool|void
+     * @throws \Symfony\Component\DependencyInjection\Exception\RuntimeException
      * @throws \DABSquared\PushNotificationsBundle\Exception\InvalidMessageTypeException
-     * @return int
      */
     public function send(MessageInterface $message)
     {

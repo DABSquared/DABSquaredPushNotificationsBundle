@@ -55,10 +55,14 @@ class DABSquaredPushNotificationsExtension extends Extension
         $container->setAlias('dab_push_notifications.manager.appevent', $config['service']['manager']['appevent']);
 
         $this->setInitialParams();
+
+        $this->setApps($config);
+
         if (isset($config["android"])) {
             $this->setAndroidConfig($config);
             $loader->load('android.xml');
         }
+
         if (isset($config["ios"])) {
             $this->setiOSConfig($config);
             $loader->load('ios.xml');
@@ -83,6 +87,21 @@ class DABSquaredPushNotificationsExtension extends Extension
     {
         $this->container->setParameter("dab_push_notifications.android.enabled", false);
         $this->container->setParameter("dab_push_notifications.ios.enabled", false);
+    }
+
+    /**
+     * Sets apps config into container
+     *
+     * @param array $config
+     * @throws \RuntimeException
+     */
+    protected function setAppsConfig(array $config)
+    {
+        if(count($config['apps']) <= 0) {
+            throw new \RuntimeException(sprintf('An app is required'));
+        }
+
+        $this->container->setParameter("dab_push_notifications.apps", $config['apps']);
     }
 
     /**

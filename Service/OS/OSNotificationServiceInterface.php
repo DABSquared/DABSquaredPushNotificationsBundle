@@ -9,17 +9,34 @@ interface OSNotificationServiceInterface
     /**
      * Send a notification message
      *
-     * @param \DABSquared\PushNotificationsBundle\Model\MessageInterface $message
-     * @return mixed
+     * @param MessageInterface $message
+     * @return bool|void
+     * @throws \Symfony\Component\DependencyInjection\Exception\RuntimeException
+     * @throws \DABSquared\PushNotificationsBundle\Exception\InvalidMessageTypeException
      */
     public function send(MessageInterface $message);
 
     /**
      * Sends a set of messages
      *
-     * @param array $message
-     * @throws \RuntimeException
+     * @param array $messages
      * @return bool
+     * @throws \RuntimeException
      */
     public function sendMessages(array $messages);
+
+    /**
+     * Returns the apps from the configuration
+     *
+     * @return array
+     */
+    public function getApps();
+
+    /**
+     * Returns the app name from the configuration
+     *
+     * @param $internalId
+     * @return null|string
+     */
+    public function getAppNameForInternalId($internalId);
 }

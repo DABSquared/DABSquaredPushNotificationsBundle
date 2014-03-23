@@ -14,10 +14,18 @@ class Notifications
     protected $handlers = array();
 
     /**
+     * The apps configured
+     *
+     * @var array
+     */
+    protected $apps;
+
+    /**
      * Constructor
      */
-    public function __construct()
+    public function __construct($apps)
     {
+        $this->apps = $apps;
     }
 
     /**
@@ -41,9 +49,9 @@ class Notifications
     /**
      * Sends a set of messages
      *
-     * @param array $message
-     * @throws \RuntimeException
+     * @param array $messages
      * @return bool
+     * @throws \RuntimeException
      */
     public function sendMessages(array $messages)
     {
@@ -74,6 +82,32 @@ class Notifications
         }
 
         return $return;
+    }
+
+    /**
+     * Returns the apps from the configuration
+     *
+     * @return array
+     */
+    public function getApps()
+    {
+        return $this->apps;
+    }
+
+    /**
+     * Returns the app name from the configuration
+     *
+     * @param $internalId
+     * @return null|string
+     */
+    public function getAppNameForInternalId($internalId)
+    {
+        foreach($this->apps as $app) {
+            if($app['internal_app_id'] == $internalId) {
+                return $app['name'];
+            }
+        }
+        return null;
     }
 
     /**

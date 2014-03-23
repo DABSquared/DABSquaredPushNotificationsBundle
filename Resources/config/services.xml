@@ -14,6 +14,7 @@
 
         <!-- main notification service -->
         <service id="dab_push_notifications" class="%dab_push_notifications.class%">
+            <argument>%dab_push_notifications.apps%</argument>
         </service>
 
         <service

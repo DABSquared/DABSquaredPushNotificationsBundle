@@ -50,12 +50,35 @@ class Configuration
                     ->end()
                 ->end()
             ->end();
+        $this->addApps();
         $this->addAndroid();
         $this->addiOS();
         $this->addBlackberry();
         $this->addSafari();
 
         return $treeBuilder->buildTree();
+    }
+
+    /**
+     * Apps configuration
+     */
+    protected function addApps()
+    {
+        $this->root
+            ->children()
+                ->arrayNode("apps")
+                    ->isRequired()
+                    ->requiresAtLeastOneElement()
+                    ->useAttributeAsKey('name')
+                    ->prototype('array')
+                        ->children()
+                            ->scalarNode('name')->isRequired()->end()
+                            ->scalarNode('internal_app_id')->isRequired()->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
     }
 
     /**

@@ -199,7 +199,6 @@ namespace MyProject\MyBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use DABSquared\PushNotificationsBundle\Entity\AppEvent as BaseAppEvent;
-use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity
@@ -210,7 +209,6 @@ class AppEvent extends BaseAppEvent {
 
     /**
      * @ORM\ManyToOne(targetEntity="MyProject\MyBundle\Entity\Device", inversedBy="appEvents")
-     * @Serializer\Groups({"app_event"})
      */
     protected $device;
 

@@ -43,13 +43,21 @@
         });
 
         function loadGraphData() {
+            var deviceState =  $("input:radio[name=device_state]:checked").val();
+            var internal_app_ids =  Array();
+
+            $('input[name="internal_app_ids"]:checked').each(function() {
+                internal_app_ids.push(this.value);
+            });
+
             $.ajax ({
-                url: "{{ path('dabsquared_push_notifications_data_app_open_graph')}}",
+                url: "{{ create_proper_route('dabsquared_push_notifications_data_app_open_graph')}}",
                 type: "POST",
-                data: JSON.stringify({internal_app_ids: ["0000001"], device_state: 0 }),
+                data: JSON.stringify({internal_app_ids: internal_app_ids, device_state: deviceState }),
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function(data){
+                    window.graph.setData(data);
                 }
             });
 
@@ -67,17 +75,11 @@
                     element: 'appOpensChart',
                     // Chart data records -- each entry in this array corresponds to a point on
                     // the chart.
-                    data: [
-                        { day: '2008', value: 20 },
-                        { day: '2009', value: 10 },
-                        { day: '2010', value: 5 },
-                        { day: '2011', value: 5 },
-                        { day: '2012', value: 20 }
-                    ],
+                    data: [],
                     // The name of the data record attribute that contains x-values.
                     xkey: 'day',
                     // A list of names of data record attributes that contain y-values.
-                    ykeys: ['value'],
+                    ykeys: [{% for app in apps %} '{{ app.internal_app_id }}', {% endfor %}],
                     // Labels for the ykeys -- will be displayed when you hover over the
                     // chart.
                     labels: yLabels

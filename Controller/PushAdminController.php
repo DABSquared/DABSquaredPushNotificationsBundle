@@ -258,10 +258,9 @@ class PushAdminController extends Controller
      *  description="Gets the data to be converted for the graph",
      *  section="DABSquared Push Notifications (Dashboard Data)"
      * )
-     *
+     * @Rest\View()
      * @Route("push/data/app_open_graph", defaults={"_format": "json"}, name="dabsquared_push_notifications_data_app_open_graph")
      * @Method("POST")
-     * @Rest\View(serializerGroups={"app_event"})
      * @RequestParam(name="device_state", description="What device state to grab", strict=true)
      * @RequestParam(name="internal_app_ids", description="The vendor device identifier of the Android device.", strict=true, array=true)
      */
@@ -270,10 +269,40 @@ class PushAdminController extends Controller
         $internalAppIds = $paramFetcher->get('internal_app_ids');
 
         $appEvents = $this->appEventManager->getAppEvents(array(AppEventInterface::APP_OPEN), array(Types::OS_IOS), $internalAppIds, $deviceState, new \DateTime('2005-08-15T15:52:01+00:00'), new \DateTime('2015-08-15T15:52:01+00:00'));
+        $appEventDayCounts = array();
 
+        /** @var $appEvent \DABSquared\PushNotificationsBundle\Model\AppEventInterface */
+        foreach($appEvents as $appEvent) {
+            $day = $appEvent->getCreatedAt()->format('Y-m-d');
+            $appId = $appEvent->getDevice()->getAppId();
 
+            if(!isset($appEventDayCounts[$day])) {
+                $appEventDayCounts[$day] = array();
+            }
 
-        return $appEvents;
+            if(!isset($appEventDayCounts[$day][$appId])) {
+                $appEventDayCounts[$day][$appId] = 0;
+            }
+
+            $appEventDayCounts[$day][$appId] = $appEventDayCounts[$day][$appId] + 1;
+        }
+
+        ksort($appEventDayCounts);
+
+        $appEventCounts = array();
+
+        foreach($appEventDayCounts as $key => $val) {
+            $tempPointArray = array();
+            $tempPointArray['day'] = $key;
+
+            foreach($appEventDayCounts[$key] as $key1 => $val1) {
+                $tempPointArray[$key1] = $val1;
+            }
+
+            $appEventCounts[] = $tempPointArray;
+        }
+
+        return $appEventCounts;
     }
 
 

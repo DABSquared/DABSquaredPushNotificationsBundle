@@ -17,6 +17,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Routing\Exception\InvalidParameterException;
 
 class AppEventManager extends BaseAppEventManger
 {
@@ -83,7 +84,73 @@ class AppEventManager extends BaseAppEventManger
         return $this->class;
     }
 
+    public function getAppEvents($appEventTypes, $deviceTypes, $appIds, $deviceState, \DateTime $startDate, \DateTime $endDate ) {
 
+        if(empty($appEventTypes)) {
+            throw new InvalidParameterException("The app events array cannot be empty.");
+        }
 
+        if(empty($deviceTypes)) {
+            throw new InvalidParameterException("The device types array cannot be empty.");
+        }
+
+        if(empty($appIds)) {
+            throw new InvalidParameterException("The app ids array cannot be empty.");
+        }
+
+        $qb = $this->repository->createQueryBuilder('a');
+        $qb->join('a.device','d');
+
+        $qb->where('d.state = :state');
+        $qb->setParameter('state',$deviceState);
+
+        $i = 0;
+        foreach($appEventTypes as $appEventType) {
+            if($i == 0) {
+                $qb->andWhere('a.type = :type'.$i);
+                $qb->setParameter('type'.$i, $appEventType);
+            } else {
+                $qb->orWhere('a.type = :type'.$i);
+                $qb->setParameter('type'.$i, $appEventType);
+            }
+            $i++;
+        }
+
+        $i = 0;
+        foreach($deviceTypes as $deviceType) {
+            if($i == 0) {
+                $qb->andWhere('d.type = :deviceType'.$i);
+                $qb->setParameter('deviceType'.$i, $deviceType);
+            } else {
+                $qb->orWhere('d.type = :deviceType'.$i);
+                $qb->setParameter('deviceType'.$i, $deviceType);
+            }
+            $i++;
+        }
+
+        $i = 0;
+        foreach($appIds as $appId) {
+            if($i == 0) {
+                $qb->andWhere('d.appId = :appId'.$i);
+                $qb->setParameter('appId'.$i, $appId);
+            } else {
+                $qb->orWhere('d.appId = :appId'.$i);
+                $qb->setParameter('appId'.$i, $appId);
+            }
+            $i++;
+        }
+
+        $qb->andWhere('a.createdAt >= :startDate');
+        $qb->setParameter('startDate', $startDate);
+
+        $qb->andWhere('a.createdAt <= :endDate');
+        $qb->setParameter('endDate', $endDate);
+
+        $appEvents = $qb
+            ->getQuery()
+            ->execute();
+
+        return $appEvents;
+    }
 
 }

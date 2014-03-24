@@ -5,6 +5,8 @@ namespace DABSquared\PushNotificationsBundle\Model;
 use DABSquared\PushNotificationsBundle\Device\DeviceStatus;
 use Doctrine\Common\Collections\ArrayCollection;
 
+use JMS\Serializer\Annotation as Serializer;
+
 /**
  * Created by JetBrains PhpStorm.
  * User: daniel_brooks
@@ -18,6 +20,7 @@ abstract class Device implements DeviceInterface
      * Device database id
      *
      * @var mixed
+     * @Serializer\Groups({"app_event"})
      */
     protected $id;
 
@@ -25,6 +28,7 @@ abstract class Device implements DeviceInterface
      * Current state of the device.
      *
      * @var integer
+     * @Serializer\Groups({"app_event"})
      */
     protected $state = Device::STATE_PRODUCTION;
 
@@ -64,6 +68,7 @@ abstract class Device implements DeviceInterface
 
     /**
      * @var string
+     * @Serializer\Groups({"app_event"})
      */
     protected $type;
 
@@ -104,6 +109,7 @@ abstract class Device implements DeviceInterface
 
     /**
      * @var string
+     * @Serializer\Groups({"app_event"})
      */
     protected $appId;
 

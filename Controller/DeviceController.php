@@ -77,7 +77,7 @@ class DeviceController extends Controller
         $alertAllowed = filter_var($paramFetcher->get('alert_allowed'), FILTER_VALIDATE_BOOLEAN);
         $isSandbox = filter_var($paramFetcher->get('is_sandbox'), FILTER_VALIDATE_BOOLEAN);
 
-        /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
+        /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManagerInterface */
         $deviceManager = $this->get('dab_push_notifications.manager.device');
 
         /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
@@ -140,7 +140,7 @@ class DeviceController extends Controller
         $appVersion = $paramFetcher->get('app_version');
         $appId = $paramFetcher->get('app_id');
 
-        /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
+        /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManagerInterface */
         $deviceManager = $this->get('dab_push_notifications.manager.device');
 
         /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
@@ -190,7 +190,7 @@ class DeviceController extends Controller
         $appId = $paramFetcher->get('app_id');
         $deviceIdentifier = $paramFetcher->get('device_identifier');
 
-        /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
+        /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManagerInterface */
         $deviceManager = $this->get('dab_push_notifications.manager.device');
 
         /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
@@ -221,7 +221,7 @@ class DeviceController extends Controller
         $appId = $paramFetcher->get('app_id');
         $deviceIdentifier = $paramFetcher->get('device_identifier');
 
-        /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
+        /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManagerInterface */
         $deviceManager = $this->get('dab_push_notifications.manager.device');
 
         /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
@@ -252,10 +252,10 @@ class DeviceController extends Controller
         $appId = $paramFetcher->get('app_id');
         $deviceIdentifier =$paramFetcher->get('device_identifier');
 
-        /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
+        /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManagerInterface */
         $deviceManager = $this->get('dab_push_notifications.manager.device');
 
-        /** @var $appEventManager \DABSquared\PushNotificationsBundle\Model\AppEventManager */
+        /** @var $appEventManager \DABSquared\PushNotificationsBundle\Model\AppEventManagerInterface */
         $appEventManager = $this->get('dab_push_notifications.manager.appevent');
 
         /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
@@ -289,10 +289,10 @@ class DeviceController extends Controller
         $appId = $paramFetcher->get('app_id');
         $deviceIdentifier =$paramFetcher->get('device_identifier');
 
-        /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
+        /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManagerInterface */
         $deviceManager = $this->get('dab_push_notifications.manager.device');
 
-        /** @var $appEventManager \DABSquared\PushNotificationsBundle\Model\AppEventManager */
+        /** @var $appEventManager \DABSquared\PushNotificationsBundle\Model\AppEventManagerInterface */
         $appEventManager = $this->get('dab_push_notifications.manager.appevent');
 
         /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
@@ -328,10 +328,10 @@ class DeviceController extends Controller
         $appId = $paramFetcher->get('app_id');
         $deviceIdentifier =$paramFetcher->get('device_identifier');
 
-        /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
+        /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManagerInterface */
         $deviceManager = $this->get('dab_push_notifications.manager.device');
 
-        /** @var $appEventManager \DABSquared\PushNotificationsBundle\Model\AppEventManager */
+        /** @var $appEventManager \DABSquared\PushNotificationsBundle\Model\AppEventManagerInterface */
         $appEventManager = $this->get('dab_push_notifications.manager.appevent');
 
         /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
@@ -363,10 +363,10 @@ class DeviceController extends Controller
         $appId = $paramFetcher->get('app_id');
         $deviceIdentifier =$paramFetcher->get('device_identifier');
 
-        /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
+        /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManagerInterface */
         $deviceManager = $this->get('dab_push_notifications.manager.device');
 
-        /** @var $appEventManager \DABSquared\PushNotificationsBundle\Model\AppEventManager */
+        /** @var $appEventManager \DABSquared\PushNotificationsBundle\Model\AppEventManagerInterface */
         $appEventManager = $this->get('dab_push_notifications.manager.appevent');
 
         /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
@@ -400,7 +400,7 @@ class DeviceController extends Controller
         $deviceIdentifier =$paramFetcher->get('device_identifier');
         $deviceToken = $paramFetcher->get('device_token');
 
-        /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManager */
+        /** @var $deviceManager \DABSquared\PushNotificationsBundle\Model\DeviceManagerInterface */
         $deviceManager = $this->get('dab_push_notifications.manager.device');
 
         /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */

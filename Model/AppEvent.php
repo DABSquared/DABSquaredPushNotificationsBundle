@@ -4,6 +4,9 @@ namespace DABSquared\PushNotificationsBundle\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
+use JMS\Serializer\Annotation as Serializer;
+
+
 /**
  * Created by JetBrains PhpStorm.
  * User: daniel_brooks
@@ -23,16 +26,19 @@ abstract class AppEvent implements AppEventInterface
 
     /**
      * @var \DateTime
+     * @Serializer\Groups({"app_event"})
      */
     protected $createdAt;
 
     /**
      * @var string
+     * @Serializer\Groups({"app_event"})
      */
     protected $type;
 
     /**
      * @var \DABSquared\PushNotificationsBundle\Model\DeviceInterface
+     * @Serializer\Groups({"app_event"})
      */
     protected $device;
 

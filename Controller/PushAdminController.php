@@ -10,7 +10,17 @@
 namespace DABSquared\PushNotificationsBundle\Controller;
 
 use DABSquared\PushNotificationsBundle\Device\DeviceStatus;
+use DABSquared\PushNotificationsBundle\Device\Types;
+use DABSquared\PushNotificationsBundle\Model\AppEventInterface;
+use DABSquared\PushNotificationsBundle\Model\DeviceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
+use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\Request\ParamFetcher;
+use FOS\RestBundle\Controller\Annotations\RequestParam;
+use FOS\RestBundle\Controller\Annotations\QueryParam;
+
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -31,6 +41,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use FOS\RestBundle\View\View;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Validator\Constraints\Date;
 
 
 class PushAdminController extends Controller
@@ -59,6 +70,12 @@ class PushAdminController extends Controller
      * @DI\Inject("dab_push_notifications.manager.message")
      */
     private $messageManager;
+
+    /**
+     * @var \DABSquared\PushNotificationsBundle\Model\AppEventManagerInterface
+     * @DI\Inject("dab_push_notifications.manager.appevent")
+     */
+    private $appEventManager;
 
     /**
      * @var \DABSquared\PushNotificationsBundle\Service\Notifications
@@ -233,5 +250,32 @@ class PushAdminController extends Controller
 
         return array('form' => $form->createView());
     }
+
+
+
+    /**
+     * @ApiDoc(
+     *  description="Gets the data to be converted for the graph",
+     *  section="DABSquared Push Notifications (Dashboard Data)"
+     * )
+     *
+     * @Route("push/data/app_open_graph", defaults={"_format": "json"}, name="dabsquared_push_notifications_data_app_open_graph")
+     * @Method("POST")
+     * @Rest\View(serializerGroups={"app_event"})
+     * @RequestParam(name="device_state", description="What device state to grab", strict=true)
+     * @RequestParam(name="internal_app_ids", description="The vendor device identifier of the Android device.", strict=true, array=true)
+     */
+    public function getAppOpenGraphDataAction(ParamFetcher $paramFetcher) {
+        $deviceState = $paramFetcher->get('device_state');
+        $internalAppIds = $paramFetcher->get('internal_app_ids');
+
+        $appEvents = $this->appEventManager->getAppEvents(array(AppEventInterface::APP_OPEN), array(Types::OS_IOS), $internalAppIds, $deviceState, new \DateTime('2005-08-15T15:52:01+00:00'), new \DateTime('2015-08-15T15:52:01+00:00'));
+
+
+
+        return $appEvents;
+    }
+
+
 
 }

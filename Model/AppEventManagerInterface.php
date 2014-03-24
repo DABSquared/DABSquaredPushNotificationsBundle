@@ -21,4 +21,6 @@ interface AppEventManagerInterface
     public function getClass();
 
 
+    public function getAppEvents($appEventTypes, $deviceTypes, $appIds, $deviceState, \DateTime $startDate, \DateTime $endDate );
+
 }

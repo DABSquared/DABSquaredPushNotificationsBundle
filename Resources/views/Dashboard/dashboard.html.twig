@@ -2,10 +2,68 @@
 
  {% block content %}
 
+
+     <div class="row">
+         <div class="col-md-12">
+             <div id="appOpensChart" style="height: 250px;"></div>
+         </div>
+     </div>
+
      {% for app in apps %}
-
          {{ app.name }}
-
      {% endfor %}
 
  {% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="application/javascript">
+
+        var yLabels = Array();
+
+        {% for app in apps %}
+            yLabels.push('{{ app.name }}');
+        {% endfor %}
+
+        new Morris.Line({
+            // ID of the element in which to draw the chart.
+            element: 'appOpensChart',
+            // Chart data records -- each entry in this array corresponds to a point on
+            // the chart.
+            data: [
+                { day: '2008', value: 20 },
+                { day: '2009', value: 10 },
+                { day: '2010', value: 5 },
+                { day: '2011', value: 5 },
+                { day: '2012', value: 20 }
+            ],
+            // The name of the data record attribute that contains x-values.
+            xkey: 'day',
+            // A list of names of data record attributes that contain y-values.
+            ykeys: ['value'],
+            // Labels for the ykeys -- will be displayed when you hover over the
+            // chart.
+            labels: yLabels
+        });
+
+
+
+        function loadGraphData() {
+            $.ajax ({
+                url: "{{create_proper_route('dabsquared_push_notifications_data_app_open_graph')}}",
+                type: "POST",
+                data: JSON.stringify({internal_app_ids: ["0000001"], device_state: 0 }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function(data){
+                }
+            });
+        }
+
+        loadGraphData();
+
+    </script>
+
+{% endblock %}

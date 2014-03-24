@@ -44,7 +44,7 @@
 
         function loadGraphData() {
             $.ajax ({
-                url: "{{create_proper_route('dabsquared_push_notifications_data_app_open_graph')}}",
+                url: "{{ path('dabsquared_push_notifications_data_app_open_graph')}}",
                 type: "POST",
                 data: JSON.stringify({internal_app_ids: ["0000001"], device_state: 0 }),
                 dataType: "json",

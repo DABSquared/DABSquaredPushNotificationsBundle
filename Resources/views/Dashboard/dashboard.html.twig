@@ -2,6 +2,25 @@
 
  {% block content %}
 
+     <div class="row">
+         <div class="col-md-12">
+             {% for app in apps %}
+                 {{ app.name }}: <input type="checkbox" name="internal_app_ids" value="{{ app.internal_app_id }}" checked>
+             {% endfor %}
+         </div>
+     </div>
+
+     <div class="row">
+         <div class="col-md-12">
+              Sandbox: <input type="radio" name="device_state" value="0" checked> Production: <input type="radio" name="device_state" value="1">
+         </div>
+     </div>
+
+     <div class="row">
+         <div class="col-md-12">
+             <input class="btn btn-primary" value="Submit" onclick="loadGraphData();">
+         </div>
+     </div>
 
      <div class="row">
          <div class="col-md-12">
@@ -9,9 +28,7 @@
          </div>
      </div>
 
-     {% for app in apps %}
-         {{ app.name }}
-     {% endfor %}
+
 
  {% endblock %}
 
@@ -21,34 +38,9 @@
 
     <script type="application/javascript">
 
-        var yLabels = Array();
-
-        {% for app in apps %}
-            yLabels.push('{{ app.name }}');
-        {% endfor %}
-
-        new Morris.Line({
-            // ID of the element in which to draw the chart.
-            element: 'appOpensChart',
-            // Chart data records -- each entry in this array corresponds to a point on
-            // the chart.
-            data: [
-                { day: '2008', value: 20 },
-                { day: '2009', value: 10 },
-                { day: '2010', value: 5 },
-                { day: '2011', value: 5 },
-                { day: '2012', value: 20 }
-            ],
-            // The name of the data record attribute that contains x-values.
-            xkey: 'day',
-            // A list of names of data record attributes that contain y-values.
-            ykeys: ['value'],
-            // Labels for the ykeys -- will be displayed when you hover over the
-            // chart.
-            labels: yLabels
+        $(document).ready(function(){
+            loadGraphData();
         });
-
-
 
         function loadGraphData() {
             $.ajax ({
@@ -60,10 +52,38 @@
                 success: function(data){
                 }
             });
+
+            var yLabels = Array();
+
+            {% for app in apps %}
+            yLabels.push('{{ app.name }}');
+            {% endfor %}
+
+            if(window.graph != null) {
+
+            } else {
+                window.graph = new Morris.Line({
+                    // ID of the element in which to draw the chart.
+                    element: 'appOpensChart',
+                    // Chart data records -- each entry in this array corresponds to a point on
+                    // the chart.
+                    data: [
+                        { day: '2008', value: 20 },
+                        { day: '2009', value: 10 },
+                        { day: '2010', value: 5 },
+                        { day: '2011', value: 5 },
+                        { day: '2012', value: 20 }
+                    ],
+                    // The name of the data record attribute that contains x-values.
+                    xkey: 'day',
+                    // A list of names of data record attributes that contain y-values.
+                    ykeys: ['value'],
+                    // Labels for the ykeys -- will be displayed when you hover over the
+                    // chart.
+                    labels: yLabels
+                });
+            }
         }
-
-        loadGraphData();
-
     </script>
 
 {% endblock %}

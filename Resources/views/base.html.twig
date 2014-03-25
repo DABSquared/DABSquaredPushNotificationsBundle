@@ -7,6 +7,7 @@
     <title>{% block title %}DABSquaredPushNotificationsBundle{% endblock %}</title>
     <link href="{{ asset("bundles/dabsquaredpushnotifications/css/bootstrap.css") }}" rel="stylesheet" />
     <link href="{{ asset("bundles/dabsquaredpushnotifications/css/morris.css") }}" rel="stylesheet" />
+    <link href="{{ asset("bundles/dabsquaredpushnotifications/css/jquery-ui-1.10.4.custom.min.css") }}" rel="stylesheet" />
 
 </head>
 <body>
@@ -23,7 +24,7 @@
 
         </div>
         <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
+            <ul class="nav navbar-nav pull-right">
                 <li class="{% if dab_push_selected_nav == 'dashboard' %}active{% endif %}">
                     <a href="{{ path('dabsquared_push_notifications_dashboard') }}">Dashboard</a>
                 </li>
@@ -49,6 +50,7 @@
 
 {% block javascripts %}
     <script src="{{ asset("bundles/dabsquaredpushnotifications/js/jquery.js") }}" type="text/javascript"></script>
+    <script src="{{ asset("bundles/dabsquaredpushnotifications/js/jquery-ui-1.10.4.custom.min.js") }}" type="text/javascript"></script>
     <script src="{{ asset("bundles/dabsquaredpushnotifications/js/bootstrap.min.js") }}" type="text/javascript"></script>
     <script src="{{ asset("bundles/dabsquaredpushnotifications/js/raphael-min.js") }}" type="text/javascript"></script>
     <script src="{{ asset("bundles/dabsquaredpushnotifications/js/morris.min.js") }}" type="text/javascript"></script>

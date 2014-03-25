@@ -37,6 +37,11 @@
 
     </form>
 
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
     <script type="text/javascript">
         $(document).ready(function(){
             $('#dabsquared_pushbundle_messagetype_message').keyup(function () {
@@ -49,6 +54,7 @@
                 }
             });
 
+            $('#dabsquared_pushbundle_messagetype_message').addClass('col-md-12');
         });
     </script>
 {% endblock %}

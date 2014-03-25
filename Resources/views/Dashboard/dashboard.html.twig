@@ -3,22 +3,79 @@
  {% block content %}
 
      <div class="row">
+        <div class="col-md-12">
+            <h4>Apps</h4>
+        </div>
+     </div>
+
+     <div class="row">
          <div class="col-md-12">
              {% for app in apps %}
-                 {{ app.name }}: <input type="checkbox" name="internal_app_ids" value="{{ app.internal_app_id }}" checked>
+                 <label for="{{ app.name }}">{{ app.name }}</label> <input type="checkbox" id="{{ app.name }}" name="internal_app_ids" value="{{ app.internal_app_id }}" checked>
              {% endfor %}
          </div>
      </div>
 
      <div class="row">
          <div class="col-md-12">
-              Sandbox: <input type="radio" name="device_state" value="0" checked> Production: <input type="radio" name="device_state" value="1">
+             <h4>Device Types</h4>
+         </div>
+     </div>
+
+     <div class="row">
+         <div class="col-md-3">
+             <label for="ios">iOS</label> <input type="checkbox" id="ios" name="device_type" value="dab_push_notifications.os.ios" checked>
+         </div>
+         <div class="col-md-3">
+             <label for="gcm">Android GCM</label> <input type="checkbox" id="gcm" name="device_type" value="dab_push_notifications.os.android.gcm" checked>
+         </div>
+         <div class="col-md-3">
+             <label for="c2dm">Android C2DM</label> <input type="checkbox" id="c2dm" name="device_type" value="dab_push_notifications.os.android.c2dm" checked>
+         </div>
+         <div class="col-md-3">
+             <label for="safari">Safari</label> <input type="checkbox" id="safari" name="device_type" value="dab_push_notifications.os.safari" checked>
          </div>
      </div>
 
      <div class="row">
          <div class="col-md-12">
-             <input class="btn btn-primary" value="Submit" onclick="loadGraphData();">
+             <h4>System</h4>
+         </div>
+     </div>
+
+     <div class="row">
+         <div class="col-md-6">
+             <label for="sandbox">Sandbox</label> <input type="radio" id="sandbox" name="device_state" value="0" checked>
+         </div>
+         <div class="col-md-6">
+             <label for="production">Production</label> <input type="radio" id="production" name="device_state" value="1">
+         </div>
+     </div>
+
+     <div class="row">
+         <div class="col-md-12">
+             <h4>Date Range</h4>
+         </div>
+     </div>
+
+     <div class="row">
+         <div class="col-md-12">
+             <label for="from">From</label>
+             <input type="text" id="from" name="from">
+             <label for="to">to</label>
+             <input type="text" id="to" name="to">
+         </div>
+     </div>
+
+     <div class="row">
+         <div class="col-md-12 pull-right">
+             <input class="btn btn-primary pull-right" value="Submit" onclick="loadGraphData();">
+         </div>
+     </div>
+
+     <div class="row">
+         <div class="col-md-12">
+             <h4>App Opens</h4>
          </div>
      </div>
 
@@ -28,7 +85,29 @@
          </div>
      </div>
 
+     <div class="row">
+         <div class="col-md-12">
+             <h4>App Terminated</h4>
+         </div>
+     </div>
 
+     <div class="row">
+         <div class="col-md-12">
+             <div id="appTerminatedChart" style="height: 250px;"></div>
+         </div>
+     </div>
+
+     <div class="row">
+         <div class="col-md-12">
+             <h4>App Backgrounded</h4>
+         </div>
+     </div>
+
+     <div class="row">
+         <div class="col-md-12">
+             <div id="appBackgroundedChart" style="height: 250px;"></div>
+         </div>
+     </div>
 
  {% endblock %}
 
@@ -38,26 +117,58 @@
 
     <script type="application/javascript">
 
+        $(function() {
+            $( "#from" ).datepicker({
+              defaultDate: "+1w",
+              changeMonth: true,
+              numberOfMonths: 3,
+              onClose: function( selectedDate ) {
+                $( "#to" ).datepicker( "option", "minDate", selectedDate );
+              }
+            });
+            $( "#to" ).datepicker({
+              defaultDate: "+1w",
+              changeMonth: true,
+              numberOfMonths: 3,
+              onClose: function( selectedDate ) {
+                $( "#from" ).datepicker( "option", "maxDate", selectedDate );
+              }
+            });
+
+            $( "#from" ).val();
+          });
+
         $(document).ready(function(){
             loadGraphData();
         });
 
         function loadGraphData() {
+            loadAppOpenGraphData();
+            loadAppTerminatedGraphData();
+            loadAppBackgroundedGraphData();
+        }
+
+        function loadAppOpenGraphData() {
             var deviceState =  $("input:radio[name=device_state]:checked").val();
             var internal_app_ids =  Array();
+            var device_type =  Array();
 
             $('input[name="internal_app_ids"]:checked').each(function() {
                 internal_app_ids.push(this.value);
             });
 
+            $('input[name="device_type"]:checked').each(function() {
+                device_type.push(this.value);
+            });
+
             $.ajax ({
-                url: "{{ create_proper_route('dabsquared_push_notifications_data_app_open_graph')}}",
+                url: "{{ path('dabsquared_push_notifications_data_app_open_graph')}}",
                 type: "POST",
-                data: JSON.stringify({internal_app_ids: internal_app_ids, device_state: deviceState }),
+                data: JSON.stringify({internal_app_ids: internal_app_ids, device_state: deviceState, device_types: device_type, start_date: $("#from").val(), end_date: $("#to").val() }),
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function(data){
-                    window.graph.setData(data);
+                    window.appOpenGraph.setData(data);
                 }
             });
 
@@ -67,12 +178,112 @@
             yLabels.push('{{ app.name }}');
             {% endfor %}
 
-            if(window.graph != null) {
+            if(window.appOpenGraph != null) {
 
             } else {
-                window.graph = new Morris.Line({
+                window.appOpenGraph = new Morris.Line({
                     // ID of the element in which to draw the chart.
                     element: 'appOpensChart',
+                    // Chart data records -- each entry in this array corresponds to a point on
+                    // the chart.
+                    data: [],
+                    // The name of the data record attribute that contains x-values.
+                    xkey: 'day',
+                    // A list of names of data record attributes that contain y-values.
+                    ykeys: [{% for app in apps %} '{{ app.internal_app_id }}', {% endfor %}],
+                    // Labels for the ykeys -- will be displayed when you hover over the
+                    // chart.
+                    labels: yLabels
+                });
+            }
+        }
+
+        function loadAppTerminatedGraphData() {
+            var deviceState =  $("input:radio[name=device_state]:checked").val();
+            var internal_app_ids =  Array();
+            var device_type =  Array();
+
+            $('input[name="internal_app_ids"]:checked').each(function() {
+                internal_app_ids.push(this.value);
+            });
+
+            $('input[name="device_type"]:checked').each(function() {
+                device_type.push(this.value);
+            });
+
+            $.ajax ({
+                url: "{{ path('dabsquared_push_notifications_data_app_terminated_graph')}}",
+                type: "POST",
+                data: JSON.stringify({internal_app_ids: internal_app_ids, device_state: deviceState, device_types: device_type, start_date: $("#from").val(), end_date: $("#to").val() }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function(data){
+                    window.appTerminatedGraph.setData(data);
+                }
+            });
+
+            var yLabels = Array();
+
+            {% for app in apps %}
+            yLabels.push('{{ app.name }}');
+            {% endfor %}
+
+            if(window.appTerminatedGraph != null) {
+
+            } else {
+                window.appTerminatedGraph = new Morris.Line({
+                    // ID of the element in which to draw the chart.
+                    element: 'appTerminatedChart',
+                    // Chart data records -- each entry in this array corresponds to a point on
+                    // the chart.
+                    data: [],
+                    // The name of the data record attribute that contains x-values.
+                    xkey: 'day',
+                    // A list of names of data record attributes that contain y-values.
+                    ykeys: [{% for app in apps %} '{{ app.internal_app_id }}', {% endfor %}],
+                    // Labels for the ykeys -- will be displayed when you hover over the
+                    // chart.
+                    labels: yLabels
+                });
+            }
+        }
+
+        function loadAppBackgroundedGraphData() {
+            var deviceState =  $("input:radio[name=device_state]:checked").val();
+            var internal_app_ids =  Array();
+            var device_type =  Array();
+
+            $('input[name="internal_app_ids"]:checked').each(function() {
+                internal_app_ids.push(this.value);
+            });
+
+            $('input[name="device_type"]:checked').each(function() {
+                device_type.push(this.value);
+            });
+
+            $.ajax ({
+                url: "{{ path('dabsquared_push_notifications_data_app_backgrounded_graph')}}",
+                type: "POST",
+                data: JSON.stringify({internal_app_ids: internal_app_ids, device_state: deviceState, device_types: device_type, start_date: $("#from").val(), end_date: $("#to").val() }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function(data){
+                    window.appBackgroundedGraph.setData(data);
+                }
+            });
+
+            var yLabels = Array();
+
+            {% for app in apps %}
+            yLabels.push('{{ app.name }}');
+            {% endfor %}
+
+            if(window.appBackgroundedGraph != null) {
+
+            } else {
+                window.appBackgroundedGraph = new Morris.Line({
+                    // ID of the element in which to draw the chart.
+                    element: 'appBackgroundedChart',
                     // Chart data records -- each entry in this array corresponds to a point on
                     // the chart.
                     data: [],

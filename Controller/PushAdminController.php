@@ -262,13 +262,34 @@ class PushAdminController extends Controller
      * @Route("push/data/app_open_graph", defaults={"_format": "json"}, name="dabsquared_push_notifications_data_app_open_graph")
      * @Method("POST")
      * @RequestParam(name="device_state", description="What device state to grab", strict=true)
-     * @RequestParam(name="internal_app_ids", description="The vendor device identifier of the Android device.", strict=true, array=true)
+     * @RequestParam(name="internal_app_ids", description="The internal app ids to see information for.", strict=true, array=true)
+     * @RequestParam(name="device_types", description="The device types to show data for", strict=true, array=true)
+     * @RequestParam(name="start_date", description="Start date", strict=false)
+     * @RequestParam(name="end_date", description="End date", strict=false)
      */
     public function getAppOpenGraphDataAction(ParamFetcher $paramFetcher) {
         $deviceState = $paramFetcher->get('device_state');
         $internalAppIds = $paramFetcher->get('internal_app_ids');
+        $deviceTypes = $paramFetcher->get('device_types');
+        $startDate = $paramFetcher->get('start_date');
+        $endDate = $paramFetcher->get('end_date');
 
-        $appEvents = $this->appEventManager->getAppEvents(array(AppEventInterface::APP_OPEN), array(Types::OS_IOS), $internalAppIds, $deviceState, new \DateTime('2005-08-15T15:52:01+00:00'), new \DateTime('2015-08-15T15:52:01+00:00'));
+        if(is_null($startDate)) {
+            $date = new \DateTime('NOW');
+            $date->modify('-1 week');
+            $startDate = $date;
+        } else {
+            $startDate = new \DateTime($startDate);
+        }
+
+        if(is_null($endDate)) {
+            $endDate = new \DateTime('NOW');
+        }else {
+            $endDate = new \DateTime($endDate);
+        }
+
+
+        $appEvents = $this->appEventManager->getAppEvents(array(AppEventInterface::APP_OPEN), $deviceTypes, $internalAppIds, $deviceState, $startDate, $endDate);
         $appEventDayCounts = array();
 
         /** @var $appEvent \DABSquared\PushNotificationsBundle\Model\AppEventInterface */
@@ -305,6 +326,151 @@ class PushAdminController extends Controller
         return $appEventCounts;
     }
 
+    /**
+     * @ApiDoc(
+     *  description="Gets the data to be converted for the graph",
+     *  section="DABSquared Push Notifications (Dashboard Data)"
+     * )
+     * @Rest\View()
+     * @Route("push/data/app_terminated_graph", defaults={"_format": "json"}, name="dabsquared_push_notifications_data_app_terminated_graph")
+     * @Method("POST")
+     * @RequestParam(name="device_state", description="What device state to grab", strict=true)
+     * @RequestParam(name="internal_app_ids", description="The internal app ids to see information for.", strict=true, array=true)
+     * @RequestParam(name="device_types", description="The device types to show data for", strict=true, array=true)
+     * @RequestParam(name="start_date", description="Start date", strict=false)
+     * @RequestParam(name="end_date", description="End date", strict=false)
+     */
+    public function getAppTerminatedGraphDataAction(ParamFetcher $paramFetcher) {
+        $deviceState = $paramFetcher->get('device_state');
+        $internalAppIds = $paramFetcher->get('internal_app_ids');
+        $deviceTypes = $paramFetcher->get('device_types');
+        $startDate = $paramFetcher->get('start_date');
+        $endDate = $paramFetcher->get('end_date');
+
+        if(is_null($startDate)) {
+            $date = new \DateTime('NOW');
+            $date->modify('-1 week');
+            $startDate = $date;
+        } else {
+            $startDate = new \DateTime($startDate);
+        }
+
+        if(is_null($endDate)) {
+            $endDate = new \DateTime('NOW');
+        }else {
+            $endDate = new \DateTime($endDate);
+        }
+
+
+        $appEvents = $this->appEventManager->getAppEvents(array(AppEventInterface::APP_TERMINATED), $deviceTypes, $internalAppIds, $deviceState, $startDate, $endDate);
+        $appEventDayCounts = array();
+
+        /** @var $appEvent \DABSquared\PushNotificationsBundle\Model\AppEventInterface */
+        foreach($appEvents as $appEvent) {
+            $day = $appEvent->getCreatedAt()->format('Y-m-d');
+            $appId = $appEvent->getDevice()->getAppId();
+
+            if(!isset($appEventDayCounts[$day])) {
+                $appEventDayCounts[$day] = array();
+            }
+
+            if(!isset($appEventDayCounts[$day][$appId])) {
+                $appEventDayCounts[$day][$appId] = 0;
+            }
+
+            $appEventDayCounts[$day][$appId] = $appEventDayCounts[$day][$appId] + 1;
+        }
+
+        ksort($appEventDayCounts);
+
+        $appEventCounts = array();
+
+        foreach($appEventDayCounts as $key => $val) {
+            $tempPointArray = array();
+            $tempPointArray['day'] = $key;
+
+            foreach($appEventDayCounts[$key] as $key1 => $val1) {
+                $tempPointArray[$key1] = $val1;
+            }
+
+            $appEventCounts[] = $tempPointArray;
+        }
+
+        return $appEventCounts;
+    }
+
+    /**
+     * @ApiDoc(
+     *  description="Gets the data to be converted for the graph",
+     *  section="DABSquared Push Notifications (Dashboard Data)"
+     * )
+     * @Rest\View()
+     * @Route("push/data/app_backgrounded_graph", defaults={"_format": "json"}, name="dabsquared_push_notifications_data_app_backgrounded_graph")
+     * @Method("POST")
+     * @RequestParam(name="device_state", description="What device state to grab", strict=true)
+     * @RequestParam(name="internal_app_ids", description="The internal app ids to see information for.", strict=true, array=true)
+     * @RequestParam(name="device_types", description="The device types to show data for", strict=true, array=true)
+     * @RequestParam(name="start_date", description="Start date", strict=false)
+     * @RequestParam(name="end_date", description="End date", strict=false)
+     */
+    public function getAppBackgroundedGraphDataAction(ParamFetcher $paramFetcher) {
+        $deviceState = $paramFetcher->get('device_state');
+        $internalAppIds = $paramFetcher->get('internal_app_ids');
+        $deviceTypes = $paramFetcher->get('device_types');
+        $startDate = $paramFetcher->get('start_date');
+        $endDate = $paramFetcher->get('end_date');
+
+        if(is_null($startDate)) {
+            $date = new \DateTime('NOW');
+            $date->modify('-1 week');
+            $startDate = $date;
+        } else {
+            $startDate = new \DateTime($startDate);
+        }
+
+        if(is_null($endDate)) {
+            $endDate = new \DateTime('NOW');
+        }else {
+            $endDate = new \DateTime($endDate);
+        }
+
+
+        $appEvents = $this->appEventManager->getAppEvents(array(AppEventInterface::APP_BACKGROUNDED), $deviceTypes, $internalAppIds, $deviceState, $startDate, $endDate);
+        $appEventDayCounts = array();
+
+        /** @var $appEvent \DABSquared\PushNotificationsBundle\Model\AppEventInterface */
+        foreach($appEvents as $appEvent) {
+            $day = $appEvent->getCreatedAt()->format('Y-m-d');
+            $appId = $appEvent->getDevice()->getAppId();
+
+            if(!isset($appEventDayCounts[$day])) {
+                $appEventDayCounts[$day] = array();
+            }
+
+            if(!isset($appEventDayCounts[$day][$appId])) {
+                $appEventDayCounts[$day][$appId] = 0;
+            }
+
+            $appEventDayCounts[$day][$appId] = $appEventDayCounts[$day][$appId] + 1;
+        }
+
+        ksort($appEventDayCounts);
+
+        $appEventCounts = array();
+
+        foreach($appEventDayCounts as $key => $val) {
+            $tempPointArray = array();
+            $tempPointArray['day'] = $key;
+
+            foreach($appEventDayCounts[$key] as $key1 => $val1) {
+                $tempPointArray[$key1] = $val1;
+            }
+
+            $appEventCounts[] = $tempPointArray;
+        }
+
+        return $appEventCounts;
+    }
 
 
 }

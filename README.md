@@ -34,51 +34,13 @@ This bundle is under the MIT license. See the complete license in the bundle:
 
     Resources/meta/LICENSE
 
+## Admin Web Interface
 
-Configuration
--------
+![](Resources/doc/images/dashboard.png)
+![](Resources/doc/images/devices.png)
+![](Resources/doc/images/create_message.png)
 
-Below you'll find all configuration options; just use what you need:
-
-``` yaml
-    dab_push_notifications:
-      android:
-          c2dm:
-              username: <string_android_c2dm_username>
-              password: <string_android_c2dm_password>
-              source: <string_android_c2dm_source>
-          gcm:
-              api_key: <string_android_gcm_api_key>
-      ios:
-          certificates:  #replace these certs with your own as well as app ids. The bundle will loop through all certs displayed here when sending a push based on the sandbox param. You can add as many certificates as you need. Also note that the bundle will send using certificates that match the internal_app_ids of the registered devices.
-            dev_prem: { sandbox: true, pem: %kernel.root_dir%/../pushcerts/premium/dev/certificate.pem, passphrase: ~, internal_app_id: 0000001}
-            dev_lite: { sandbox: true, pem: %kernel.root_dir%/../pushcerts/lite/dev/certificate.pem, passphrase: ~, internal_app_id: 0000002}
-            prod_prem: { sandbox: false, pem: %kernel.root_dir%/../pushcerts/premium/prod/certificate.pem, passphrase: ~, internal_app_id: 0000001}
-            prod_lite: { sandbox: false, pem: %kernel.root_dir%/../pushcerts/lite/prod/certificate.pem, passphrase: ~,internal_app_id: 0000002}
-      blackberry:
-          evaluation: <bool_bb_evaluation_mode>
-          app_id: <string_bb_app_id>
-          password: <string_bb_password>
-      safari:
-          pem: %kernel.root_dir%/../pushcerts/safari/safari_push.pem
-          pk12: %kernel.root_dir%/../pushcerts/safari/Certificates.p12
-          passphrase: ~
-          website_push_id: web.com.demo
-          icon16x16: %kernel.root_dir%/../pushcerts/safari/icon_16x16.png
-          icon16x16@2x: %kernel.root_dir%/../pushcerts/safari/icon_16x16@2x.png
-          icon32x32: %kernel.root_dir%/../pushcerts/safari/icon_32x32.png
-          icon32x32@2x: %kernel.root_dir%/../pushcerts/safari/icon_32x32@2x.png
-          icon128x128: %kernel.root_dir%/../pushcerts/safari/icon_128x128.png
-          icon128x128@2x: %kernel.root_dir%/../pushcerts/safari/icon_128x128@2x.png
-          websiteName: Demo Site
-          allowedDomains: ["https://demo.com","https://www.demo.com"]
-          urlFormatString: http://www.demo.com/%@
-          webServiceURL: https://www.demo.com
-```
-
-
-
-## DABSquared New Usage
+## Sending Messages
 
 Send to a User:
 

@@ -156,6 +156,7 @@ class DeviceController extends Controller
         }
 
         $device->setDeviceModel($deviceModel);
+        $device->setDeviceIdentifier($deviceIdentifier);
         $device->setDeviceName($deviceName);
         $device->setDeviceVersion($deviceVersion);
         $device->setDeviceToken($deviceToken);

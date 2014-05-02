@@ -17,11 +17,11 @@ class AndroidGCMNotification implements OSNotificationServiceInterface
     protected $apiURL = "https://android.googleapis.com/gcm/send";
 
     /**
-     * Google GCM API key
+     * Array of used api keys
      *
      * @var string
      */
-    protected $apiKey;
+    protected $apiKeys;
 
     /**
      * @var \DABSquared\PushNotificationsBundle\Model\DeviceManager
@@ -47,9 +47,9 @@ class AndroidGCMNotification implements OSNotificationServiceInterface
      *
      * @param $apiKey
      */
-    public function __construct($apiKey, \DABSquared\PushNotificationsBundle\Model\DeviceManager $deviceManager)
+    public function __construct($apiKeys, \DABSquared\PushNotificationsBundle\Model\DeviceManager $deviceManager)
     {
-        $this->apiKey = $apiKey;
+        $this->apiKeys = $apiKeys;
         $this->deviceManager = $deviceManager;
     }
 
@@ -66,8 +66,18 @@ class AndroidGCMNotification implements OSNotificationServiceInterface
             throw new InvalidMessageTypeException(sprintf("Message type '%s' not supported by GCM", get_class($message)));
         }
 
+        $apiKey = null;
+
+        foreach($this->apiKeys as $anAPIKey) {
+            if($message->getDevice()->getAppId() == $anAPIKey['internal_app_id']) {
+                $apiKey = $anAPIKey;
+                break;
+            }
+        }
+
+
         $headers = array(
-            "Authorization: key=" . $this->apiKey,
+            "Authorization: key=" . $apiKey,
             "Content-Type: application/json",
         );
         $data = array_merge(

@@ -4,7 +4,7 @@ namespace DABSquared\PushNotificationsBundle\Model;
 
 interface MessageInterface
 {
-    const DEFAULT_COLLAPSE_KEY = 1;
+    const DEFAULT_COLLAPSE_KEY = "1";
 
     /**
      * @return mixed database ID for this device

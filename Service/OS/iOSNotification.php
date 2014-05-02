@@ -8,7 +8,6 @@ use DABSquared\PushNotificationsBundle\Exception\InvalidMessageTypeException,
     DABSquared\PushNotificationsBundle\Device\Types,
     DABSquared\PushNotificationsBundle\Model\Device;
 
-use Buzz\Browser;
 use DABSquared\PushNotificationsBundle\Message\MessageStatus;
 use DABSquared\PushNotificationsBundle\Model\DeviceManagerInterface;
 use DABSquared\PushNotificationsBundle\Model\MessageManagerInterface;
@@ -108,9 +107,9 @@ class iOSNotification implements OSNotificationServiceInterface
      * Send a bunch of notification messages
      *
      * @param array $messages
-     * @throws \RuntimeException
+     * @return bool|void
+     * @throws \Symfony\Component\DependencyInjection\Exception\RuntimeException
      * @throws \DABSquared\PushNotificationsBundle\Exception\InvalidMessageTypeException
-     * @return int
      */
     public function sendMessages(array $messages)
     {

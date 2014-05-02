@@ -86,7 +86,7 @@ abstract class Message implements MessageInterface
     /**
      * Collapse key for data
      *
-     * @var int
+     * @var string
      */
     protected $collapseKey = self::DEFAULT_COLLAPSE_KEY;
 
@@ -234,6 +234,7 @@ abstract class Message implements MessageInterface
                 "registration_id" => $this->device->getDeviceidentifier(),
                 "collapse_key"    => $this->collapseKey,
                 "data.message"    => $this->message,
+                "data.content_available" => $this->contentAvailable ? 1 : 0,
             );
             if (!empty($this->customData)) {
                 $data = array_merge($data, $this->customData);
@@ -388,7 +389,7 @@ abstract class Message implements MessageInterface
      * Android-specific
      * Returns the collapse key
      *
-     * @return int
+     * @return string
      */
     public function getCollapseKey()
     {

@@ -105,11 +105,18 @@ class Configuration
                                         scalarNode("source")->defaultValue("")->end()->
                                     end()->
                             end()->
-                            arrayNode("gcm")->
-                                canBeUnset()->
-                                    children()->
-                                        scalarNode("api_key")->isRequired()->cannotBeEmpty()->end()->
-                                    end()->
+                            arrayNode("gcm")
+                                ->children()
+                                ->arrayNode('api_keys')
+                                    ->isRequired()
+                                    ->requiresAtLeastOneElement()
+                                    ->useAttributeAsKey('name')
+                                    ->prototype('array')
+                                    ->children()
+                                        ->scalarNode('api_key')->isRequired()->end()
+                                        ->scalarNode('internal_app_id')->isRequired()->end()
+                                    ->end()->
+                                end()->
                             end()->
                         end()->
                 end()->

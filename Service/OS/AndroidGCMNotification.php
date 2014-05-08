@@ -70,7 +70,7 @@ class AndroidGCMNotification implements OSNotificationServiceInterface
 
         foreach($this->apiKeys as $anAPIKey) {
             if($message->getDevice()->getAppId() == $anAPIKey['internal_app_id']) {
-                $apiKey = $anAPIKey;
+                $apiKey = $anAPIKey['api_key'];
                 break;
             }
         }
@@ -80,6 +80,7 @@ class AndroidGCMNotification implements OSNotificationServiceInterface
             "Authorization: key=" . $apiKey,
             "Content-Type: application/json",
         );
+
         $data = array_merge(
             $message->getGCMOptions(),
             array("data" => $message->getMessageBody())
@@ -87,12 +88,13 @@ class AndroidGCMNotification implements OSNotificationServiceInterface
 
         $device = $message->getDevice();
         // Chunk number of registration IDs according to the maximum allowed by GCM
-        $chunks = array_chunk(array($device->getDeviceIdentifier()), $this->registrationIdMaxCount);
+        $chunks = array_chunk(array($device->getDeviceToken()), $this->registrationIdMaxCount);
 
         // Perform the calls (in parallel)
         $this->responses = array();
         foreach ($chunks as $registrationIDs) {
             $data["registration_ids"] = $registrationIDs;
+
             // Open connection
             $ch = curl_init();
             // Set the url, number of POST vars, POST data

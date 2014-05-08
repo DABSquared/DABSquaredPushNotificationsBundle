@@ -130,7 +130,7 @@ class DABSquaredPushNotificationsExtension extends Extension
         // GCM
         $this->container->setParameter("dab_push_notifications.android.gcm.enabled", isset($config["android"]["gcm"]));
         if (isset($config["android"]["gcm"])) {
-            $this->container->setParameter("dab_push_notifications.android.gcm.api_key", $config["android"]["gcm"]["api_key"]);
+            $this->container->setParameter("dab_push_notifications.android.gcm.api_keys", $config["android"]["gcm"]["api_keys"]);
         }
     }
 

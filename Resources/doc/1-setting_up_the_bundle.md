@@ -42,6 +42,11 @@ dab_squared_push_notifications:
     apps:
         your_app_free: {name: 'Your App Free', internal_app_id: 0000001 }
         your_app_premium: {name: 'Your App Premium', internal_app_id: 0000002 }
+    android:
+        gcm:
+          api_keys:
+            your_app_free: { api_key: 'YOUR ANDROID SERVER KEY HERE', internal_app_id: 0000001 }
+            your_app_premium: { api_key: 'YOUR ANDROID SERVER KEY HERE', internal_app_id: 0000002 }
     ios:
         certificates:
             dev_free: { sandbox: true, pem: %kernel.root_dir%/../pushcerts/dev/certificate.pem, passphrase: ~, internal_app_id: 0000001}

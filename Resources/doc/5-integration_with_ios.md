@@ -1,5 +1,9 @@
 Step 5: Integration With iOS
 =======================================
+
+### Accepting pull requests with better iOS Docs.
+
+
 In the AppDelegate file do the following:
 
 
@@ -158,5 +162,5 @@ In the AppDelegate file do the following:
 }
 ```
 
-[Step 6: Integration with Safari](6-integration_with_safari.md).
+[Step 6: Integration with Android](6-integration_with_android.md).
 

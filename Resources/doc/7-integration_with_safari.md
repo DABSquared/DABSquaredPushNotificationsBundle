@@ -1,4 +1,4 @@
-Step 6: Integration With Safari (Requires FOSUserBundle or Some Type Of User System)
+Step 7: Integration With Safari (Requires FOSUserBundle or Some Type Of User System)
 =======================================
 
 

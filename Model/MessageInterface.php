@@ -164,12 +164,12 @@ interface MessageInterface
     public function getCustomData();
 
     /**
-     * @param \DABSquared\PushNotificationsBundle\Model\DeviceInterface $device
+     * @param \DABSquared\PushNotificationsBundle\Model\Device $device
      */
-    public function setDevice(\DABSquared\PushNotificationsBundle\Model\DeviceInterface $device);
+    public function setDevice(\DABSquared\PushNotificationsBundle\Model\Device $device);
 
     /**
-     * @return \DABSquared\PushNotificationsBundle\Model\DeviceInterface
+     * @return \DABSquared\PushNotificationsBundle\Model\Device
      */
     public function getDevice();
 

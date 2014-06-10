@@ -45,10 +45,10 @@
 
      <div class="row">
          <div class="col-md-6">
-             <label for="sandbox">Sandbox</label> <input type="radio" id="sandbox" name="device_state" value="0" checked>
+             <label for="sandbox">Sandbox</label> <input type="radio" id="sandbox" name="device_state" value="0">
          </div>
          <div class="col-md-6">
-             <label for="production">Production</label> <input type="radio" id="production" name="device_state" value="1">
+             <label for="production">Production</label> <input type="radio" id="production" name="device_state" value="1" checked>
          </div>
      </div>
 
@@ -136,7 +136,16 @@
             });
 
             $( "#from" ).val();
-          });
+
+            var date = new Date();
+            date.setDate(date.getDate() - 90);
+
+            var date2 = new Date();
+
+            $("#from").datepicker("setDate", date);
+            $("#to").datepicker("setDate", date2);
+
+        });
 
         $(document).ready(function(){
             loadGraphData();

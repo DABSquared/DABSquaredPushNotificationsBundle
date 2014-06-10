@@ -90,15 +90,15 @@ abstract class AppEvent implements AppEventInterface
     }
 
     /**
-     * @param \DABSquared\PushNotificationsBundle\Model\Device $device
+     * @param \DABSquared\PushNotificationsBundle\Model\DeviceInterface $device
      */
-    public function setDevice(\DABSquared\PushNotificationsBundle\Model\Device $device)
+    public function setDevice($device)
     {
         $this->device = $device;
     }
 
     /**
-     * @return \DABSquared\PushNotificationsBundle\Model\Device
+     * @return \DABSquared\PushNotificationsBundle\Model\DeviceInterface
      */
     public function getDevice()
     {

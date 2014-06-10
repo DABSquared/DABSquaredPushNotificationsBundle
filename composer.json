@@ -2,25 +2,25 @@
     "name": "dabsquared/dabsquared-push-notifications-bundle",
     "type": "symfony-bundle",
     "description": "Push notifications/messages for mobile devices",
-    "keywords": ["push", "notification", "bundle", "gcm", "c2dm", "ios", "apns", "blackberry"],
+    "keywords": ["push", "notification", "bundle", "gcm", "c2dm", "ios", "apns", "blackberry", "android"],
     "homepage": "https://github.com/DABSquared/DABSquaredPushNotificationsBundle",
     "license": "MIT",
     "authors": [
         {
             "name": "Daniel Brooks",
-            "email": "daniel.brooks@curveu.com",
+            "email": "daniel_brooks@dabsquared.com",
             "homepage": "http://www.dabsquared.com"
         }
     ],
     "require": {
         "php": ">=5.3.3",
         "friendsofsymfony/rest": "*",
-        "friendsofsymfony/rest-bundle": "dev-master",
+        "friendsofsymfony/rest-bundle": "1.3.*",
         "symfony/framework-bundle": ">=2.1,<3.0-dev",
         "doctrine/common": ">=2.3,<3.0",
         "jms/di-extra-bundle": ">=1.1,<2.0",
-        "nelmio/api-doc-bundle": "dev-master",
-        "jms/serializer-bundle": "0.13.*",
+        "nelmio/api-doc-bundle": "@stable",
+        "jms/serializer-bundle": ">= 0.13.0",
         "knplabs/knp-paginator-bundle": "~2.4"
     },
     "require-dev": {

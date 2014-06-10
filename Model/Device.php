@@ -326,7 +326,7 @@ abstract class Device implements DeviceInterface
     /**
      * @param MessageInterface $message
      */
-    public function addMessage(\DABSquared\PushNotificationsBundle\Model\Message $message) {
+    public function addMessage($message) {
         $message->setDevice($this);
         $this->messages[] = $message;
     }
@@ -334,7 +334,7 @@ abstract class Device implements DeviceInterface
     /**
      * @param MessageInterface $message
      */
-    public function removeMessage(\DABSquared\PushNotificationsBundle\Model\Message $message) {
+    public function removeMessage($message) {
         $this->messages->removeElement($message);
     }
 
@@ -355,7 +355,7 @@ abstract class Device implements DeviceInterface
     /**
      * @param AppEventInterface $appEvent
      */
-    public function addAppEvent(\DABSquared\PushNotificationsBundle\Model\AppEvent $appEvent) {
+    public function addAppEvent($appEvent) {
         $appEvent->setDevice($this);
         $this->appEvents[] = $appEvent;
     }
@@ -363,7 +363,7 @@ abstract class Device implements DeviceInterface
     /**
      * @param AppEventInterface $appEvent
      */
-    public function removeAppEvent(\DABSquared\PushNotificationsBundle\Model\AppEvent $appEvent) {
+    public function removeAppEvent($appEvent) {
         $this->appEvents->removeElement($appEvent);
     }
 

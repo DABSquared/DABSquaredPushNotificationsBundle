@@ -194,14 +194,14 @@ interface DeviceInterface
     public function setMessages(\Doctrine\Common\Collections\ArrayCollection $messages);
 
     /**
-     * @param Message $message
+     * @param MessageInterface $message
      */
-    public function addMessage(\DABSquared\PushNotificationsBundle\Model\Message $message);
+    public function addMessage($message);
 
     /**
-     * @param Message $message
+     * @param MessageInterface $message
      */
-    public function removeMessage(\DABSquared\PushNotificationsBundle\Model\Message $message);
+    public function removeMessage($message);
 
     /**
      * @return \Doctrine\Common\Collections\ArrayCollection
@@ -214,13 +214,13 @@ interface DeviceInterface
     public function setAppEvents(\Doctrine\Common\Collections\ArrayCollection $appEvents);
 
     /**
-     * @param AppEvent $appEvent
+     * @param AppEventInterface $appEvent
      */
-    public function addAppEvent(\DABSquared\PushNotificationsBundle\Model\AppEvent $appEvent);
+    public function addAppEvent($appEvent);
 
     /**
-     * @param AppEvent $appEvent
+     * @param AppEventInterface $appEvent
      */
-    public function removeAppEvent(\DABSquared\PushNotificationsBundle\Model\AppEvent $appEvent);
+    public function removeAppEvent($appEvent);
 
 }

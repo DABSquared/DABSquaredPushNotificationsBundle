@@ -57,7 +57,7 @@ class MessageManager extends BaseMessageManger
     /**
      * Performs persisting of the message.
      *
-     * @param MessageInterface message
+     * @param MessageInterface $message
      */
     protected function doSaveMessage(MessageInterface $message)
     {
@@ -119,6 +119,14 @@ class MessageManager extends BaseMessageManger
             ->createQueryBuilder('m')
             ->where('m.device = :id')
             ->setParameter('id', $id);
+
+        return $qb;
+    }
+
+    public function findAllQuery() {
+        $qb = $this->repository
+            ->createQueryBuilder('m')
+            ->join('m.device', 'd');
 
         return $qb;
     }

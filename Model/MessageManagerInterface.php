@@ -66,4 +66,8 @@ interface MessageManagerInterface
      */
     public function findAllQueryByDeviceId($id);
 
+    /**
+     * @return mixed
+     */
+    public function findAllQuery();
 }

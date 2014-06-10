@@ -1,5 +1,35 @@
 {% extends "DABSquaredPushNotificationsBundle::base.html.twig" %}
 
+{% import "DABSquaredPushNotificationsBundle::macros.html.twig" as macros %}
+
  {% block content %}
-     Some content
+     <div class="count">
+         {{ pagination.getTotalItemCount }} Devices
+     </div>
+
+     <div class="table-responsive">
+         <table class="table table-bordered table-striped">
+             <thead>
+             <tr>
+                 <th{% if pagination.isSorted('m.id') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'ID', 'm.id') }}</th>
+                 <th{% if pagination.isSorted('m.status') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Status', 'm.status') }}</th>
+                 <th{% if pagination.isSorted('m.message') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Message', 'm.message') }}</th>
+                 <th{% if pagination.isSorted('m.device') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Device', 'd.id') }}</th>
+             </tr>
+             </thead>
+
+             {% for message in pagination %}
+                 <tr>
+                     <td>{{ message.id }}</td>
+                     <td>{{ macros.message_status(message) }}</td>
+                     <td>{{ message.message }}</td>
+                     <td><a href="{{ path('dabsquared_push_notifications_device', {"id": message.device.id}) }}">{{  message.device.id }}</a></td>
+                 </tr>
+             {% endfor %}
+         </table>
+     </div>
+
+     <div class="navigation">
+         {{ knp_pagination_render(pagination) }}
+     </div>
  {% endblock %}

@@ -144,14 +144,20 @@ class PushAdminController extends Controller
      */
     public function messagesAction() {
         $this->session->set('dab_push_selected_nav', 'messages');
-        return array();
+        $allMessagesQuery = $this->messageManager->findAllQuery();
+        $pagination = $this->paginator->paginate(
+            $allMessagesQuery,
+            $this->get('request')->query->get('page', 1)/*page number*/,
+            20/*limit per page*/
+        );
+        return array('pagination' => $pagination);
     }
 
 
     /**
      * @Route("push/create_device_message/{deviceId}", name="dabsquared_push_notifications_create_device_push_message")
      * @Method({"GET","POST"})
-     * @Template("DABSquaredPushNotificationsBundle:Messages:create_message.html.twig")
+     * @Template("DABSquaredPushNotificationsBundle:Messages:create_message_only.html.twig")
      */
     public function createDevicePushMessageAction($deviceId) {
         $this->session->set('dab_push_selected_nav', 'devices');
@@ -159,54 +165,36 @@ class PushAdminController extends Controller
         /** @var $request \Symfony\Component\HttpFoundation\Request */
         $request = Request::createFromGlobals();
 
-        $form = $this->createForm(new \DABSquared\PushNotificationsBundle\Form\MessageType($this->container->getParameter('dab_push_notifications.model.device.class')));
+        $form = $this->createForm(new \DABSquared\PushNotificationsBundle\Form\MessageOnlyType());
 
-        if(!is_null($deviceId)) {
-            $device = $this->deviceManager->findDeviceWithId($deviceId);
-            if(is_null($device)) {
-                throw new NotFoundHttpException("The device with that id was not found.");
-            }
-            $form->setData($device);
-        } else {
-            throw new NotFoundHttpException("The device with that id was not found.");
+        if(is_null($deviceId)) {
+            throw new NotFoundHttpException("You need to add a device id.");
         }
 
+        $device = $this->deviceManager->findDeviceWithId($deviceId);
+
+        if(is_null($device)) {
+            throw new NotFoundHttpException("The device with that id was not found.");
+        }
 
         if($request->isMethod("POST")) {
             $form->bind($request);
 
-            $types = $form['type']->getData();
             $messageText = $form['message']->getData();
 
-            if(!is_null($device) && $device != "") {
-                /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
-                $device = $this->deviceManager->findDeviceWithId($device);
+            /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
+            $device = $this->deviceManager->findDeviceWithId($device);
 
-                $message = null;
-                /** @var $message \DABSquared\PushNotificationsBundle\Model\Message */
-                $message =  $this->messageManager->createMessage($message);
-                $message->setMessage($messageText);
-                $message->setDevice($device);
-                $this->messageManager->saveMessage($message);
+            $message = null;
+            /** @var $message \DABSquared\PushNotificationsBundle\Model\Message */
+            $message =  $this->messageManager->createMessage($message);
+            $message->setMessage($messageText);
+            $message->setDevice($device);
+            $this->messageManager->saveMessage($message);
 
-            } else if(!empty($types)) {
-
-                foreach($types as $type) {
-
-                    $devices = $this->deviceManager->findDevicesWithTypeAndStatus($type, DeviceStatus::DEVICE_STATUS_ACTIVE);
-                    foreach($devices as $device) {
-                        $message = null;
-                        /** @var $message \DABSquared\PushNotificationsBundle\Model\Message */
-                        $message =  $this->messageManager->createMessage($message);
-                        $message->setMessage($messageText);
-                        $message->setDevice($device);
-                        $this->messageManager->saveMessage($message);
-                    }
-                }
-            }
         }
 
-        return array('form' => $form->createView());
+        return array('form' => $form->createView(), 'device' => $device);
     }
 
 
@@ -221,7 +209,7 @@ class PushAdminController extends Controller
         /** @var $request \Symfony\Component\HttpFoundation\Request */
         $request = Request::createFromGlobals();
 
-        $form = $this->createForm(new \DABSquared\PushNotificationsBundle\Form\MessageType($this->container->getParameter('dab_push_notifications.model.device.class')));
+        $form = $this->createForm(new \DABSquared\PushNotificationsBundle\Form\MessageType());
 
         if($request->isMethod("POST")) {
             $form->bind($request);

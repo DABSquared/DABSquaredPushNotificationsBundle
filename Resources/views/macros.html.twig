@@ -34,6 +34,22 @@
     {% endif %}
 {%- endmacro %}
 
+{% macro message_status(message) -%}
+    {% if message.status == "dab_push_notifications.status.not.sent" -%}
+        <span class="label label-warning">Not Sent</span>
+    {%- elseif message.status == "dab_push_notifications.status.sent"  -%}
+        <span class="label label-success">Sent</span>
+    {%- elseif message.status == "dab_push_notifications.status.sending"  -%}
+        <span class="label label-primary">Sending</span>
+    {%- elseif message.status == "dab_push_notifications.status.no.cert.found"  -%}
+        <span class="label label-danger">No Certificate Found</span>
+    {%- elseif message.status == "dab_push_notifications.status.stream.error"  -%}
+        <span class="label label-danger">Stream Error</span>
+    {%- else -%}
+        <span class="label label-danger">Unknown</span>
+    {% endif %}
+{%- endmacro %}
+
 {% macro messages_count(device) -%}
         <span class="label label-success">{{ device.messages | length }}</span>
 {%- endmacro %}

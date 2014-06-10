@@ -19,6 +19,7 @@
                  <th{% if pagination.isSorted('d.alertAllowed') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Alerts Allowed', 'd.alertAllowed') }}</th>
                  <th{% if pagination.isSorted('d.soundAllowed') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Sound Allowed', 'd.soundAllowed') }}</th>
                  <th{% if pagination.isSorted('d.badgeAllowed') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Badge Allowed', 'd.badgeAllowed') }}</th>
+                 <th>Send Message</th>
                  <th>Messages Sent</th>
              </tr>
              </thead>
@@ -35,6 +36,7 @@
                      <td>{{ macros.sound_enabled(device) }}</td>
                      <td>{{ macros.badge_enabled(device) }}</td>
                      <td>{{ macros.messages_count(device) }}</td>
+                     <td><a class="btn btn-primary" href="{{ path('dabsquared_push_notifications_create_device_push_message', {"deviceId": device.id}) }}">Send Message</a></td>
                  </tr>
              {% endfor %}
          </table>

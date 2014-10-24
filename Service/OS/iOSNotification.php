@@ -76,10 +76,10 @@ class iOSNotification implements OSNotificationServiceInterface
             throw new InvalidMessageTypeException(sprintf("Message type '%s' not supported by APN", get_class($message)));
         }
 
-        $apnURL = "ssl://gateway.push.apple.com:2195";
+        $apnURL = "tls://gateway.push.apple.com:2195";
 
         if($message->getDevice()->getState() == Device::STATE_SANDBOX) {
-            $apnURL = "ssl://gateway.sandbox.push.apple.com:2195";
+            $apnURL = "tls://gateway.sandbox.push.apple.com:2195";
         }
 
         $certsToTry = array();
@@ -139,10 +139,10 @@ class iOSNotification implements OSNotificationServiceInterface
                 }
 
 
-                $apnURL = "ssl://gateway.push.apple.com:2195";
+                $apnURL = "tls://gateway.push.apple.com:2195";
 
                 if($message->getDevice()->getState() == Device::STATE_SANDBOX) {
-                    $apnURL = "ssl://gateway.sandbox.push.apple.com:2195";
+                    $apnURL = "tls://gateway.sandbox.push.apple.com:2195";
                 }
                 $cert["apnURL"] = $apnURL;
             }

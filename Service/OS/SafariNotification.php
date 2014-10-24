@@ -79,7 +79,7 @@ class SafariNotification implements OSNotificationServiceInterface
             throw new InvalidMessageTypeException(sprintf("Message type '%s' not supported by APN", get_class($message)));
         }
 
-        $apnURL = "ssl://gateway.push.apple.com:2195";
+        $apnURL = "tls://gateway.push.apple.com:2195";
 
         $cert = array();
         $cert['pem'] = $this->pem;
@@ -102,7 +102,7 @@ class SafariNotification implements OSNotificationServiceInterface
     {
 
         $cert = array();
-        $cert["apnURL"] = "ssl://gateway.push.apple.com:2195";
+        $cert["apnURL"] = "tls://gateway.push.apple.com:2195";
         $cert['pem'] = $this->pem;
         $cert['passphrase'] = $this->passphrase;
 

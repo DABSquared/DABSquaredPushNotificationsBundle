@@ -7,7 +7,7 @@
 
     <h3>Create Message For {{ device.deviceName }}</h3>
 
-    <form id="pushMessageForm" action="{{ path('dabsquared_push_notifications_create_push_messages') }}" method="post" {{ form_enctype(form) }} autocomplete="off" >
+    <form id="pushMessageForm" action="{{ path('dabsquared_push_notifications_create_device_push_message', { deviceId: device.id}) }}" method="post" {{ form_enctype(form) }} autocomplete="off" >
 
         <div class="row" style="text-align:center; width:100%;">
             <div class="col-md-12">

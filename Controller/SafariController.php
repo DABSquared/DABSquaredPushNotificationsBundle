@@ -322,7 +322,7 @@ class SafariController extends Controller
      *
      * @param HeaderBag $headers
      */
-    protected function fixAuthHeader(HeaderBag $headers)
+    protected function fixAuthHeader(\Symfony\Component\HttpFoundation\HeaderBag $headers)
     {
         if (!$headers->has('Authorization') && function_exists('apache_request_headers')) {
             $all = apache_request_headers();

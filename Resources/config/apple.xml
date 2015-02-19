@@ -4,22 +4,22 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="dab_push_notifications.ios.class">DABSquared\PushNotificationsBundle\Service\OS\iOSNotification</parameter>
+        <parameter key="dab_push_notifications.apple.class">DABSquared\PushNotificationsBundle\Service\OS\AppleNotification</parameter>
     </parameters>
 
     <services>
 
         <!-- iOS-->
-        <service id="dab_push_notifications.ios" class="%dab_push_notifications.ios.class%" public="false">
-            <argument>%dab_push_notifications.ios.certificates%</argument>
+        <service id="dab_push_notifications.apple" class="%dab_push_notifications.apple.class%" public="false">
+            <argument>%dab_push_notifications.apple.certificates%</argument>
             <argument type="service" id="dab_push_notifications.manager.message" />
             <argument type="service" id="dab_push_notifications.manager.device" />
-            <tag name="dab_push_notifications.handler" osType="dab_push_notifications.os.ios" />
+            <tag name="dab_push_notifications.handler" osType="dab_push_notifications.os.apple" />
         </service>
 
         <!-- iOS Feedback requests -->
         <service id="dab_push_notifications.ios.feedback" class="%dab_push_notifications.ios.feedback.class%">
-            <argument>%dab_push_notifications.ios.certificates%</argument>
+            <argument>%dab_push_notifications.apple.certificates%</argument>
 
         </service>
 

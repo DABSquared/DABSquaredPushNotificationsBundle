@@ -50,7 +50,7 @@ interface MessageManagerInterface
 
     /**
      * @param $status
-     * @return \DABSquared\PushNotificationsBundle\Model\MessageInterface
+     * @return array
      */
     public function findByStatus($status);
 

@@ -3,17 +3,16 @@
 namespace DABSquared\PushNotificationsBundle\Service\OS;
 
 use DABSquared\PushNotificationsBundle\Exception\InvalidMessageTypeException,
-    DABSquared\PushNotificationsBundle\Model\Message,
     DABSquared\PushNotificationsBundle\Model\MessageInterface,
-    DABSquared\PushNotificationsBundle\Device\Types,
-    DABSquared\PushNotificationsBundle\Model\Device;
+    DABSquared\PushNotificationsBundle\Model\Device,
+    DABSquared\PushNotificationsBundle\Device\Types;
 
 use DABSquared\PushNotificationsBundle\Message\MessageStatus;
 use DABSquared\PushNotificationsBundle\Model\DeviceManagerInterface;
 use DABSquared\PushNotificationsBundle\Model\MessageManagerInterface;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 
-class iOSNotification implements OSNotificationServiceInterface
+class AppleNotification implements OSNotificationServiceInterface
 {
 
     /**
@@ -71,35 +70,7 @@ class iOSNotification implements OSNotificationServiceInterface
      */
     public function send(MessageInterface $message)
     {
-        if ($message->getTargetOS() != Types::OS_IOS) {
-            throw new InvalidMessageTypeException(sprintf("Message type '%s' not supported by APN", get_class($message)));
-        }
-
-        $apnURL = "tls://gateway.push.apple.com:2195";
-
-        if($message->getDevice()->getState() == Device::STATE_SANDBOX) {
-            $apnURL = "tls://gateway.sandbox.push.apple.com:2195";
-        }
-
-        $certsToTry = array();
-
-        foreach ($this->certificates as $cert) {
-            if($message->getDevice()->getState() == Device::STATE_SANDBOX && $cert['sandbox'] == true && $message->getDevice()->getAppId() == $cert['internal_app_id']) {
-                $certsToTry[] = $cert;
-            } else if($message->getDevice()->getState() == Device::STATE_PRODUCTION && $cert['sandbox'] == false && $message->getDevice()->getAppId() == $cert['internal_app_id']) {
-                $certsToTry[] = $cert;
-            }
-        }
-
-        if(count($certsToTry) == 0) {
-            throw new RuntimeException(sprintf("The device with it's current state, %s did not find a valid Push Certificate", $message->getDevice()->getState()));
-        }
-
-        foreach($certsToTry as $cert) {
-            $payload = $this->createPayload($message, $cert);
-            $result = $this->writeApnStream($apnURL, $payload ,$cert, $message);
-        }
-
+        $this->sendMessages(array($message));
     }
 
 
@@ -125,23 +96,17 @@ class iOSNotification implements OSNotificationServiceInterface
                     $cert['messages'] = array();
                 }
 
-                if(!array_key_exists("payloads", $cert)) {
-                    $cert['payloads'] = array();
-                }
-
                 if($message->getDevice()->getState() == Device::STATE_SANDBOX && $cert['sandbox'] == true && $message->getDevice()->getAppId() == $cert['internal_app_id']) {
                     $cert['messages'][] = $message;
-                    $cert['payloads'][] = $this->createPayload($message, $cert);
                 } else if($message->getDevice()->getState() == Device::STATE_PRODUCTION && $cert['sandbox'] == false && $message->getDevice()->getAppId() == $cert['internal_app_id']) {
                     $cert['messages'][] = $message;
-                    $cert['payloads'][] = $this->createPayload($message, $cert);
                 }
 
 
-                $apnURL = "tls://gateway.push.apple.com:2195";
+                $apnURL = "ssl://gateway.push.apple.com:2195";
 
                 if($message->getDevice()->getState() == Device::STATE_SANDBOX) {
-                    $apnURL = "tls://gateway.sandbox.push.apple.com:2195";
+                    $apnURL = "ssl://gateway.sandbox.push.apple.com:2195";
                 }
                 $cert["apnURL"] = $apnURL;
             }
@@ -156,25 +121,22 @@ class iOSNotification implements OSNotificationServiceInterface
         }
 
         foreach($this->certificates as &$cert) {
-
             if(!array_key_exists("messages", $cert)) {
                continue;
             }
 
-
-            $result = $this->writeApnStreamMessages($cert["apnURL"], $cert, $cert['payloads'] , $cert['messages']);
+            /** @var \DABSquared\PushNotificationsBundle\Model\MessageInterface $message */
+            foreach($cert['messages'] as $message) {
+                $this->writeApnStream($cert, $message);
+            }
         }
     }
 
     /**
-     * @param $apnURL
      * @param $cert
-     * @param array $payloads
-     * @param array $messages
      */
-    protected function writeApnStreamMessages($apnURL, $cert,array $payloads, array $messages)
+    protected function writeApnStream($cert, \DABSquared\PushNotificationsBundle\Model\MessageInterface $message)
     {
-
         $ctx = stream_context_create();
         stream_context_set_option($ctx, "ssl", "local_cert", $cert['pem']);
         if (strlen($cert['passphrase'])) {
@@ -184,10 +146,16 @@ class iOSNotification implements OSNotificationServiceInterface
         $apns = null;
 
         try {
-            $apns = stream_socket_client($apnURL, $err, $errstr, 60, STREAM_CLIENT_CONNECT, $ctx);
+            $apns = stream_socket_client($cert["apnURL"], $err, $errstr, 60, STREAM_CLIENT_CONNECT, $ctx);
+            // Reduce buffering and blocking
+            if (function_exists("stream_set_read_buffer")) {
+                stream_set_read_buffer($apns, 6);
+            }
+            stream_set_write_buffer($apns, 0);
+            stream_set_blocking($apns, 0);
         } catch (\ErrorException $er) {
-            /* @var \DABSquared\PushNotificationsBundle\Model\Message $message*/
-            foreach ($messages as $message) {
+            /* @var \DABSquared\PushNotificationsBundle\Model\MessageInterface $message*/
+            foreach ($cert['messages'] as $message) {
                 $message->setStatus(MessageStatus::MESSAGE_STATUS_STREAM_ERROR);
                 $this->messageManager->saveMessage($message);
             }
@@ -195,56 +163,23 @@ class iOSNotification implements OSNotificationServiceInterface
         }
 
 
-
-
-        $i = 0;
-        foreach ($payloads as $payload) {
-
-            try {
-                fwrite($apns, $payload);
-            } catch (\ErrorException $er) {
-                $messages[$i]->setStatus(MessageStatus::MESSAGE_STATUS_STREAM_ERROR);
-                $this->messageManager->saveMessage($messages[$i]);
-                $i++;
-                continue;
-            }
-
-            $messages[$i]->setStatus(MessageStatus::MESSAGE_STATUS_SENT);
-
-            $this->messageManager->saveMessage($messages[$i]);
-
-            $i++;
-        }
-
-        if(is_resource($apns)) {
-            fclose($apns);
-        }
-
-    }
-
-
-    /**
-     * Write data to the apn stream that is associated with the given apn URL
-     *
-     * @param $apnURL
-     * @param $payload
-     * @param $cert
-     * @param Message $message
-     */
-    protected function writeApnStream($apnURL, $payload, $cert, \DABSquared\PushNotificationsBundle\Model\Message $message)
-    {
-
-        $ctx = stream_context_create();
-        stream_context_set_option($ctx, "ssl", "local_cert", $cert['pem']);
-        if (strlen($cert['passphrase'])) {
-            stream_context_set_option($ctx, "ssl", "passphrase", $cert['passphrase']);
-        }
+        $payload = $this->createPayload($message, $cert);
 
         try {
-            $apns = stream_socket_client($apnURL, $err, $errstr, 60, STREAM_CLIENT_CONNECT, $ctx);
-            fwrite($apns, $payload);
-            if(is_resource($apns)) {
-                fclose($apns);
+            $response = (strlen($payload) === @fwrite($apns, $payload, strlen($payload)));
+
+            $readStreams = array($apns);
+            $null = NULL;
+            $streamsReadyToRead = @stream_select($readStreams, $null, $null, 1, 0);
+            if ($streamsReadyToRead > 0) {
+                // Unpack error response data and set as the result
+                $response = @unpack("Ccommand/Cstatus/Nidentifier", fread($apns, 6));
+                if (is_resource($apns)) {
+                    fclose($apns);
+                }
+
+                //TODO: Set Response on the message
+
             }
         } catch (\ErrorException $er) {
             $message->setStatus(MessageStatus::MESSAGE_STATUS_STREAM_ERROR);
@@ -252,10 +187,13 @@ class iOSNotification implements OSNotificationServiceInterface
             return;
         }
 
-
         $message->setStatus(MessageStatus::MESSAGE_STATUS_SENT);
         $this->messageManager->saveMessage($message);
 
+
+        if(is_resource($apns)) {
+            fclose($apns);
+        }
     }
 
 
@@ -270,12 +208,12 @@ class iOSNotification implements OSNotificationServiceInterface
      */
     protected function createPayload(MessageInterface $message, $cert)
     {
-        $messageBody = $message->getMessageBody();
         $newBadge = $message->getDevice()->getBadgeNumber()+1;
 
         $message->getDevice()->setBadgeNumber($newBadge);
         $this->deviceManager->saveDevice($message->getDevice());
-        $messageBody["aps"]["badge"] = $message->getDevice()->getBadgeNumber();
+
+        $messageBody = $message->getMessageBody();
 
         if ($cert['json_unescaped_unicode']) {
             // Validate PHP version
@@ -291,19 +229,24 @@ class iOSNotification implements OSNotificationServiceInterface
             // of RFC 4627
             // Because required validate charsets (Must be UTF-8)
 
-            if (mb_detect_encoding($messageBody['aps']['alert']) != 'UTF-8') {
+            $encoding = mb_detect_encoding($messageBody['aps']['alert']);
+
+            if ($encoding != 'UTF-8' && $encoding != 'ASCII') {
                 throw new \InvalidArgumentException(sprintf(
                     'Message must be UTF-8 encoding, "%s" given.',
-                    mb_detect_encoding($messageBody)
+                    mb_detect_encoding($messageBody['aps']['alert'])
                 ));
             }
 
-
-            $jsonBody = json_encode($messageBody, JSON_UNESCAPED_UNICODE ^ JSON_FORCE_OBJECT);
+            $jsonBody = json_encode($message, JSON_UNESCAPED_UNICODE);
         }
         else {
-            $jsonBody = json_encode($messageBody, JSON_FORCE_OBJECT);
+            $jsonBody = json_encode($messageBody);
         }
+
+        $token = preg_replace("/[^0-9A-Fa-f]/", "", $message->getDevice()->getDeviceToken());
+        $payload = chr(1) . pack("N", $message->getId()) . pack("N", $message->getExpiry()) . pack("n", 32) . pack("H*", $token) . pack("n", strlen($jsonBody)) . $jsonBody;
+
 
         $payload = chr(0) . chr(0) . chr(32) . pack('H*', str_replace(' ', '', $message->getDevice()->getDeviceToken())) . chr(0) . chr(strlen($jsonBody)) . $jsonBody;
 

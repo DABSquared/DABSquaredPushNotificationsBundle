@@ -63,9 +63,9 @@ class DABSquaredPushNotificationsExtension extends Extension
             $loader->load('android.xml');
         }
 
-        if (isset($config["ios"])) {
-            $this->setiOSConfig($config);
-            $loader->load('ios.xml');
+        if (isset($config["apple"])) {
+            $this->setAppleConfig($config);
+            $loader->load('apple.xml');
         }
 
         if (isset($config["safari"])) {
@@ -139,20 +139,20 @@ class DABSquaredPushNotificationsExtension extends Extension
      *
      * @param array $config
      */
-    protected function setiOSConfig(array $config)
+    protected function setAppleConfig(array $config)
     {
         // PEM file is required
-        if(count($config['ios']['certificates']) <= 0) {
+        if(count($config['apple']['certificates']) <= 0) {
             throw new \RuntimeException(sprintf('A push certificate is required'));
 
         }
 
-        foreach ($config['ios']['certificates'] as $iosCert) {
-            if (!file_exists($iosCert['pem'])) {
-                throw new \RuntimeException(sprintf('Pem file "%s" not found.', $iosCert['pem']));
+        foreach ($config['apple']['certificates'] as $appleCert) {
+            if (!file_exists($appleCert['pem'])) {
+                throw new \RuntimeException(sprintf('Pem file "%s" not found.', $appleCert['pem']));
             }
 
-            if ($iosCert['json_unescaped_unicode']) {
+            if ($appleCert['json_unescaped_unicode']) {
                 // Not support JSON_UNESCAPED_UNICODE option
                 if (!version_compare(PHP_VERSION, '5.4.0', '>=')) {
                     throw new \LogicException(sprintf(
@@ -164,8 +164,8 @@ class DABSquaredPushNotificationsExtension extends Extension
         }
 
 
-        $this->container->setParameter("dab_push_notifications.ios.enabled", true);
-        $this->container->setParameter("dab_push_notifications.ios.certificates", $config['ios']['certificates']);
+        $this->container->setParameter("dab_push_notifications.apple.enabled", true);
+        $this->container->setParameter("dab_push_notifications.apple.certificates", $config['apple']['certificates']);
     }
 
     protected function setSafariConfig(array $config)

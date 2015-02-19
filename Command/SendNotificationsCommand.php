@@ -28,7 +28,7 @@ class SendNotificationsCommand  extends ContainerAwareCommand{
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
-        /** @var $messageManager \DABSquared\PushNotificationsBundle\Model\MessageManager */
+        /** @var $messageManager \DABSquared\PushNotificationsBundle\Model\MessageManagerInterface */
         $messageManager = $this->getContainer()->get('dab_push_notifications.manager.message');
 
         /** @var $notificationManager \DABSquared\PushNotificationsBundle\Service\Notifications */
@@ -41,7 +41,7 @@ class SendNotificationsCommand  extends ContainerAwareCommand{
 
         if(!is_null($messageId)) {
             $messages = $messageManager->findById($messageId);
-            /** @var $message \DABSquared\PushNotificationsBundle\Model\Message */
+            /** @var $message \DABSquared\PushNotificationsBundle\Model\MessageInterface */
             foreach($messages as $message) {
                 if($message->getStatus() == MessageStatus::MESSAGE_STATUS_SENT) {
                     throw new InvalidParameterException("This message has already been sent");
@@ -53,7 +53,7 @@ class SendNotificationsCommand  extends ContainerAwareCommand{
 
 
 
-        /** @var $message \DABSquared\PushNotificationsBundle\Model\Message */
+        /** @var $message \DABSquared\PushNotificationsBundle\Model\MessageInterface */
         foreach($messages as $message) {
             $message->setStatus(MessageStatus::MESSAGE_STATUS_SENDING);
             $messageManager->saveMessage($message);
@@ -71,7 +71,7 @@ class SendNotificationsCommand  extends ContainerAwareCommand{
 
         $messages = $messageManager->findByStatus(MessageStatus::MESSAGE_STATUS_NO_CERT);
 
-        /** @var $message \DABSquared\PushNotificationsBundle\Model\Message */
+        /** @var $message \DABSquared\PushNotificationsBundle\Model\MessageInterface */
         foreach($messages as $message) {
             $message->setStatus(MessageStatus::MESSAGE_STATUS_SENDING);
             $messageManager->saveMessage($message);
@@ -82,7 +82,7 @@ class SendNotificationsCommand  extends ContainerAwareCommand{
 
         $messages = $messageManager->findByStatus(MessageStatus::MESSAGE_STATUS_STREAM_ERROR);
 
-        /** @var $message \DABSquared\PushNotificationsBundle\Model\Message */
+        /** @var $message \DABSquared\PushNotificationsBundle\Model\MessageInterface */
         foreach($messages as $message) {
             $message->setStatus(MessageStatus::MESSAGE_STATUS_SENDING);
             $messageManager->saveMessage($message);

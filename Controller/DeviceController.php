@@ -242,7 +242,7 @@ class DeviceController extends Controller
      *  description="Registers that an iOS app opened",
      *  section="DABSquared Push Notifications (Deprecated)"
      * )
-     *
+     * @deprecated
      * @Route("device/app_open", defaults={"_format": "json"})
      * @Method("POST")
      * @Rest\View()

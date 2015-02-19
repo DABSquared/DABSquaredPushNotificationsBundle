@@ -52,7 +52,7 @@ class Configuration
             ->end();
         $this->addApps();
         $this->addAndroid();
-        $this->addiOS();
+        $this->addApple();
         $this->addBlackberry();
         $this->addSafari();
 
@@ -125,13 +125,13 @@ class Configuration
     }
 
     /**
-     * iOS configuration
+     * Apple configuration
      */
-    protected function addiOS()
+    protected function addApple()
     {
         $this->root
             ->children()
-                ->arrayNode("ios")
+                ->arrayNode("apple")
                     ->children()
                          ->arrayNode('certificates')
                             ->isRequired()

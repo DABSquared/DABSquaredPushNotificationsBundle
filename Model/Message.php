@@ -19,7 +19,7 @@ abstract class Message implements MessageInterface
     /**
      * Message database id
      *
-     * @var mixed
+     * @var int
      */
     protected $id;
 
@@ -29,9 +29,9 @@ abstract class Message implements MessageInterface
     protected $device;
 
     /**
-     * @var integer
+     * @var int
      */
-    protected $type;
+    protected $badge;
 
     /**
      * @var string
@@ -68,21 +68,6 @@ abstract class Message implements MessageInterface
      */
     protected $customData = array();
 
-    /********************************************************
-     * iOS Specific Stuff
-     ********************************************************/
-
-    /**
-     * The APS core body
-     *
-     * @var array
-     */
-    protected $apsBody = array();
-
-    /********************************************************
-     * Android Specific Stuff
-     ********************************************************/
-
     /**
      * Collapse key for data
      *
@@ -108,17 +93,21 @@ abstract class Message implements MessageInterface
     protected $updatedAt;
 
     /**
+     * Expiration date (UTC)
+     *
+     * A fixed UNIX epoch date expressed in seconds (UTC) that identifies when the notification is no longer valid and can be discarded.
+     * If the expiry value is non-zero, APNs tries to deliver the notification at least once.
+     * Specify zero to request that APNs not store the notification at all.
+     *
+     * @var int
+     */
+    protected $expiry = 0;
+
+    /**
      * Class constructor
      */
-    public function __construct($type)
+    public function __construct()
     {
-        $this->type = $type;
-
-        $this->apsBody = array(
-            "aps" => array(
-            ),
-        );
-
         $this->createdAt = new \DateTime();
     }
 
@@ -196,40 +185,43 @@ abstract class Message implements MessageInterface
     public function getMessageBody()
     {
 
-        if($this->type == Types::OS_IOS) {
-        }else if($this->type == Types::OS_ANDROID_GCM || $this->type == Types::OS_ANDROID_C2DM) {
+        if($this->getTargetOS() == Types::OS_IOS || $this->getTargetOS() == Types::OS_MAC) {
+            $apsBody = array();
+            $apsBody["aps"] = array();
 
-        }else if($this->type == Types::OS_BLACKBERRY) {
-        }
+            $apsBody["aps"]["alert"] = $this->getMessage();
 
-        if($this->type == Types::OS_IOS) {
-            $this->apsBody["aps"]["alert"] = $this->getMessage();
-
-            if(!is_null($this->sound)) {
-                $this->apsBody["aps"]["sound"] = $this->sound;
+            if(!is_null($this->getSound())) {
+                $apsBody["aps"]["sound"] = $this->getSound();
             }
 
-            if($this->contentAvailable) {
-                $this->apsBody["aps"]["content-available"] = 1;
+            if(!is_null($this->getContentAvailable())) {
+                $apsBody["aps"]["content-available"] = $this->getContentAvailable();
             }
 
-            $payloadBody = $this->apsBody;
+            if(!is_null($this->getBadge())) {
+                $apsBody["aps"]["badge"] = $this->getBadge();
+            }
+
+            $payloadBody = $apsBody;
             if (!empty($this->customData)) {
                 $payloadBody = array_merge($payloadBody, $this->customData);
             }
             return $payloadBody;
-        } else if($this->type == Types::OS_SAFARI) {
-            $this->apsBody["aps"]["alert"] = array();
-            $this->apsBody["aps"]["alert"]['body'] = $this->getMessage();
-            $this->apsBody["aps"]["alert"]['title'] = $this->getTitle();
-            $this->apsBody["aps"]["alert"]['action'] = 'View';
+        } else if($this->getTargetOS() == Types::OS_SAFARI) {
+            $apsBody = array();
+            $apsBody["aps"] = array();
+            $apsBody["aps"]["alert"] = array();
+            $apsBody["aps"]["alert"]['body'] = $this->getMessage();
+            $apsBody["aps"]["alert"]['title'] = $this->getTitle();
+            $apsBody["aps"]["alert"]['action'] = 'View';
 
-            $payloadBody = $this->apsBody;
+            $payloadBody = $apsBody;
             if (!empty($this->customData)) {
                 $payloadBody = array_merge($payloadBody, $this->customData);
             }
             return $payloadBody;
-        } else if($this->type == Types::OS_ANDROID_GCM || $this->type == Types::OS_ANDROID_C2DM) {
+        } else if($this->getTargetOS() == Types::OS_ANDROID_GCM || $this->getTargetOS() == Types::OS_ANDROID_C2DM) {
             $data = array(
                 "registration_id" => $this->device->getDeviceidentifier(),
                 "collapse_key"    => $this->collapseKey,
@@ -240,7 +232,7 @@ abstract class Message implements MessageInterface
                 $data = array_merge($data, $this->customData);
             }
             return $data;
-        } else if($this->type == Types::OS_BLACKBERRY) {
+        } else if($this->getTargetOS() == Types::OS_BLACKBERRY) {
             $this->setData($this->getMessage());
             return $this->customData;
         }
@@ -254,7 +246,7 @@ abstract class Message implements MessageInterface
      */
     public function setData($data)
     {
-        if($this->type == Types::OS_IOS) {
+        if($this->getTargetOS() == Types::OS_IOS || $this->getTargetOS() == Types::OS_MAC) {
             if (!is_array($data)) {
                 throw new \InvalidArgumentException(sprintf('Messages custom data must be array, "%s" given.', gettype($data)));
             }
@@ -266,7 +258,7 @@ abstract class Message implements MessageInterface
             foreach ($data as $key => $value) {
                 $this->addCustomData($key, $value);
             }
-        } else if($this->type == Types::OS_SAFARI) {
+        } else if($this->getTargetOS() == Types::OS_SAFARI) {
             if (!is_array($data)) {
                 throw new \InvalidArgumentException(sprintf('Messages custom data must be array, "%s" given.', gettype($data)));
             }
@@ -278,9 +270,9 @@ abstract class Message implements MessageInterface
             foreach ($data as $key => $value) {
                 $this->addCustomData($key, $value);
             }
-        } else if($this->type == Types::OS_ANDROID_GCM || $this->type == Types::OS_ANDROID_C2DM) {
+        } else if($this->getTargetOS() == Types::OS_ANDROID_GCM || $this->getTargetOS() == Types::OS_ANDROID_C2DM) {
             $this->customData = (is_array($data) ? $data : array($data));
-        } else if($this->type == Types::OS_BLACKBERRY) {
+        } else if($this->getTargetOS() == Types::OS_BLACKBERRY) {
              $this->customData = $data;
         }
     }
@@ -303,7 +295,7 @@ abstract class Message implements MessageInterface
      */
     public function addCustomData($key, $value)
     {
-        if($this->type == Types::OS_IOS) {
+        if($this->getTargetOS() == Types::OS_IOS || $this->getTargetOS() == Types::OS_MAC) {
             if ($key == 'aps') {
                 throw new \LogicException('Can\'t replace "aps" data. Please call to setMessage, if your want replace message text.');
             }
@@ -353,37 +345,95 @@ abstract class Message implements MessageInterface
     }
 
     /**
-     * @param $type
-     */
-    public function setTargetOS($type)
-    {
-        $this->type = $type;
-    }
-
-    /**
      * Returns the target OS for this message
      * @return string
      */
     public function getTargetOS()
     {
-       if($this->type == Types::OS_IOS) {
-           return  Types::OS_IOS;
-       }else  if($this->type == Types::OS_SAFARI) {
-           return  Types::OS_SAFARI;
-       }else  if($this->type == Types::OS_ANDROID_C2DM) {
-           return Types::OS_ANDROID_C2DM;
-       }else  if($this->type == Types::OS_ANDROID_GCM) {
-           return Types::OS_ANDROID_GCM;
-       }else if($this->type == Types::OS_BLACKBERRY) {
-            return Types::OS_BLACKBERRY;
-       }
-        return null;
+        return $this->getDevice()->getType();
+    }
+
+    /**
+     * @param array $customData
+     */
+    public function setCustomData($customData)
+    {
+        $this->customData = $customData;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCustomData()
+    {
+        return $this->customData;
+    }
+
+    /**
+     * @param \DABSquared\PushNotificationsBundle\Model\DeviceInterface $device
+     */
+    public function setDevice($device)
+    {
+        $this->device = $device;
+    }
+
+    /**
+     * @return \DABSquared\PushNotificationsBundle\Model\DeviceInterface
+     */
+    public function getDevice()
+    {
+        return $this->device;
+    }
+
+    /**
+     * @param string $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param int $expiry
+     */
+    public function setExpiry($expiry) {
+        $this->expiry = $expiry;
+    }
+
+    /**
+     * @return int
+     */
+    public function getExpiry() {
+        return $this->expiry;
     }
 
 
-    /***************************************
-     * Android Specific
-     ***************************************/
+    /**
+     * @return int
+     */
+    public function getBadge()
+    {
+        return $this->badge;
+    }
+
+    /**
+     * @param int $badge
+     */
+    public function setBadge($badge)
+    {
+        $this->badge = $badge;
+    }
+
+
+    #region "Android Specific"
 
     /**
      * Android-specific
@@ -442,69 +492,5 @@ abstract class Message implements MessageInterface
         return $this->gcmOptions;
     }
 
-    /**
-     * @param array $apsBody
-     */
-    public function setApsBody($apsBody)
-    {
-        $this->apsBody = $apsBody;
-    }
-
-    /**
-     * @return array
-     */
-    public function getApsBody()
-    {
-        return $this->apsBody;
-    }
-
-    /**
-     * @param array $customData
-     */
-    public function setCustomData($customData)
-    {
-        $this->customData = $customData;
-    }
-
-    /**
-     * @return array
-     */
-    public function getCustomData()
-    {
-        return $this->customData;
-    }
-
-    /**
-     * @param \DABSquared\PushNotificationsBundle\Model\DeviceInterface $device
-     */
-    public function setDevice($device)
-    {
-        $this->device = $device;
-        $this->setTargetOS($device->getType());
-    }
-
-    /**
-     * @return \DABSquared\PushNotificationsBundle\Model\DeviceInterface
-     */
-    public function getDevice()
-    {
-        return $this->device;
-    }
-
-    /**
-     * @param string $status
-     */
-    public function setStatus($status)
-    {
-        $this->status = $status;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
+    #endregion
 }

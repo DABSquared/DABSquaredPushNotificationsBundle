@@ -6,7 +6,7 @@
     <parameters>
         <parameter key="dab_push_notifications.class">DABSquared\PushNotificationsBundle\Service\Notifications</parameter>
         <parameter key="dab_push_notifications.android.class">DABSquared\PushNotificationsBundle\Service\OS\AndroidNotification</parameter>
-        <parameter key="dab_push_notifications.ios.class">DABSquared\PushNotificationsBundle\Service\OS\iOSNotification</parameter>
+        <parameter key="dab_push_notifications.apple.class">DABSquared\PushNotificationsBundle\Service\OS\AppleNotification</parameter>
         <parameter key="dab_push_notifications.ios.feedback.class">DABSquared\PushNotificationsBundle\Service\iOSFeedback</parameter>
     </parameters>
 

@@ -19,9 +19,9 @@
             <generator strategy="AUTO" />
         </id>
 
-        <field name="type"  type="text" />
-
         <field name="status"  type="text" />
+
+        <field name="badge"  type="integer" />
 
         <field name="message" type="text" />
 

@@ -7,7 +7,7 @@ interface MessageInterface
     const DEFAULT_COLLAPSE_KEY = "1";
 
     /**
-     * @return mixed database ID for this device
+     * @return int database ID for this device
      */
     public function getId();
 
@@ -94,11 +94,6 @@ interface MessageInterface
     public function getContentAvailable();
 
     /**
-     * @param $type
-     */
-    public function setTargetOS($type);
-
-    /**
      * Returns the target OS for this message
      * @return string
      */
@@ -142,17 +137,6 @@ interface MessageInterface
      */
     public function getGCMOptions();
 
-
-    /**
-     * @param array $apsBody
-     */
-    public function setApsBody($apsBody);
-
-    /**
-     * @return array
-     */
-    public function getApsBody();
-
     /**
      * @param array $customData
      */
@@ -183,5 +167,25 @@ interface MessageInterface
      * @return string
      */
     public function getStatus();
+
+    /**
+     * @param int $expiry
+     */
+    public function setExpiry($expiry);
+
+    /**
+     * @return int
+     */
+    public function getExpiry();
+
+    /**
+     * @param int $badge
+     */
+    public function setBadge($badge);
+
+    /**
+     * @return int
+     */
+    public function getBadge();
 
 }

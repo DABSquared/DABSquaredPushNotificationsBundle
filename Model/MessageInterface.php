@@ -188,4 +188,14 @@ interface MessageInterface
      */
     public function getBadge();
 
+    /**
+     * @param string $urlArgs
+     */
+    public function setURLArgs($urlArgs);
+
+    /**
+     * @return string
+     */
+    public function getURLArgs();
+
 }

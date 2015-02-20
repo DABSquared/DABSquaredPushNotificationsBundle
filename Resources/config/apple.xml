@@ -10,11 +10,30 @@
     <services>
 
         <!-- iOS-->
-        <service id="dab_push_notifications.apple" class="%dab_push_notifications.apple.class%" public="false">
+        <service id="dab_push_notifications.ios" class="%dab_push_notifications.apple.class%" public="false">
+            <argument type="service" id="kernel" />
             <argument>%dab_push_notifications.apple.certificates%</argument>
             <argument type="service" id="dab_push_notifications.manager.message" />
             <argument type="service" id="dab_push_notifications.manager.device" />
-            <tag name="dab_push_notifications.handler" osType="dab_push_notifications.os.apple" />
+            <tag name="dab_push_notifications.handler" osType="dab_push_notifications.os.ios" />
+        </service>
+
+        <!-- Mac-->
+        <service id="dab_push_notifications.mac" class="%dab_push_notifications.apple.class%" public="false">
+            <argument type="service" id="kernel" />
+            <argument>%dab_push_notifications.apple.certificates%</argument>
+            <argument type="service" id="dab_push_notifications.manager.message" />
+            <argument type="service" id="dab_push_notifications.manager.device" />
+            <tag name="dab_push_notifications.handler" osType="dab_push_notifications.os.mac" />
+        </service>
+
+        <!-- Safari-->
+        <service id="dab_push_notifications.safari" class="%dab_push_notifications.apple.class%" public="false">
+            <argument type="service" id="kernel" />
+            <argument>%dab_push_notifications.apple.certificates%</argument>
+            <argument type="service" id="dab_push_notifications.manager.message" />
+            <argument type="service" id="dab_push_notifications.manager.device" />
+            <tag name="dab_push_notifications.handler" osType="dab_push_notifications.os.safari" />
         </service>
 
         <!-- iOS Feedback requests -->
@@ -22,7 +41,6 @@
             <argument>%dab_push_notifications.apple.certificates%</argument>
 
         </service>
-
 
     </services>
 

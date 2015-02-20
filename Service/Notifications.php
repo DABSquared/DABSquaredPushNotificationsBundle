@@ -57,6 +57,7 @@ class Notifications
     {
         $messageTypes = array();
 
+        /** @var \DABSquared\PushNotificationsBundle\Model\MessageInterface $message */
         foreach($messages as $message) {
             if (!isset($this->handlers[$message->getTargetOS()])) {
                 throw new \RuntimeException("OS type {$message->getTargetOS()} not supported");

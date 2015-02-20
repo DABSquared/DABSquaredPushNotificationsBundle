@@ -23,6 +23,8 @@
 
         <field name="badge"  type="integer" />
 
+        <field name="urlArgs" type="text" nullable="true"  />
+
         <field name="message" type="text" />
 
         <field name="title" type="text" />

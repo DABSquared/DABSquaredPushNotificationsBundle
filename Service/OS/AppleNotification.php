@@ -11,9 +11,17 @@ use DABSquared\PushNotificationsBundle\Message\MessageStatus;
 use DABSquared\PushNotificationsBundle\Model\DeviceManagerInterface;
 use DABSquared\PushNotificationsBundle\Model\MessageManagerInterface;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
+use Symfony\Component\HttpKernel\Kernel;
 
 class AppleNotification implements OSNotificationServiceInterface
 {
+
+    /**
+     * Kernel
+     *
+     * @var Kernel
+     */
+    protected $kernel;
 
     /**
      * Array for certificates
@@ -45,18 +53,31 @@ class AppleNotification implements OSNotificationServiceInterface
      */
     protected $jsonUnescapedUnicode = FALSE;
 
+
+    protected $entrustPath = null;
+
     /**
      * Constructor
      *
+     * @param Kernel $kernel
      * @param array $certificates
      * @param \DABSquared\PushNotificationsBundle\Model\MessageManagerInterface $messageManager
      * @param \DABSquared\PushNotificationsBundle\Model\DeviceManagerInterface $deviceManager
      */
-    public function __construct($certificates, MessageManagerInterface $messageManager, DeviceManagerInterface $deviceManager)
+    public function __construct($kernel, $certificates, MessageManagerInterface $messageManager, DeviceManagerInterface $deviceManager)
     {
+        $this->kernel = $kernel;
         $this->certificates = $certificates;
         $this->messageManager = $messageManager;
         $this->deviceManager = $deviceManager;
+
+        try {
+            $this->entrustPath = $kernel->locateResource("@DABSquaredPushNotificationsBundle/Resources/public/certs/entrust_2048_ca.cer");
+        } catch(\InvalidArgumentException $exception) {
+
+        } catch(\RuntimeException $exception) {
+
+        }
     }
 
 
@@ -103,11 +124,12 @@ class AppleNotification implements OSNotificationServiceInterface
                 }
 
 
-                $apnURL = "ssl://gateway.push.apple.com:2195";
+                $apnURL = "tls://gateway.push.apple.com:2195";
 
                 if($message->getDevice()->getState() == Device::STATE_SANDBOX) {
-                    $apnURL = "ssl://gateway.sandbox.push.apple.com:2195";
+                    $apnURL = "tls://gateway.sandbox.push.apple.com:2195";
                 }
+
                 $cert["apnURL"] = $apnURL;
             }
         }
@@ -142,6 +164,11 @@ class AppleNotification implements OSNotificationServiceInterface
         if (strlen($cert['passphrase'])) {
             stream_context_set_option($ctx, "ssl", "passphrase", $cert['passphrase']);
         }
+
+        if(!is_null($this->entrustPath)) {
+            stream_context_set_option($ctx, 'ssl', 'cafile', $this->entrustPath);
+        }
+
 
         $apns = null;
 
@@ -246,9 +273,6 @@ class AppleNotification implements OSNotificationServiceInterface
 
         $token = preg_replace("/[^0-9A-Fa-f]/", "", $message->getDevice()->getDeviceToken());
         $payload = chr(1) . pack("N", $message->getId()) . pack("N", $message->getExpiry()) . pack("n", 32) . pack("H*", $token) . pack("n", strlen($jsonBody)) . $jsonBody;
-
-
-        $payload = chr(0) . chr(0) . chr(32) . pack('H*', str_replace(' ', '', $message->getDevice()->getDeviceToken())) . chr(0) . chr(strlen($jsonBody)) . $jsonBody;
 
         return $payload;
     }

@@ -70,7 +70,6 @@ class DABSquaredPushNotificationsExtension extends Extension
 
         if (isset($config["safari"])) {
             $this->setSafariConfig($config);
-            $loader->load('safari.xml');
         }
 
         if (isset($config["blackberry"])) {

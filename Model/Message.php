@@ -69,6 +69,11 @@ abstract class Message implements MessageInterface
     protected $customData = array();
 
     /**
+     * @var string
+     */
+    protected $urlArgs = null;
+
+    /**
      * Collapse key for data
      *
      * @var string
@@ -216,6 +221,12 @@ abstract class Message implements MessageInterface
             $apsBody["aps"]["alert"]['title'] = $this->getTitle();
             $apsBody["aps"]["alert"]['action'] = 'View';
 
+            if(is_null($this->getURLArgs())) {
+                $apsBody["aps"]['url-args'] = '';
+            } else {
+                $apsBody["aps"]['url-args'] = $this->getURLArgs();
+            }
+
             $payloadBody = $apsBody;
             if (!empty($this->customData)) {
                 $payloadBody = array_merge($payloadBody, $this->customData);
@@ -246,19 +257,7 @@ abstract class Message implements MessageInterface
      */
     public function setData($data)
     {
-        if($this->getTargetOS() == Types::OS_IOS || $this->getTargetOS() == Types::OS_MAC) {
-            if (!is_array($data)) {
-                throw new \InvalidArgumentException(sprintf('Messages custom data must be array, "%s" given.', gettype($data)));
-            }
-
-            if (array_key_exists("aps", $data)) {
-                unset($data["aps"]);
-            }
-
-            foreach ($data as $key => $value) {
-                $this->addCustomData($key, $value);
-            }
-        } else if($this->getTargetOS() == Types::OS_SAFARI) {
+        if($this->getTargetOS() == Types::OS_IOS || $this->getTargetOS() == Types::OS_MAC || $this->getTargetOS() == Types::OS_SAFARI) {
             if (!is_array($data)) {
                 throw new \InvalidArgumentException(sprintf('Messages custom data must be array, "%s" given.', gettype($data)));
             }
@@ -430,6 +429,22 @@ abstract class Message implements MessageInterface
     public function setBadge($badge)
     {
         $this->badge = $badge;
+    }
+
+    /**
+     * @return string
+     */
+    public function getURLArgs()
+    {
+        return $this->urlArgs;
+    }
+
+    /**
+     * @param string $urlArgs
+     */
+    public function setURLArgs($urlArgs)
+    {
+        $this->urlArgs = $urlArgs;
     }
 
 

@@ -56,6 +56,28 @@ class DABSquaredPushNotificationsExtension extends Extension
 
         $this->setInitialParams();
 
+
+        if ($config['use_bcc_resque']) {
+            $bundles = $container->getParameter('kernel.bundles');
+
+            $foundBCCResque = false;
+
+            foreach ($bundles as $name => $class) {
+                $ref = new \ReflectionClass($class);
+                if($ref->getName() == "BCC\\ResqueBundle\\BCCResqueBundle") {
+                    $foundBCCResque = true;
+                    break;
+                }
+            }
+
+            if(!$foundBCCResque) {
+                throw new \InvalidArgumentException("To use BCCResque you need to add it to composer.");
+            }
+        }
+
+        $container->setParameter('dab_push_notifications.use_bcc_resque', $config['use_bcc_resque']);
+        $container->setParameter('dab_push_notifications.bcc_resque_queue', $config['bcc_resque_queue']);
+
         $this->setAppsConfig($config);
 
         if (isset($config["android"])) {
@@ -85,7 +107,7 @@ class DABSquaredPushNotificationsExtension extends Extension
     protected function setInitialParams()
     {
         $this->container->setParameter("dab_push_notifications.android.enabled", false);
-        $this->container->setParameter("dab_push_notifications.ios.enabled", false);
+        $this->container->setParameter("dab_push_notifications.apple.enabled", false);
     }
 
     /**

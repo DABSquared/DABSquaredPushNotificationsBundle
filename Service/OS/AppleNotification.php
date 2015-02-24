@@ -30,7 +30,6 @@ class AppleNotification implements OSNotificationServiceInterface
      */
     protected $certificates;
 
-
     /**
      * Message Manager
      *
@@ -55,6 +54,18 @@ class AppleNotification implements OSNotificationServiceInterface
 
 
     protected $entrustPath = null;
+
+    protected $errorResponseMessages = array(
+        0 => 'No errors encountered',
+        1 => 'Processing error',
+        2 => 'Missing device token',
+        3 => 'Missing topic',
+        4 => 'Missing payload',
+        5 => 'Invalid token size',
+        6 => 'Invalid topic size',
+        7 => 'Invalid payload size',
+        8 => 'Invalid token',
+    ); /**< @type array Error-response messages. */
 
     /**
      * Constructor
@@ -108,7 +119,7 @@ class AppleNotification implements OSNotificationServiceInterface
 
         /** @var $message \DABSquared\PushNotificationsBundle\Model\Message */
         foreach ($messages as $message) {
-            if ($message->getTargetOS() != Types::OS_IOS) {
+            if ($message->getTargetOS() != Types::OS_IOS && $message->getTargetOS() != Types::OS_MAC && $message->getTargetOS() != Types::OS_SAFARI) {
                 throw new InvalidMessageTypeException(sprintf("Message type '%s' not supported by APN", get_class($message)));
             }
 
@@ -169,11 +180,22 @@ class AppleNotification implements OSNotificationServiceInterface
             stream_context_set_option($ctx, 'ssl', 'cafile', $this->entrustPath);
         }
 
-
         $apns = null;
 
         try {
             $apns = stream_socket_client($cert["apnURL"], $err, $errstr, 60, STREAM_CLIENT_CONNECT, $ctx);
+
+            if (!$apns) {
+                /* @var \DABSquared\PushNotificationsBundle\Model\MessageInterface $message*/
+                foreach ($cert['messages'] as $message) {
+                    $message->setStatus(MessageStatus::MESSAGE_STATUS_STREAM_ERROR);
+                    $this->messageManager->saveMessage($message);
+                }
+                throw new \Exception(
+                    "Unable to connect to '{$cert["apnURL"]}': {$errstr} ({$err})"
+                );
+            }
+
             // Reduce buffering and blocking
             if (function_exists("stream_set_read_buffer")) {
                 stream_set_read_buffer($apns, 6);
@@ -191,22 +213,27 @@ class AppleNotification implements OSNotificationServiceInterface
 
 
         $payload = $this->createPayload($message, $cert);
-
+        
         try {
             $response = (strlen($payload) === @fwrite($apns, $payload, strlen($payload)));
 
+            if($response == false) {
+                var_dump("fail");
+            }
+
             $readStreams = array($apns);
             $null = NULL;
-            $streamsReadyToRead = @stream_select($readStreams, $null, $null, 1, 0);
-            if ($streamsReadyToRead > 0) {
-                // Unpack error response data and set as the result
-                $response = @unpack("Ccommand/Cstatus/Nidentifier", fread($apns, 6));
-                if (is_resource($apns)) {
-                    fclose($apns);
-                }
+            $streamsReadyToRead = @stream_select($readStreams, $null, $null, 0, 1000000);
 
+            if ($streamsReadyToRead === false) {
+
+            } else if ($streamsReadyToRead > 0) {
+                $response = @unpack("Ccommand/Cstatus/Nidentifier", @fread($apns, 6));
                 //TODO: Set Response on the message
+            }
 
+            if (is_resource($apns)) {
+                @fclose($apns);
             }
         } catch (\ErrorException $er) {
             $message->setStatus(MessageStatus::MESSAGE_STATUS_STREAM_ERROR);
@@ -219,7 +246,7 @@ class AppleNotification implements OSNotificationServiceInterface
 
 
         if(is_resource($apns)) {
-            fclose($apns);
+            @fclose($apns);
         }
     }
 

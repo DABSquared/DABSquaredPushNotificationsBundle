@@ -18,40 +18,23 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 
 class MessageManager extends BaseMessageManger
 {
-    /**
-     * @var EntityManager
-     */
-    protected $em;
+
 
     /**
-     * @var EntityRepository
+     * @param Container $container
+     * @param EventDispatcherInterface $dispatcher
+     * @param EntityManager $em
+     * @param $class
+     * @param $useBCCResque
+     * @param $bccResqueQueue
      */
-    protected $repository;
-
-    /**
-     * @var string
-     */
-    protected $class;
-
-    /**
-     * Constructor.
-     *
-     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher
-     * @param \Doctrine\ORM\EntityManager                                 $em
-     * @param string                                                      $class
-     */
-    public function __construct(EventDispatcherInterface $dispatcher, EntityManager $em, $class)
+    public function __construct(Container $container, EventDispatcherInterface $dispatcher, $em, $class, $useBCCResque, $bccResqueQueue)
     {
-        parent::__construct($dispatcher);
-
-        $this->em = $em;
-        $this->repository = $em->getRepository($class);
-
-        $metadata = $em->getClassMetadata($class);
-        $this->class = $metadata->name;
+        parent::__construct($container, $dispatcher, $em, $class, $useBCCResque, $bccResqueQueue);
     }
 
     /**

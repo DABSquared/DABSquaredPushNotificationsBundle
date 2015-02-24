@@ -101,6 +101,22 @@ class SafariController extends Controller
         } else if(!is_null($device)) {
             $device->setBadgeNumber(0);
             $device->setStatus(DeviceStatus::DEVICE_STATUS_ACTIVE);
+            if($device instanceof UserDeviceInterface) {
+                $userEntityNamespace = $this->container->getParameter('dab_push_notifications.user_entity_namespace');
+                if(!is_null($userEntityNamespace)) {
+                    /** @var $em \Doctrine\ORM\EntityManager */
+                    $em = $this->container->get('doctrine')->getManager();
+                    /** @var $userRepository \Doctrine\ORM\EntityRepository */
+                    $userRepository = $em->getRepository($userEntityNamespace);
+                    $user = $userRepository->findOneBy(array(
+                        "id" => $userId
+                    ));
+                    if(!is_null($user)) {
+                        $device->setUser($user);
+                    }
+                }
+            }
+            $device->setDeviceName("Safari: ".$userId);
         }  else {
             $device = $deviceManager->createDevice($device);
             $device->setAppId($websitePushID);

@@ -2,12 +2,17 @@
 
 namespace DABSquared\PushNotificationsBundle\Model;
 
+use DABSquared\PushNotificationsBundle\Message\MessageStatus;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use InvalidArgumentException;
 
 use DABSquared\PushNotificationsBundle\Events;
+use DABSquared\PushNotificationsBundle\Job\PushNotificationJob;
 use DABSquared\PushNotificationsBundle\Event\MessageEvent;
 use DABSquared\PushNotificationsBundle\Event\MessagePersistEvent;
+use Symfony\Component\DependencyInjection\ContainerInterface as Container;
+
+
 
 /**
  * Created by JetBrains PhpStorm.
@@ -19,20 +24,65 @@ use DABSquared\PushNotificationsBundle\Event\MessagePersistEvent;
 abstract class MessageManager implements MessageManagerInterface
 {
 
-
     /**
-     * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+     * @var EventDispatcherInterface
      */
     protected $dispatcher;
 
     /**
-     * Constructor
-     *
-     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher
+     * @var EntityManager
      */
-    public function __construct(EventDispatcherInterface $dispatcher)
+    protected $em;
+
+    /**
+     * @var EntityRepository
+     */
+    protected $repository;
+
+    /**
+     * @var string
+     */
+    protected $class;
+
+    /**
+     * @var $resque \BCC\ResqueBundle\Resque
+     */
+    protected $resque = null;
+
+    /**
+     * @var boolean
+     */
+    protected $useBCCResque;
+
+    /**
+     * @var string
+     */
+    protected $bccResqueQueue;
+
+    /**
+     * @param Container $container
+     * @param EventDispatcherInterface $dispatcher
+     * @param EntityManager $em
+     * @param $class
+     * @param $useBCCResque
+     * @param $bccResqueQueue
+     */
+    public function __construct(Container $container, EventDispatcherInterface $dispatcher, $em, $class, $useBCCResque, $bccResqueQueue)
     {
+        $this->em = $em;
+        $this->repository = $em->getRepository($class);
+
+        $metadata = $em->getClassMetadata($class);
+        $this->class = $metadata->name;
+
         $this->dispatcher = $dispatcher;
+
+        $this->useBCCResque = $useBCCResque;
+
+        if($useBCCResque) {
+            $this->resque = $container->get('bcc_resque.resque');
+            $this->bccResqueQueue = $bccResqueQueue;
+        }
     }
 
     /**
@@ -83,6 +133,15 @@ abstract class MessageManager implements MessageManagerInterface
         $event = new MessageEvent($message);
         $this->dispatcher->dispatch(Events::MESSAGE_POST_PERSIST, $event);
 
+        if($this->useBCCResque && $message->getStatus() == MessageStatus::MESSAGE_STATUS_NOT_SENT) {
+            $pushNotificationJob = new PushNotificationJob();
+            $pushNotificationJob->args = array("notification_id" => $message->getId());
+            $pushNotificationJob->queue = $this->bccResqueQueue;
+            $message->setStatus(MessageStatus::MESSAGE_STATUS_QUEUED);
+            $this->em->persist($message);
+            $this->em->flush();
+            $this->resque->enqueue($pushNotificationJob);
+        }
     }
 
     /**

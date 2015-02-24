@@ -21,7 +21,7 @@
 
         <field name="status"  type="text" />
 
-        <field name="badge"  type="integer" />
+        <field name="badge"  type="integer" nullable="true"/>
 
         <field name="urlArgs" type="text" nullable="true"  />
 

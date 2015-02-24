@@ -33,9 +33,12 @@
             <argument>%dab_push_notifications.model.device.class%</argument>
         </service>
         <service id="dab_push_notifications.manager.message.default" class="%dab_push_notifications.manager.message.default.class%">
+            <argument type="service" id="service_container" />
             <argument type="service" id="event_dispatcher" />
             <argument type="service" id="dab_push_notifications.entity_manager" />
             <argument>%dab_push_notifications.model.message.class%</argument>
+            <argument>%dab_push_notifications.use_bcc_resque%</argument>
+            <argument>%dab_push_notifications.bcc_resque_queue%</argument>
         </service>
 
         <service id="dab_push_notifications.manager.appevent.default" class="%dab_push_notifications.manager.appevent.default.class%">

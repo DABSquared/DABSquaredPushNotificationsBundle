@@ -189,6 +189,7 @@ class PushAdminController extends Controller
             /** @var $message \DABSquared\PushNotificationsBundle\Model\Message */
             $message =  $this->messageManager->createMessage($message);
             $message->setMessage($messageText);
+            $message->setTitle("Test");
             $message->setDevice($device);
             $this->messageManager->saveMessage($message);
 

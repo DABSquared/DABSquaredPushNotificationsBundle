@@ -106,7 +106,7 @@ abstract class Message implements MessageInterface
      *
      * @var int
      */
-    protected $expiry = 0;
+    protected $expiry = 604800;
 
     /**
      * Class constructor

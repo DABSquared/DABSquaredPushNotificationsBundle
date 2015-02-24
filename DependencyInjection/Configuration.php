@@ -27,6 +27,8 @@ class Configuration
                 ->scalarNode('db_driver')->cannotBeOverwritten()->isRequired()->end()
                 ->scalarNode('model_manager_name')->defaultNull()->end()
                 ->scalarNode('user_entity_namespace')->defaultNull()->end()
+                ->booleanNode('use_bcc_resque')->isRequired()->defaultValue(false)->end()
+                ->scalarNode('bcc_resque_queue')->defaultValue("dab-push-notifications")->end()
                 ->arrayNode('class')->isRequired()
                     ->children()
                         ->arrayNode('model')->isRequired()

@@ -35,6 +35,8 @@ Enable the required bundles in the kernel:
 dab_squared_push_notifications:
     db_driver: orm
     user_entity_namespace: YourProjectBundle:User
+    use_bcc_resque: true
+    bcc_resque_queue: 'dab-push-notifications'
     class:
         model:
             device: YourProject\Bundle\Entity\Device
@@ -47,17 +49,17 @@ dab_squared_push_notifications:
           api_keys:
             your_app_free: { api_key: 'YOUR ANDROID SERVER KEY HERE', internal_app_id: 0000001 }
             your_app_premium: { api_key: 'YOUR ANDROID SERVER KEY HERE', internal_app_id: 0000002 }
-    ios:
+    apple:
         certificates:
             dev_free: { sandbox: true, pem: %kernel.root_dir%/../pushcerts/dev/certificate.pem, passphrase: ~, internal_app_id: 0000001}
             prod_free: { sandbox: false, pem: %kernel.root_dir%/../pushcerts/prod/certificate.pem, passphrase: ~, internal_app_id: 0000001}
             dev_prem: { sandbox: true, pem: %kernel.root_dir%/../pushcerts/dev/certificate1.pem, passphrase: ~, internal_app_id: 0000002}
             prod_prem: { sandbox: false, pem: %kernel.root_dir%/../pushcerts/prod/certificate1.pem, passphrase: ~, internal_app_id: 0000002}
+            website: { sandbox: false, pem: %kernel.root_dir%/../pushcerts/website/website.pem, passphrase: ~, internal_app_id: web.com.company.app}   # <= Make sure this matches the website push id
     safari:
-        pem: %kernel.root_dir%/../pushcerts/website/certificate.pem
         pk12: %kernel.root_dir%/../pushcerts/website/Certificates.p12
         passphrase: ~
-        website_push_id: web.com.spark.spark
+        website_push_id: web.com.company.app
         icon16x16: %kernel.root_dir%/../pushcerts/website/icon_16x16.png
         icon16x16@2x: %kernel.root_dir%/../pushcerts/website/icon_16x16@2x.png
         icon32x32: %kernel.root_dir%/../pushcerts/website/icon_32x32.png

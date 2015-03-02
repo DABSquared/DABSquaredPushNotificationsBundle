@@ -222,7 +222,7 @@ abstract class Message implements MessageInterface
             $apsBody["aps"]["alert"]['action'] = 'View';
 
             if(is_null($this->getURLArgs())) {
-                $apsBody["aps"]['url-args'] = '';
+                $apsBody["aps"]['url-args'] = array("");
             } else {
                 $apsBody["aps"]['url-args'] = $this->getURLArgs();
             }

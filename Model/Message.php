@@ -148,7 +148,9 @@ abstract class Message implements MessageInterface
      */
     public function setMessage($message)
     {
-        $this->message = $message;
+        if(!is_null($message)) {
+            $this->message = $message;
+        }
     }
 
 
@@ -168,7 +170,9 @@ abstract class Message implements MessageInterface
      */
     public function setTitle($title)
     {
-        $this->title = $title;
+        if(!is_null($title)) {
+            $this->title = $title;
+        }
     }
 
 
@@ -210,7 +214,7 @@ abstract class Message implements MessageInterface
 
             $payloadBody = $apsBody;
             if (!empty($this->customData)) {
-                $payloadBody = array_merge($payloadBody, $this->customData);
+                $payloadBody = array_replace_recursive($payloadBody, $this->customData);
             }
             return $payloadBody;
         } else if($this->getTargetOS() == Types::OS_SAFARI) {
@@ -229,7 +233,7 @@ abstract class Message implements MessageInterface
 
             $payloadBody = $apsBody;
             if (!empty($this->customData)) {
-                $payloadBody = array_merge($payloadBody, $this->customData);
+                $payloadBody = array_replace_recursive($payloadBody, $this->customData);
             }
             return $payloadBody;
         } else if($this->getTargetOS() == Types::OS_ANDROID_GCM || $this->getTargetOS() == Types::OS_ANDROID_C2DM) {
@@ -240,7 +244,7 @@ abstract class Message implements MessageInterface
                 "data.content_available" => $this->contentAvailable ? 1 : 0,
             );
             if (!empty($this->customData)) {
-                $data = array_merge($data, $this->customData);
+                $data = array_replace_recursive($data, $this->customData);
             }
             return $data;
         } else if($this->getTargetOS() == Types::OS_BLACKBERRY) {

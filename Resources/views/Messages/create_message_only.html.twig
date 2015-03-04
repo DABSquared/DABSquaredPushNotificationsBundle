@@ -9,21 +9,81 @@
 
     <form id="pushMessageForm" action="{{ path('dabsquared_push_notifications_create_device_push_message', { deviceId: device.id}) }}" method="post" {{ form_enctype(form) }} autocomplete="off" >
 
-        <div class="row" style="text-align:center; width:100%;">
-            <div class="col-md-12">
-                {{ form_errors(form.message) }}
-                {{ form_widget(form.message) }}
+        {% if payload_sent is not null %}
+            <div class="row ">
+                <div class="col-md-12">
+                    <div class=" alert alert-success">
+                        Sent Payload:
+                        <pre>{{ payload_sent|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+                    </div>
+                </div>
             </div>
+        {% endif %}
 
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.title) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.message) }}
+            </div>
         </div>
 
-        <div class="row" style="text-align:right;font-weight: bold; font-size: 16px;">
-            <div class="col-md-12">
-                <span id="charCount">0/255</span>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.sound) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.badge) }}
             </div>
         </div>
 
 
+
+        <div class="row">
+            <div class="col-md-12">
+               The custom data block overrides any attributes set above. Example:
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <pre>
+{
+    "aps": {
+        "alert": {
+            "title": "Game Request",
+            "body": "Bob wants to play poker",
+            "action-loc-key": "PLAY"
+        },
+        "badge": 5
+    },
+    "acme1": "bar",
+    "acme2": [
+        "bang",
+        "whiz"
+    ]
+}
+                </pre>
+            </div>
+        </div>
+
+        {% if json_error is not null %}
+            <div class="row ">
+                <div class="col-md-12">
+                    <div class=" alert alert-danger">
+                        {{ json_error }}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+
+        <div class="row">
+            <div class="col-md-12">
+                {{ form_row(form.customData) }}
+            </div>
+        </div>
 
         <div class="row" style="text-align:center;">
             <div class="col-md-12">
@@ -38,20 +98,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $('#dabsquared_pushbundle_message_only_type_message').keyup(function () {
-                var max = 255;
-                var len = $(this).val().length;
-                if (len >= max) {
-                    $('#charCount').text(len + "/255");
-                } else {
-                    $('#charCount').text(len + "/255");
-                }
-            });
-
-            $('#dabsquared_pushbundle_message_only_type_message').addClass('col-md-12');
-        });
-    </script>
 {% endblock %}
 

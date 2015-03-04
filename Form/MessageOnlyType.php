@@ -23,8 +23,13 @@ class MessageOnlyType extends AbstractType
     {
         $factory = $builder->getFormFactory();
 
-        $builder
-            ->add('message', 'textarea', array());
+        $builder->add('title', 'text', array());
+        $builder->add('message', 'textarea', array());
+        $builder->add('sound', 'text', array());
+        $builder->add('badge', 'integer', array());
+        $builder->add('customData', 'textarea', array('attr' => array(
+            'style' => 'height:300px;'
+        )));
 
     }
 

@@ -177,10 +177,18 @@ class PushAdminController extends Controller
             throw new NotFoundHttpException("The device with that id was not found.");
         }
 
+        $jsonError = null;
+
+        $payloadSent = null;
+
         if($request->isMethod("POST")) {
-            $form->bind($request);
+            $form->handleRequest($request);
 
             $messageText = $form['message']->getData();
+            $messageTitle = $form['title']->getData();
+            $messageSound = $form['sound']->getData();
+            $messageBadge = $form['badge']->getData();
+            $messageCustomData = $form['customData']->getData();
 
             /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
             $device = $this->deviceManager->findDeviceWithId($device);
@@ -189,13 +197,46 @@ class PushAdminController extends Controller
             /** @var $message \DABSquared\PushNotificationsBundle\Model\Message */
             $message =  $this->messageManager->createMessage($message);
             $message->setMessage($messageText);
-            $message->setTitle("Test");
+            $message->setTitle($messageTitle);
+            $message->setSound($messageSound);
+            $message->setBadge($messageBadge);
+
+            if(!is_null($messageCustomData)) {
+                $messageCustomData = trim($messageCustomData);
+                $data = json_decode($messageCustomData, true);
+                $message->setCustomData($data);
+
+                switch (json_last_error()) {
+                    case JSON_ERROR_NONE:
+
+                        break;
+                    case JSON_ERROR_DEPTH:
+                        $jsonError = ' - Maximum stack depth exceeded';
+                        break;
+                    case JSON_ERROR_STATE_MISMATCH:
+                        $jsonError = ' - Underflow or the modes mismatch';
+                        break;
+                    case JSON_ERROR_CTRL_CHAR:
+                        $jsonError = ' - Unexpected control character found';
+                        break;
+                    case JSON_ERROR_SYNTAX:
+                        $jsonError = ' - Syntax error, malformed JSON';
+                        break;
+                    case JSON_ERROR_UTF8:
+                        $jsonError = ' - Malformed UTF-8 characters, possibly incorrectly encoded';
+                        break;
+                    default:
+                        $jsonError = ' - Unknown error';
+                        break;
+                }
+            }
+
             $message->setDevice($device);
             $this->messageManager->saveMessage($message);
-
+            $payloadSent = $message->getMessageBody();
         }
 
-        return array('form' => $form->createView(), 'device' => $device);
+        return array('form' => $form->createView(), 'device' => $device, 'json_error' => $jsonError, "payload_sent" => $payloadSent);
     }
 
 

@@ -81,7 +81,7 @@ class DeviceController extends Controller
         $deviceManager = $this->get('dab_push_notifications.manager.device');
 
         /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
-        $device = $deviceManager->findDeviceByTypeIdentifierAndAppIdAndDeviceToken(Types::OS_IOS, $deviceIdentifier, $appId,$deviceToken );
+        $device = $deviceManager->findDeviceByTypeIdentifierAndAppId(Types::OS_IOS, $deviceIdentifier, $appId);
 
         if(is_null($device)) {
            $device = $deviceManager->createDevice($device);

@@ -218,7 +218,7 @@ class AppleNotification implements OSNotificationServiceInterface
             $response = (strlen($payload) === @fwrite($apns, $payload, strlen($payload)));
 
             if($response == false) {
-                var_dump("fail");
+                $this->kernel->getContainer()->get('logger')->error("DABSquared Push Notifications Bundle: Could not write payload: ".$payload." To Apple.");
             }
 
             $readStreams = array($apns);
@@ -238,6 +238,7 @@ class AppleNotification implements OSNotificationServiceInterface
         } catch (\ErrorException $er) {
             $message->setStatus(MessageStatus::MESSAGE_STATUS_STREAM_ERROR);
             $this->messageManager->saveMessage($message);
+            $this->kernel->getContainer()->get('logger')->error("DABSquared Push Notifications Bundle: Could not write payload: ".$payload." To Apple. Got Error: ".$er->getMessage());
             return;
         }
 

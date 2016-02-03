@@ -7,7 +7,7 @@
 
     <h3>Create Message For {{ device.deviceName }}</h3>
 
-    <form id="pushMessageForm" action="{{ path('dabsquared_push_notifications_create_device_push_message', { deviceId: device.id}) }}" method="post" {{ form_enctype(form) }} autocomplete="off" >
+    {{ form_start(form, {'attr': {'id': 'pushMessageForm'}, 'action': path('dabsquared_push_notifications_create_device_push_message', { deviceId: device.id}), 'method': 'POST' }) }}
 
         {% if payload_sent is not null %}
             <div class="row ">
@@ -91,7 +91,7 @@
             </div>
         </div>
 
-    </form>
+    {{ form_end(form) }}
 
 
 {% endblock %}

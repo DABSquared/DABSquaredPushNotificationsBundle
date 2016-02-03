@@ -5,8 +5,8 @@
 
 {% block content %}
 
-    <form id="pushMessageForm" action="{{ path('dabsquared_push_notifications_create_push_messages') }}" method="post" {{ form_enctype(form) }} autocomplete="off" >
 
+    {{ form_start(form, {'attr': {'id': 'pushMessageForm'}, 'action': path('dabsquared_push_notifications_create_push_messages'), 'method': 'GET' }) }}
         <div class="row" style="text-align:center; width:100%;">
             <div class="col-md-12">
                 {{ form_row(form.message) }}
@@ -26,9 +26,7 @@
                 <input class="btn btn-primary form-control" type="submit" />
             </div>
         </div>
-
-    </form>
-
+    {{ form_end(form) }}
 
 {% endblock %}
 

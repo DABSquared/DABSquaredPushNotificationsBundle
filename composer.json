@@ -18,7 +18,7 @@
         "symfony/framework-bundle": ">=2.1",
         "doctrine/common": ">=2.3",
         "jms/di-extra-bundle": ">=1.1",
-        "nelmio/api-doc-bundle": "@stable",
+        "nelmio/api-doc-bundle": ">= 2.11.0",
         "jms/serializer-bundle": ">= 0.13.0",
         "knplabs/knp-paginator-bundle": ">=2.4"
     },

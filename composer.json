@@ -20,7 +20,8 @@
         "jms/di-extra-bundle": ">=1.1",
         "nelmio/api-doc-bundle": ">= 2.11.0",
         "jms/serializer-bundle": ">= 0.13.0",
-        "knplabs/knp-paginator-bundle": ">=2.4"
+        "knplabs/knp-paginator-bundle": ">=2.4",
+        "ext-zip": "*"
     },
     "require-dev": {
         "doctrine/orm": "2.3.*@stable",

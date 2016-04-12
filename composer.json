@@ -15,6 +15,7 @@
     "require": {
         "php": ">=5.3.3",
         "friendsofsymfony/rest-bundle": "*",
+        "kriswallsmith/buzz": "*",
         "symfony/framework-bundle": ">=2.1",
         "doctrine/common": ">=2.3",
         "jms/di-extra-bundle": ">=1.1",
@@ -35,7 +36,6 @@
       "bcc/resque-bundle": "dev-master"
     },
     "autoload": {
-        "psr-0": { "DABSquared\\PushNotificationsBundle": "" }
-    },
-    "target-dir": "DABSquared/PushNotificationsBundle"
+        "psr-4": { "DABSquared\\PushNotificationsBundle\\": "" }
+    }
 }

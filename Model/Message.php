@@ -236,9 +236,9 @@ abstract class Message implements MessageInterface
                 $payloadBody = array_replace_recursive($payloadBody, $this->customData);
             }
             return $payloadBody;
-        } else if($this->getTargetOS() == Types::OS_ANDROID_GCM || $this->getTargetOS() == Types::OS_ANDROID_C2DM) {
+        } else if($this->getTargetOS() == Types::OS_ANDROID) {
             $data = array(
-                "registration_id" => $this->device->getDeviceidentifier(),
+                "registration_id" => $this->device->getDeviceIdentifier(),
                 "collapse_key"    => $this->collapseKey,
                 "data.message"    => $this->message,
                 "data.content_available" => $this->contentAvailable ? 1 : 0,

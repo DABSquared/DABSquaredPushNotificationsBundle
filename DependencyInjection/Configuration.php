@@ -98,15 +98,6 @@ class Configuration
                             // in the c2dm array
                             scalarNode("username")->defaultValue("")->end()->
                             scalarNode("password")->defaultValue("")->end()->
-                            scalarNode("source")->defaultValue("")->end()->
-                            arrayNode("c2dm")->
-                                canBeUnset()->
-                                    children()->
-                                        scalarNode("username")->isRequired()->end()->
-                                        scalarNode("password")->isRequired()->end()->
-                                        scalarNode("source")->defaultValue("")->end()->
-                                    end()->
-                            end()->
                             arrayNode("gcm")
                                 ->children()
                                 ->arrayNode('api_keys')
@@ -121,8 +112,7 @@ class Configuration
                                 end()->
                             end()->
                         end()->
-                end()->
-            end()
+                    end()
         ;
     }
 

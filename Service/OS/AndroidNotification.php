@@ -2,62 +2,94 @@
 
 namespace DABSquared\PushNotificationsBundle\Service\OS;
 
+use Buzz\Browser;
+use Buzz\Client\AbstractCurl;
+use Buzz\Client\Curl;
+use Buzz\Client\MultiCurl;
+use DABSquared\PushNotificationsBundle\Device\DeviceStatus;
 use DABSquared\PushNotificationsBundle\Exception\InvalidMessageTypeException,
-    DABSquared\PushNotificationsBundle\Model\Message,
     DABSquared\PushNotificationsBundle\Model\MessageInterface,
     DABSquared\PushNotificationsBundle\Device\Types;
-use Buzz\Browser;
-
+use Psr\Log\LoggerInterface;
 
 class AndroidNotification implements OSNotificationServiceInterface
 {
-    /**
-     * Username for auth
-     *
-     * @var string
-     */
-    protected $username;
 
     /**
-     * Password for auth
+     * Whether or not to use the dry run GCM
      *
-     * @var string
+     * @var bool
      */
-    protected $password;
+    protected $useDryRun = false;
 
     /**
-     * The source of the notification
-     * eg com.example.myapp
+     * GCM endpoint
      *
      * @var string
      */
-    protected $source;
+    protected $apiURL = "https://android.googleapis.com/gcm/send";
 
     /**
-     * Authentication token
+     * Array of used api keys
      *
-     * @var string
+     * @var string[]
      */
-    protected $authToken;
+    protected $apiKeys;
+
+    /**
+     * Max registration count
+     *
+     * @var integer
+     */
+    protected $registrationIdMaxCount = 1000;
+
+    /**
+     * Browser object
+     *
+     * @var \Buzz\Browser
+     */
+    protected $browser;
+
+    /**
+     * Collection of the responses from the GCM communication
+     *
+     * @var array
+     */
+    protected $responses;
+
+
+    /**
+     * Monolog logger
+     *
+     * @var LoggerInterface
+     */
+    protected $logger;
 
     /**
      * Constructor
      *
-     * @param $username
-     * @param $password
-     * @param $source
+     * @param string       $apiKeys
+     * @param bool         $useMultiCurl
+     * @param int          $timeout
+     * @param LoggerInterface $logger
+     * @param AbstractCurl $client (optional)
+     * @param bool         $dryRun
      */
-    public function __construct($username, $password, $source)
+    public function __construct($apiKeys, $useMultiCurl, $timeout, $logger, AbstractCurl $client = null, $dryRun = false)
     {
-        $this->username = $username;
-        $this->password = $password;
-        $this->source = $source;
-        $this->authToken = "";
+        $this->useDryRun = $dryRun;
+        $this->apiKeys = $apiKeys;
+        if (!$client) {
+            $client = ($useMultiCurl ? new MultiCurl() : new Curl());
+        }
+        $client->setTimeout($timeout);
+        $this->browser = new Browser($client);
+        $this->browser->getClient()->setVerifyPeer(false);
+        $this->logger = $logger;
     }
 
     /**
-     * Sends a C2DM message
-     * This assumes that a valid auth token can be obtained
+     * Sends the data to the given registration IDs via the GCM server
      *
      * @param \DABSquared\PushNotificationsBundle\Model\MessageInterface $message
      * @throws \DABSquared\PushNotificationsBundle\Exception\InvalidMessageTypeException
@@ -65,96 +97,87 @@ class AndroidNotification implements OSNotificationServiceInterface
      */
     public function send(MessageInterface $message)
     {
-        if ($message->getTargetOS() != Types::OS_ANDROID_C2DM) {
-            throw new InvalidMessageTypeException(sprintf("Message type '%s' not supported by C2DM", get_class($message)));
+        if ($message->getTargetOS() != Types::OS_ANDROID_GCM) {
+            throw new InvalidMessageTypeException(sprintf("Message type '%s' not supported by GCM", $message->getTargetOS()));
         }
 
-        if ($this->getAuthToken()) {
-            $data = $message->getMessageBody();
+        $apiKey = null;
 
-            $headers = array(
-                "Content-Type: application/json",
-                "Authorization: GoogleLogin auth=" . $this->authToken
-            );
-
-            $ch = curl_init();
-            // Set the url, number of POST vars, POST data
-            curl_setopt( $ch, CURLOPT_URL, "https://android.apis.google.com/c2dm/send");
-
-            curl_setopt( $ch, CURLOPT_POST, true );
-            curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-            curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0);
-            curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $data ) );
-
-            // Execute post
-            $response = curl_exec($ch);
-            $info = curl_getinfo($ch);
-
-            if (empty($info['http_code']) || $info['http_code'] != 200) {
-                return false;
+        foreach($this->apiKeys as $anAPIKey) {
+            if($message->getDevice()->getAppId() == $anAPIKey['internal_app_id']) {
+                $apiKey = $anAPIKey['api_key'];
+                break;
             }
-            // Close connection
-            curl_close($ch);
-
-            return preg_match("/^id=/", $response) > 0;
         }
 
-        return false;
-    }
-
-
-    public function sendMessages(array $messages){
-        foreach($messages as $message) {
-           $this->send($message);
-        }
-     }
-
-    /**
-     * Gets a valid authentication token
-     *
-     * @return bool
-     */
-    protected function getAuthToken()
-    {
-        $data = array(
-            "Email"         => $this->username,
-            "Passwd"        => $this->password,
-            "accountType"   => "HOSTED_OR_GOOGLE",
-            "source"        => $this->source,
-            "service"       => "ac2dm"
-        );
 
         $headers = array(
+            "Authorization: key=" . $apiKey,
             "Content-Type: application/json",
         );
 
-        $ch = curl_init();
-        // Set the url, number of POST vars, POST data
-        curl_setopt( $ch, CURLOPT_URL, "https://www.google.com/accounts/ClientLogin");
+        $data = array_merge(
+            $message->getGCMOptions(),
+            array("data" => $message->getMessageBody())
+        );
 
-        curl_setopt( $ch, CURLOPT_POST, true );
-        curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-        curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, 0);
-
-        curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $data ) );
-
-        // Execute post
-        $response = curl_exec($ch);
-        $info = curl_getinfo($ch);
-
-        if (empty($info['http_code']) || $info['http_code'] != 200) {
-            return false;
+        if ($this->useDryRun) {
+            $data['dry_run'] = true;
         }
 
-        // Close connection
-        curl_close($ch);
+        $device = $message->getDevice();
+        // Chunk number of registration IDs according to the maximum allowed by GCM
+        $chunks = array_chunk(array($device->getDeviceToken()), $this->registrationIdMaxCount);
 
-        preg_match("/Auth=([a-z0-9_\-]+)/i", $response, $matches);
-        $this->authToken = $matches[1];
+        // Perform the calls (in parallel)
+        $this->responses = array();
+        foreach ($chunks as $registrationIDs) {
+            $data["registration_ids"] = $registrationIDs;
+            $this->responses[] = $this->browser->post($this->apiURL, $headers, json_encode($data));
+        }
+
+        // Determine success
+        foreach ($this->responses as $response) {
+            $message = json_decode($response);
+            if ($message === null || $message->success == 0 || $message->failure > 0) {
+                if (is_null($message)) {
+                    $this->logger->error($response->getContent());
+                } else {
+                    if (isset($message->results)) {
+                        foreach ($message->results as $result) {
+                            if (isset($result->error)) {
+                                $this->logger->info($result->error);
+                                $error = $result->error;
+                                if ($error == "InvalidRegistration" || $error == "NotRegistered") {
+                                    // remove devices which do not have a valid registration or are no longer registered
+                                    $device->setStatus(DeviceStatus::DEVICE_STATUS_UNACTIVE);
+                                }
+                            }
+                        }
+                    } else {
+                        throw new InvalidMessageTypeException("No results on Android GCM messaging");
+                    }
+                }
+                return false;
+            }
+        }
+
         return true;
+    }
+
+    /**
+     * Returns responses
+     *
+     * @return array
+     */
+    public function getResponses()
+    {
+        return $this->responses;
+    }
+
+    public function sendMessages(array $messages){
+        foreach($messages as $message) {
+            $this->send($message);
+        }
     }
 }

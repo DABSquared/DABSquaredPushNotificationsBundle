@@ -133,25 +133,11 @@ class DABSquaredPushNotificationsExtension extends Extension
     protected function setAndroidConfig(array $config)
     {
         $this->container->setParameter("dab_push_notifications.android.enabled", true);
-        $this->container->setParameter("dab_push_notifications.android.c2dm.enabled", true);
-
-        // C2DM
-        $username = $config["android"]["username"];
-        $password = $config["android"]["password"];
-        $source = $config["android"]["source"];
-        if (isset($config["android"]["c2dm"])) {
-            $username = $config["android"]["c2dm"]["username"];
-            $password = $config["android"]["c2dm"]["password"];
-            $source = $config["android"]["c2dm"]["source"];
-        }
-        $this->container->setParameter("dab_push_notifications.android.c2dm.username", $username);
-        $this->container->setParameter("dab_push_notifications.android.c2dm.password", $password);
-        $this->container->setParameter("dab_push_notifications.android.c2dm.source", $source);
-
+        
         // GCM
-        $this->container->setParameter("dab_push_notifications.android.gcm.enabled", isset($config["android"]["gcm"]));
-        if (isset($config["android"]["gcm"])) {
-            $this->container->setParameter("dab_push_notifications.android.gcm.api_keys", $config["android"]["gcm"]["api_keys"]);
+        $this->container->setParameter("dab_push_notifications.android.enabled", isset($config["android"]));
+        if (isset($config["android"]["api_keys"])) {
+            $this->container->setParameter("dab_push_notifications.android.api_keys", $config["android"]["api_keys"]);
         }
     }
 

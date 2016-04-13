@@ -90,29 +90,18 @@ class Configuration
         $this->root->
             children()->
                 arrayNode("android")->
-                    canBeUnset()->
-                        children()->
-                            // WARNING: These 3 fields as they are, outside of the c2dm array
-                            // are deprecrated in favour of using the c2dm array configuration
-                            // At present these will be overriden by anything supplied
-                            // in the c2dm array
-                            scalarNode("username")->defaultValue("")->end()->
-                            scalarNode("password")->defaultValue("")->end()->
-                            arrayNode("gcm")
-                                ->children()
-                                ->arrayNode('api_keys')
-                                    ->isRequired()
-                                    ->requiresAtLeastOneElement()
-                                    ->useAttributeAsKey('name')
-                                    ->prototype('array')
-                                    ->children()
-                                        ->scalarNode('api_key')->isRequired()->end()
-                                        ->scalarNode('internal_app_id')->isRequired()->end()
-                                    ->end()->
-                                end()->
-                            end()->
+                    children()->
+                        arrayNode('api_keys')
+                            ->isRequired()
+                            ->requiresAtLeastOneElement()
+                            ->useAttributeAsKey('name')
+                            ->prototype('array')
+                            ->children()
+                                ->scalarNode('api_key')->isRequired()->end()
+                                ->scalarNode('internal_app_id')->isRequired()->end()
+                            ->end()->
                         end()->
-                    end()
+                end()
         ;
     }
 

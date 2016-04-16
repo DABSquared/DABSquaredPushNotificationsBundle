@@ -133,7 +133,12 @@ class DABSquaredPushNotificationsExtension extends Extension
     protected function setAndroidConfig(array $config)
     {
         $this->container->setParameter("dab_push_notifications.android.enabled", true);
-        
+
+        $timeout = $config["android"]["timeout"];
+        $this->container->setParameter("dab_push_notifications.android.timeout", $timeout);
+        $this->container->setParameter("dab_push_notifications.android.use_multi_curl", $config["android"]["use_multi_curl"]);
+        $this->container->setParameter('dab_push_notifications.android.dry_run', $config["android"]["dry_run"]);
+
         // GCM
         $this->container->setParameter("dab_push_notifications.android.enabled", isset($config["android"]));
         if (isset($config["android"]["api_keys"])) {

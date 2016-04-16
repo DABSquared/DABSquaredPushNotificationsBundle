@@ -88,20 +88,23 @@ class Configuration
     protected function addAndroid()
     {
         $this->root->
-            children()->
-                arrayNode("android")->
-                    children()->
-                        arrayNode('api_keys')
-                            ->isRequired()
-                            ->requiresAtLeastOneElement()
-                            ->useAttributeAsKey('name')
-                            ->prototype('array')
-                            ->children()
-                                ->scalarNode('api_key')->isRequired()->end()
-                                ->scalarNode('internal_app_id')->isRequired()->end()
-                            ->end()->
-                        end()->
-                end()
+        children()->
+        arrayNode("android")->
+        children()->
+        scalarNode("timeout")->defaultValue(5)->end()->
+        booleanNode("use_multi_curl")->defaultValue(true)->end()->
+        booleanNode("dry_run")->defaultFalse()->end()->
+        arrayNode('api_keys')
+            ->isRequired()
+            ->requiresAtLeastOneElement()
+            ->useAttributeAsKey('name')
+            ->prototype('array')
+            ->children()
+            ->scalarNode('api_key')->isRequired()->end()
+            ->scalarNode('internal_app_id')->isRequired()->end()
+            ->end()->
+            end()->
+            end()
         ;
     }
 

@@ -61,7 +61,8 @@ class DeviceController extends Controller
      * @RequestParam(name="app_id", description="The internal app id that is registered in the Symfony 2 config.", strict=true)
      * @RequestParam(name="device_identifier", description="The vendor device identifier of the iOS device.", strict=true)
      */
-    public function registeriOSDeviceAction(ParamFetcher $paramFetcher) {
+    public function registeriOSDeviceAction(ParamFetcher $paramFetcher)
+    {
         $deviceToken = $paramFetcher->get('device_token');
         $deviceName = $paramFetcher->get('device_name');
         $deviceModel = $paramFetcher->get('device_model');
@@ -83,12 +84,14 @@ class DeviceController extends Controller
         /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
         $device = $deviceManager->findDeviceByTypeIdentifierAndAppId(Types::OS_IOS, $deviceIdentifier, $appId);
 
-        if(is_null($device)) {
-           $device = $deviceManager->createDevice($device);
+        if (is_null($device)) {
+            $device = $deviceManager->createDevice();
         }
 
-        if($device instanceof UserDeviceInterface) {
-            $user = $this->get('security.context')->getToken()->getUser();
+        if ($device instanceof UserDeviceInterface) {
+            $user = $this->get('security.token_storage')->getToken()->getUser();
+            
+            /** @var $device \DABSquared\PushNotificationsBundle\Model\UserDeviceInterface */
             $device->setUser($user);
         }
         $device->setAppId($appId);
@@ -130,7 +133,8 @@ class DeviceController extends Controller
      * @RequestParam(name="app_version", description="The version of the app that is registering.", strict=true)
      * @RequestParam(name="app_id", description="The internal app id that is registered in the Symfony 2 config.", strict=true)
      */
-    public function registerGCMRegistrationIDAction(ParamFetcher $paramFetcher) {
+    public function registerGCMRegistrationIDAction(ParamFetcher $paramFetcher)
+    {
         $deviceToken = $paramFetcher->get('device_token');
         $deviceName = $paramFetcher->get('device_name');
         $deviceModel = $paramFetcher->get('device_model');
@@ -146,12 +150,13 @@ class DeviceController extends Controller
         /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
         $device = $deviceManager->findDeviceByTypeIdentifierAndAppIdAndDeviceToken(Types::OS_ANDROID_GCM, $deviceIdentifier, $appId, $deviceToken);
 
-        if(is_null($device)) {
-            $device = $deviceManager->createDevice($device);
+        if (is_null($device)) {
+            $device = $deviceManager->createDevice();
         }
 
-        if($device instanceof UserDeviceInterface) {
-            $user = $this->get('security.context')->getToken()->getUser();
+        if ($device instanceof UserDeviceInterface) {
+            $user = $this->get('security.token_storage')->getToken()->getUser();
+            /** @var $device \DABSquared\PushNotificationsBundle\Model\UserDeviceInterface */
             $device->setUser($user);
         }
 
@@ -187,7 +192,8 @@ class DeviceController extends Controller
      * @RequestParam(name="device_identifier", description="The vendor device identifier of the iOS device.", strict=true)
      * @RequestParam(name="app_id", description="The internal app id that is registered in the Symfony 2 config.", strict=true)
      */
-    public function unregisteriOSDeviceAction(ParamFetcher $paramFetcher) {
+    public function unregisteriOSDeviceAction(ParamFetcher $paramFetcher)
+    {
         $appId = $paramFetcher->get('app_id');
         $deviceIdentifier = $paramFetcher->get('device_identifier');
 
@@ -197,7 +203,7 @@ class DeviceController extends Controller
         /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
         $device = $deviceManager->findDeviceByTypeIdentifierAndAppId(Types::OS_IOS, $deviceIdentifier, $appId);
 
-        if(!is_null($device)) {
+        if (!is_null($device)) {
             $device->setStatus(DeviceStatus::DEVICE_STATUS_UNACTIVE);
             $device->setBadgeNumber(0);
             $deviceManager->saveDevice($device);
@@ -218,7 +224,8 @@ class DeviceController extends Controller
      * @RequestParam(name="device_identifier", description="The vendor device identifier of the Android device.", strict=true)
      * @RequestParam(name="app_id", description="The internal app id that is registered in the Symfony 2 config.", strict=true)
      */
-    public function unregisterGCMDeviceAction(ParamFetcher $paramFetcher) {
+    public function unregisterGCMDeviceAction(ParamFetcher $paramFetcher)
+    {
         $appId = $paramFetcher->get('app_id');
         $deviceIdentifier = $paramFetcher->get('device_identifier');
 
@@ -228,7 +235,7 @@ class DeviceController extends Controller
         /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
         $device = $deviceManager->findDeviceByTypeIdentifierAndAppId(Types::OS_ANDROID_GCM, $deviceIdentifier, $appId);
 
-        if(!is_null($device)) {
+        if (!is_null($device)) {
             $device->setStatus(DeviceStatus::DEVICE_STATUS_UNACTIVE);
             $device->setBadgeNumber(0);
             $deviceManager->saveDevice($device);
@@ -249,7 +256,8 @@ class DeviceController extends Controller
      * @RequestParam(name="device_identifier", description="The device identifier you defined.", strict=true)
      * @RequestParam(name="app_id", description="The internal app id that is registered in the Symfony 2 config.", strict=true)
      */
-    public function appOpenAction(ParamFetcher $paramFetcher) {
+    public function appOpenAction(ParamFetcher $paramFetcher)
+    {
         $appId = $paramFetcher->get('app_id');
         $deviceIdentifier =$paramFetcher->get('device_identifier');
 
@@ -262,7 +270,7 @@ class DeviceController extends Controller
         /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
         $device = $deviceManager->findDeviceByTypeIdentifierAndAppId(Types::OS_IOS, $deviceIdentifier, $appId);
 
-        if(!is_null($device)) {
+        if (!is_null($device)) {
             $device->setBadgeNumber(0);
             $deviceManager->saveDevice($device);
             $appEvent = $appEventManager->createAppEvent();
@@ -286,7 +294,8 @@ class DeviceController extends Controller
      * @RequestParam(name="device_identifier", description="The device identifier you defined.", strict=true)
      * @RequestParam(name="app_id", description="The internal app id that is registered in the Symfony 2 config.", strict=true)
      */
-    public function appiOSOpenAction(ParamFetcher $paramFetcher) {
+    public function appiOSOpenAction(ParamFetcher $paramFetcher)
+    {
         $appId = $paramFetcher->get('app_id');
         $deviceIdentifier =$paramFetcher->get('device_identifier');
 
@@ -301,7 +310,7 @@ class DeviceController extends Controller
 
 
 
-        if(!is_null($device)) {
+        if (!is_null($device)) {
             $device->setBadgeNumber(0);
             $deviceManager->saveDevice($device);
             $appEvent = $appEventManager->createAppEvent();
@@ -325,7 +334,8 @@ class DeviceController extends Controller
      * @RequestParam(name="device_identifier", description="The device identifier you defined.", strict=true)
      * @RequestParam(name="app_id", description="The internal app id that is registered in the Symfony 2 config.", strict=true)
      */
-    public function appiOSTerminatedAction(ParamFetcher $paramFetcher) {
+    public function appiOSTerminatedAction(ParamFetcher $paramFetcher)
+    {
         $appId = $paramFetcher->get('app_id');
         $deviceIdentifier =$paramFetcher->get('device_identifier');
 
@@ -338,7 +348,7 @@ class DeviceController extends Controller
         /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
         $device = $deviceManager->findDeviceByTypeIdentifierAndAppId(Types::OS_IOS, $deviceIdentifier, $appId);
 
-        if(!is_null($device)) {
+        if (!is_null($device)) {
             $appEvent = $appEventManager->createAppEvent();
             $appEvent->setType(AppEventInterface::APP_TERMINATED);
             $appEvent->setDevice($device);
@@ -360,7 +370,8 @@ class DeviceController extends Controller
      * @RequestParam(name="device_identifier", description="The device identifier you defined.", strict=true)
      * @RequestParam(name="app_id", description="The internal app id that is registered in the Symfony 2 config.", strict=true)
      */
-    public function appiOSBackgroundedAction(ParamFetcher $paramFetcher) {
+    public function appiOSBackgroundedAction(ParamFetcher $paramFetcher)
+    {
         $appId = $paramFetcher->get('app_id');
         $deviceIdentifier =$paramFetcher->get('device_identifier');
 
@@ -373,7 +384,7 @@ class DeviceController extends Controller
         /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
         $device = $deviceManager->findDeviceByTypeIdentifierAndAppId(Types::OS_IOS, $deviceIdentifier, $appId);
 
-        if(!is_null($device)) {
+        if (!is_null($device)) {
             $appEvent = $appEventManager->createAppEvent();
             $appEvent->setType(AppEventInterface::APP_BACKGROUNDED);
             $appEvent->setDevice($device);
@@ -396,7 +407,8 @@ class DeviceController extends Controller
      * @RequestParam(name="app_id", description="The internal app id that is registered in the Symfony 2 config.", strict=true)
      * @RequestParam(name="device_token", description="The registration id returned from GCM", strict=true)
      */
-    public function appGCMOpenAction(ParamFetcher $paramFetcher) {
+    public function appGCMOpenAction(ParamFetcher $paramFetcher)
+    {
         $appId = $paramFetcher->get('app_id');
         $deviceIdentifier =$paramFetcher->get('device_identifier');
         $deviceToken = $paramFetcher->get('device_token');
@@ -407,7 +419,7 @@ class DeviceController extends Controller
         /** @var $device \DABSquared\PushNotificationsBundle\Model\Device */
         $device = $deviceManager->findDeviceByTypeIdentifierAndAppIdAndDeviceToken(Types::OS_ANDROID_GCM, $deviceIdentifier, $appId, $deviceToken);
 
-        if(!is_null($device)) {
+        if (!is_null($device)) {
             $device->setBadgeNumber(0);
             $deviceManager->saveDevice($device);
         }

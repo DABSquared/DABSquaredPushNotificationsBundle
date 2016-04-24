@@ -64,13 +64,13 @@ class DABSquaredPushNotificationsExtension extends Extension
 
             foreach ($bundles as $name => $class) {
                 $ref = new \ReflectionClass($class);
-                if($ref->getName() == "BCC\\ResqueBundle\\BCCResqueBundle") {
+                if ($ref->getName() == "BCC\\ResqueBundle\\BCCResqueBundle") {
                     $foundBCCResque = true;
                     break;
                 }
             }
 
-            if(!$foundBCCResque) {
+            if (!$foundBCCResque) {
                 throw new \InvalidArgumentException("To use BCCResque you need to add it to composer.");
             }
         }
@@ -154,7 +154,7 @@ class DABSquaredPushNotificationsExtension extends Extension
     protected function setAppleConfig(array $config)
     {
         // PEM file is required
-        if(count($config['apple']['certificates']) <= 0) {
+        if (count($config['apple']['certificates']) <= 0) {
             throw new \RuntimeException(sprintf('A push certificate is required'));
 
         }

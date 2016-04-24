@@ -24,33 +24,34 @@ class iOSFeedback
 
     }
 
-    public function getDeviceFeedback($appId = null, $sandbox = null) {
+    public function getDeviceFeedback($appId = null, $sandbox = null)
+    {
         $feedbacks = array();
 
-        foreach($this->certificates as $cert) {
+        foreach ($this->certificates as $cert) {
             $isSandbox = $cert['sandbox'];
             $internalAppId = $cert['internal_app_id'];
 
-            if(!is_null($appId)) {
-                if($appId != $internalAppId) {
+            if (!is_null($appId)) {
+                if ($appId != $internalAppId) {
                     continue;
                 }
             }
 
-            if(!is_null($sandbox)) {
-                if($sandbox) {
-                    if($sandbox && !$isSandbox) {
+            if (!is_null($sandbox)) {
+                if ($sandbox) {
+                    if ($sandbox && !$isSandbox) {
                         continue;
                     }
                 } else {
-                    if(!$sandbox && $isSandbox) {
+                    if (!$sandbox && $isSandbox) {
                         continue;
                     }
                 }
             }
 
             $certFeedbacks = $this->getDeviceFeedbackCertificate($cert);
-            $feedbacks = array_merge($feedbacks,$certFeedbacks);
+            $feedbacks = array_merge($feedbacks, $certFeedbacks);
         }
         return $feedbacks;
     }

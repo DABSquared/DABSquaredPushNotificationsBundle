@@ -17,17 +17,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Routing\Exception\InvalidParameterException;
 
 
-class SendNotificationsCommand  extends ContainerAwareCommand{
-    protected function configure() {
+class SendNotificationsCommand extends ContainerAwareCommand
+{
+    protected function configure()
+    {
         $this->setName('dab:push:send')
             ->setDescription('Send all unsent push notifications.')
-            ->setDefinition(array(
-                new InputArgument('messageId',
-                    InputArgument::OPTIONAL,
-                    'The message to send'),));
+            ->setDefinition(array(new InputArgument('messageId', InputArgument::OPTIONAL, 'The message to send')));
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
         /** @var $messageManager \DABSquared\PushNotificationsBundle\Model\MessageManagerInterface */
         $messageManager = $this->getContainer()->get('dab_push_notifications.manager.message');
 
@@ -39,30 +39,30 @@ class SendNotificationsCommand  extends ContainerAwareCommand{
 
         $messages = array();
 
-        if(!is_null($messageId)) {
+        if (!is_null($messageId)) {
             $messages = $messageManager->findById($messageId);
             /** @var $message \DABSquared\PushNotificationsBundle\Model\MessageInterface */
-            foreach($messages as $message) {
-                if($message->getStatus() == MessageStatus::MESSAGE_STATUS_SENT) {
+            foreach ($messages as $message) {
+                if ($message->getStatus() == MessageStatus::MESSAGE_STATUS_SENT) {
                     throw new InvalidParameterException("This message has already been sent");
                 }
             }
         } else {
-          $messages  = $messageManager->findByStatus(MessageStatus::MESSAGE_STATUS_NOT_SENT);
+            $messages = $messageManager->findByStatus(MessageStatus::MESSAGE_STATUS_NOT_SENT);
         }
 
 
 
         /** @var $message \DABSquared\PushNotificationsBundle\Model\MessageInterface */
-        foreach($messages as $message) {
+        foreach ($messages as $message) {
             $message->setStatus(MessageStatus::MESSAGE_STATUS_SENDING);
             $messageManager->saveMessage($message);
         }
 
         $notificationManager->sendMessages($messages);
 
-        if(!is_null($messageId)) {
-            die();
+        if (!is_null($messageId)) {
+            return;
         }
 
 
@@ -72,7 +72,7 @@ class SendNotificationsCommand  extends ContainerAwareCommand{
         $messages = $messageManager->findByStatus(MessageStatus::MESSAGE_STATUS_NO_CERT);
 
         /** @var $message \DABSquared\PushNotificationsBundle\Model\MessageInterface */
-        foreach($messages as $message) {
+        foreach ($messages as $message) {
             $message->setStatus(MessageStatus::MESSAGE_STATUS_SENDING);
             $messageManager->saveMessage($message);
         }
@@ -83,15 +83,12 @@ class SendNotificationsCommand  extends ContainerAwareCommand{
         $messages = $messageManager->findByStatus(MessageStatus::MESSAGE_STATUS_STREAM_ERROR);
 
         /** @var $message \DABSquared\PushNotificationsBundle\Model\MessageInterface */
-        foreach($messages as $message) {
+        foreach ($messages as $message) {
             $message->setStatus(MessageStatus::MESSAGE_STATUS_SENDING);
             $messageManager->saveMessage($message);
         }
 
         $notificationManager->sendMessages($messages);
-
-
-        die();
     }
 }
 

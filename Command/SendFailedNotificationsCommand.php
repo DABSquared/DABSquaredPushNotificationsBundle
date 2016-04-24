@@ -17,13 +17,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Routing\Exception\InvalidParameterException;
 
 
-class SendFailedNotificationsCommand  extends ContainerAwareCommand{
-    protected function configure() {
+class SendFailedNotificationsCommand extends ContainerAwareCommand 
+{
+    protected function configure()
+    {
         $this->setName('dab:push:send:failed');
         $this->setDescription('Send all unsent push notifications.');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
         /** @var $messageManager \DABSquared\PushNotificationsBundle\Model\MessageManager */
         $messageManager = $this->getContainer()->get('dab_push_notifications.manager.message');
 
@@ -35,7 +38,7 @@ class SendFailedNotificationsCommand  extends ContainerAwareCommand{
         $messages = $messageManager->findByStatus(MessageStatus::MESSAGE_STATUS_NO_CERT);
 
         /** @var $message \DABSquared\PushNotificationsBundle\Model\Message */
-        foreach($messages as $message) {
+        foreach ($messages as $message) {
             $message->setStatus(MessageStatus::MESSAGE_STATUS_SENDING);
             $messageManager->saveMessage($message);
         }
@@ -46,15 +49,12 @@ class SendFailedNotificationsCommand  extends ContainerAwareCommand{
         $messages = $messageManager->findByStatus(MessageStatus::MESSAGE_STATUS_STREAM_ERROR);
 
         /** @var $message \DABSquared\PushNotificationsBundle\Model\Message */
-        foreach($messages as $message) {
+        foreach ($messages as $message) {
             $message->setStatus(MessageStatus::MESSAGE_STATUS_SENDING);
             $messageManager->saveMessage($message);
         }
 
         $notificationManager->sendMessages($messages);
-
-
-        die();
     }
 }
 

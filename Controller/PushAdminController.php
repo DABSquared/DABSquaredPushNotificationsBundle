@@ -94,7 +94,8 @@ class PushAdminController extends Controller
      * @Method({"GET"})
      * @Template("DABSquaredPushNotificationsBundle:Dashboard:dashboard.html.twig")
      */
-    public function dashboardAction() {
+    public function dashboardAction()
+    {
         $this->session->set('dab_push_selected_nav', 'dashboard');
 
         $apps = $this->notificationManager->getApps();
@@ -107,7 +108,8 @@ class PushAdminController extends Controller
      * @Method({"GET"})
      * @Template("DABSquaredPushNotificationsBundle:Devices:devices.html.twig")
      */
-    public function devicesAction() {
+    public function devicesAction()
+    {
         $this->session->set('dab_push_selected_nav', 'devices');
         $allDevicesQuery = $this->deviceManager->findAllDevicesQuery();
         $pagination = $this->paginator->paginate(
@@ -123,7 +125,8 @@ class PushAdminController extends Controller
      * @Method({"GET"})
      * @Template("DABSquaredPushNotificationsBundle:Devices:device.html.twig")
      */
-    public function deviceAction($id) {
+    public function deviceAction($id)
+    {
         $this->session->set('dab_push_selected_nav', 'devices');
         $device = $this->deviceManager->findDeviceWithId($id);
         $allMessagesQuery = $this->messageManager->findAllQueryByDeviceId($id);
@@ -142,7 +145,8 @@ class PushAdminController extends Controller
      * @Method({"GET"})
      * @Template("DABSquaredPushNotificationsBundle:Messages:messages.html.twig")
      */
-    public function messagesAction() {
+    public function messagesAction()
+    {
         $this->session->set('dab_push_selected_nav', 'messages');
         $allMessagesQuery = $this->messageManager->findAllQuery();
         $pagination = $this->paginator->paginate(
@@ -159,7 +163,8 @@ class PushAdminController extends Controller
      * @Method({"GET","POST"})
      * @Template("DABSquaredPushNotificationsBundle:Messages:create_message_only.html.twig")
      */
-    public function createDevicePushMessageAction($deviceId) {
+    public function createDevicePushMessageAction($deviceId)
+    {
         $this->session->set('dab_push_selected_nav', 'devices');
 
         /** @var $request \Symfony\Component\HttpFoundation\Request */
@@ -167,13 +172,13 @@ class PushAdminController extends Controller
 
         $form = $this->createForm(new \DABSquared\PushNotificationsBundle\Form\MessageOnlyType());
 
-        if(is_null($deviceId)) {
+        if (is_null($deviceId)) {
             throw new NotFoundHttpException("You need to add a device id.");
         }
 
         $device = $this->deviceManager->findDeviceWithId($deviceId);
 
-        if(is_null($device)) {
+        if (is_null($device)) {
             throw new NotFoundHttpException("The device with that id was not found.");
         }
 
@@ -181,7 +186,7 @@ class PushAdminController extends Controller
 
         $payloadSent = null;
 
-        if($request->isMethod("POST")) {
+        if ($request->isMethod("POST")) {
             $form->handleRequest($request);
 
             $messageText = $form['message']->getData();
@@ -201,14 +206,13 @@ class PushAdminController extends Controller
             $message->setSound($messageSound);
             $message->setBadge($messageBadge);
 
-            if(!is_null($messageCustomData)) {
+            if (!is_null($messageCustomData)) {
                 $messageCustomData = trim($messageCustomData);
                 $data = json_decode($messageCustomData, true);
                 $message->setCustomData($data);
 
                 switch (json_last_error()) {
                     case JSON_ERROR_NONE:
-
                         break;
                     case JSON_ERROR_DEPTH:
                         $jsonError = ' - Maximum stack depth exceeded';
@@ -245,7 +249,8 @@ class PushAdminController extends Controller
      * @Method({"GET","POST"})
      * @Template("DABSquaredPushNotificationsBundle:Messages:create_message.html.twig")
      */
-    public function pushMessagesAction() {
+    public function pushMessagesAction()
+    {
         $this->session->set('dab_push_selected_nav', 'create_message');
 
         /** @var $request \Symfony\Component\HttpFoundation\Request */
@@ -253,26 +258,24 @@ class PushAdminController extends Controller
 
         $form = $this->createForm(new \DABSquared\PushNotificationsBundle\Form\MessageType());
 
-        if($request->isMethod("POST")) {
+        if ($request->isMethod("POST")) {
             $form->bind($request);
 
             $types = $form['type']->getData();
             $messageText = $form['message']->getData();
 
-            if(!empty($types)) {
-
-                foreach($types as $type) {
-
-                   $devices = $this->deviceManager->findDevicesWithTypeAndStatus($type, DeviceStatus::DEVICE_STATUS_ACTIVE);
-                   foreach($devices as $device) {
-                       $message = null;
-                       /** @var $message \DABSquared\PushNotificationsBundle\Model\Message */
-                       $message =  $this->messageManager->createMessage($message);
-                       $message->setMessage($messageText);
-                       $message->setDevice($device);
-                       $this->messageManager->saveMessage($message);
-                   }
-               }
+            if (!empty($types)) {
+                foreach ($types as $type) {
+                    $devices = $this->deviceManager->findDevicesWithTypeAndStatus($type, DeviceStatus::DEVICE_STATUS_ACTIVE);
+                    foreach ($devices as $device) {
+                        $message = null;
+                        /** @var $message \DABSquared\PushNotificationsBundle\Model\Message */
+                        $message =  $this->messageManager->createMessage();
+                        $message->setMessage($messageText);
+                        $message->setDevice($device);
+                        $this->messageManager->saveMessage($message);
+                    }
+                }
             } else {
                 throw new BadRequestHttpException("You need to specify the device types to send to.");
             }
@@ -297,14 +300,15 @@ class PushAdminController extends Controller
      * @RequestParam(name="start_date", description="Start date", strict=false)
      * @RequestParam(name="end_date", description="End date", strict=false)
      */
-    public function getAppOpenGraphDataAction(ParamFetcher $paramFetcher) {
+    public function getAppOpenGraphDataAction(ParamFetcher $paramFetcher)
+    {
         $deviceState = $paramFetcher->get('device_state');
         $internalAppIds = $paramFetcher->get('internal_app_ids');
         $deviceTypes = $paramFetcher->get('device_types');
         $startDate = $paramFetcher->get('start_date');
         $endDate = $paramFetcher->get('end_date');
 
-        if(is_null($startDate)) {
+        if (is_null($startDate)) {
             $date = new \DateTime('NOW');
             $date->modify('-1 week');
             $startDate = $date;
@@ -312,9 +316,9 @@ class PushAdminController extends Controller
             $startDate = new \DateTime($startDate);
         }
 
-        if(is_null($endDate)) {
+        if (is_null($endDate)) {
             $endDate = new \DateTime('NOW');
-        }else {
+        } else {
             $endDate = new \DateTime($endDate);
         }
 
@@ -323,15 +327,15 @@ class PushAdminController extends Controller
         $appEventDayCounts = array();
 
         /** @var $appEvent \DABSquared\PushNotificationsBundle\Model\AppEventInterface */
-        foreach($appEvents as $appEvent) {
+        foreach ($appEvents as $appEvent) {
             $day = $appEvent->getCreatedAt()->format('Y-m-d');
             $appId = $appEvent->getDevice()->getAppId();
 
-            if(!isset($appEventDayCounts[$day])) {
+            if (!isset($appEventDayCounts[$day])) {
                 $appEventDayCounts[$day] = array();
             }
 
-            if(!isset($appEventDayCounts[$day][$appId])) {
+            if (!isset($appEventDayCounts[$day][$appId])) {
                 $appEventDayCounts[$day][$appId] = 0;
             }
 
@@ -342,11 +346,11 @@ class PushAdminController extends Controller
 
         $appEventCounts = array();
 
-        foreach($appEventDayCounts as $key => $val) {
+        foreach ($appEventDayCounts as $key => $val) {
             $tempPointArray = array();
             $tempPointArray['day'] = $key;
 
-            foreach($appEventDayCounts[$key] as $key1 => $val1) {
+            foreach ($appEventDayCounts[$key] as $key1 => $val1) {
                 $tempPointArray[$key1] = $val1;
             }
 
@@ -370,14 +374,15 @@ class PushAdminController extends Controller
      * @RequestParam(name="start_date", description="Start date", strict=false)
      * @RequestParam(name="end_date", description="End date", strict=false)
      */
-    public function getAppTerminatedGraphDataAction(ParamFetcher $paramFetcher) {
+    public function getAppTerminatedGraphDataAction(ParamFetcher $paramFetcher)
+    {
         $deviceState = $paramFetcher->get('device_state');
         $internalAppIds = $paramFetcher->get('internal_app_ids');
         $deviceTypes = $paramFetcher->get('device_types');
         $startDate = $paramFetcher->get('start_date');
         $endDate = $paramFetcher->get('end_date');
 
-        if(is_null($startDate)) {
+        if (is_null($startDate)) {
             $date = new \DateTime('NOW');
             $date->modify('-1 week');
             $startDate = $date;
@@ -385,9 +390,9 @@ class PushAdminController extends Controller
             $startDate = new \DateTime($startDate);
         }
 
-        if(is_null($endDate)) {
+        if (is_null($endDate)) {
             $endDate = new \DateTime('NOW');
-        }else {
+        } else {
             $endDate = new \DateTime($endDate);
         }
 
@@ -396,15 +401,15 @@ class PushAdminController extends Controller
         $appEventDayCounts = array();
 
         /** @var $appEvent \DABSquared\PushNotificationsBundle\Model\AppEventInterface */
-        foreach($appEvents as $appEvent) {
+        foreach ($appEvents as $appEvent) {
             $day = $appEvent->getCreatedAt()->format('Y-m-d');
             $appId = $appEvent->getDevice()->getAppId();
 
-            if(!isset($appEventDayCounts[$day])) {
+            if (!isset($appEventDayCounts[$day])) {
                 $appEventDayCounts[$day] = array();
             }
 
-            if(!isset($appEventDayCounts[$day][$appId])) {
+            if (!isset($appEventDayCounts[$day][$appId])) {
                 $appEventDayCounts[$day][$appId] = 0;
             }
 
@@ -415,11 +420,11 @@ class PushAdminController extends Controller
 
         $appEventCounts = array();
 
-        foreach($appEventDayCounts as $key => $val) {
+        foreach ($appEventDayCounts as $key => $val) {
             $tempPointArray = array();
             $tempPointArray['day'] = $key;
 
-            foreach($appEventDayCounts[$key] as $key1 => $val1) {
+            foreach ($appEventDayCounts[$key] as $key1 => $val1) {
                 $tempPointArray[$key1] = $val1;
             }
 
@@ -443,14 +448,15 @@ class PushAdminController extends Controller
      * @RequestParam(name="start_date", description="Start date", strict=false)
      * @RequestParam(name="end_date", description="End date", strict=false)
      */
-    public function getAppBackgroundedGraphDataAction(ParamFetcher $paramFetcher) {
+    public function getAppBackgroundedGraphDataAction(ParamFetcher $paramFetcher)
+    {
         $deviceState = $paramFetcher->get('device_state');
         $internalAppIds = $paramFetcher->get('internal_app_ids');
         $deviceTypes = $paramFetcher->get('device_types');
         $startDate = $paramFetcher->get('start_date');
         $endDate = $paramFetcher->get('end_date');
 
-        if(is_null($startDate)) {
+        if (is_null($startDate)) {
             $date = new \DateTime('NOW');
             $date->modify('-1 week');
             $startDate = $date;
@@ -458,9 +464,9 @@ class PushAdminController extends Controller
             $startDate = new \DateTime($startDate);
         }
 
-        if(is_null($endDate)) {
+        if (is_null($endDate)) {
             $endDate = new \DateTime('NOW');
-        }else {
+        } else {
             $endDate = new \DateTime($endDate);
         }
 
@@ -469,15 +475,15 @@ class PushAdminController extends Controller
         $appEventDayCounts = array();
 
         /** @var $appEvent \DABSquared\PushNotificationsBundle\Model\AppEventInterface */
-        foreach($appEvents as $appEvent) {
+        foreach ($appEvents as $appEvent) {
             $day = $appEvent->getCreatedAt()->format('Y-m-d');
             $appId = $appEvent->getDevice()->getAppId();
 
-            if(!isset($appEventDayCounts[$day])) {
+            if (!isset($appEventDayCounts[$day])) {
                 $appEventDayCounts[$day] = array();
             }
 
-            if(!isset($appEventDayCounts[$day][$appId])) {
+            if (!isset($appEventDayCounts[$day][$appId])) {
                 $appEventDayCounts[$day][$appId] = 0;
             }
 
@@ -488,11 +494,11 @@ class PushAdminController extends Controller
 
         $appEventCounts = array();
 
-        foreach($appEventDayCounts as $key => $val) {
+        foreach ($appEventDayCounts as $key => $val) {
             $tempPointArray = array();
             $tempPointArray['day'] = $key;
 
-            foreach($appEventDayCounts[$key] as $key1 => $val1) {
+            foreach ($appEventDayCounts[$key] as $key1 => $val1) {
                 $tempPointArray[$key1] = $val1;
             }
 
@@ -501,6 +507,4 @@ class PushAdminController extends Controller
 
         return $appEventCounts;
     }
-
-
 }

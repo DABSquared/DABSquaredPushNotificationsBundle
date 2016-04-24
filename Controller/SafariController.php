@@ -48,7 +48,8 @@ class SafariController extends Controller
      * @Method("POST")
      *
      */
-    public function logSafariErrorAction() {
+    public function logSafariErrorAction()
+    {
         /** @var $request \Symfony\Component\HttpFoundation\Request */
         $request = $this->get('request');
 
@@ -57,7 +58,7 @@ class SafariController extends Controller
         $logs = json_decode($request->getContent());
         $logs = $logs->logs;
 
-        foreach($logs as $log) {
+        foreach ($logs as $log) {
             $logger->error("Push error: ".$log);
         }
 
@@ -75,7 +76,8 @@ class SafariController extends Controller
      * @Method({"POST","GET","DELETE"})
      *
      */
-    public function registerSafariDeviceAction($deviceToken,$websitePushID) {
+    public function registerSafariDeviceAction($deviceToken,$websitePushID)
+    {
         /** @var $request \Symfony\Component\HttpFoundation\Request */
         $request = $this->get('request');
         $request->headers = $this->fixAuthHeader($request->headers);
@@ -91,19 +93,19 @@ class SafariController extends Controller
 
         /** @var $logger \Symfony\Component\HttpKernel\Log\LoggerInterface */
         $logger = $this->container->get('logger');
-        if($request->getContent()) {
-            $logger->notice(print_r($request->getContent(),true));
+        if ($request->getContent()) {
+            $logger->notice(print_r($request->getContent(), true));
         }
 
 
-        if(!is_null($device) && $request->isMethod("DELETE")) {
+        if (!is_null($device) && $request->isMethod("DELETE")) {
             $device->setStatus(DeviceStatus::DEVICE_STATUS_UNACTIVE);
-        } else if(!is_null($device)) {
+        } elseif (!is_null($device)) {
             $device->setBadgeNumber(0);
             $device->setStatus(DeviceStatus::DEVICE_STATUS_ACTIVE);
-            if($device instanceof UserDeviceInterface) {
+            if ($device instanceof UserDeviceInterface) {
                 $userEntityNamespace = $this->container->getParameter('dab_push_notifications.user_entity_namespace');
-                if(!is_null($userEntityNamespace)) {
+                if (!is_null($userEntityNamespace)) {
                     /** @var $em \Doctrine\ORM\EntityManager */
                     $em = $this->container->get('doctrine')->getManager();
                     /** @var $userRepository \Doctrine\ORM\EntityRepository */
@@ -111,14 +113,14 @@ class SafariController extends Controller
                     $user = $userRepository->findOneBy(array(
                         "id" => $userId
                     ));
-                    if(!is_null($user)) {
+                    if (!is_null($user)) {
                         $device->setUser($user);
                     }
                 }
             }
             $device->setDeviceName("Safari: ".$userId);
-        }  else {
-            $device = $deviceManager->createDevice($device);
+        } else {
+            $device = $deviceManager->createDevice();
             $device->setAppId($websitePushID);
             $device->setDeviceIdentifier($deviceToken);
             $device->setType(Types::OS_SAFARI);
@@ -126,9 +128,9 @@ class SafariController extends Controller
             $device->setDeviceVersion($request->headers->get("User-Agent"));
             $device->setDeviceName("Safari: ".$userId);
             $device->setStatus(DeviceStatus::DEVICE_STATUS_ACTIVE);
-            if($device instanceof UserDeviceInterface) {
+            if ($device instanceof UserDeviceInterface) {
                 $userEntityNamespace = $this->container->getParameter('dab_push_notifications.user_entity_namespace');
-                if(!is_null($userEntityNamespace)) {
+                if (!is_null($userEntityNamespace)) {
                     /** @var $em \Doctrine\ORM\EntityManager */
                     $em = $this->container->get('doctrine')->getManager();
                     /** @var $userRepository \Doctrine\ORM\EntityRepository */
@@ -136,7 +138,7 @@ class SafariController extends Controller
                     $user = $userRepository->findOneBy(array(
                         "id" => $userId
                     ));
-                    if(!is_null($user)) {
+                    if (!is_null($user)) {
                         $device->setUser($user);
                     }
                 }
@@ -159,14 +161,15 @@ class SafariController extends Controller
      * @Method({"POST","GET"})
      *
      */
-    public function downloadSafariDevicePayloadAction($websitePushID) {
+    public function downloadSafariDevicePayloadAction($websitePushID)
+    {
         /** @var $request \Symfony\Component\HttpFoundation\Request */
         $request = $this->get('request');
 
         /** @var $logger \Symfony\Component\HttpKernel\Log\LoggerInterface */
         $logger = $this->container->get('logger');
 
-        if($request->getContent()== null) {
+        if ($request->getContent()== null) {
             $logger->error("No content");
             return new Response("no content");
         }
@@ -175,9 +178,9 @@ class SafariController extends Controller
 
         $authenticationToken = "authenticationToken_".$userJSON->userId;
 
-        $zipName = $this->buildPushPackage($websitePushID,$authenticationToken);
+        $zipName = $this->buildPushPackage($websitePushID, $authenticationToken);
 
-        if(is_null($zipName)) {
+        if (is_null($zipName)) {
             $logger->error("No zip name");
             return new Response("No zip name");
         }
@@ -201,7 +204,8 @@ class SafariController extends Controller
     }
 
 
-    function buildPushPackage($websitePushID, $authenticationToken) {
+    private function buildPushPackage($websitePushID, $authenticationToken)
+    {
         $pushPackage = new \ZipArchive;
         $zipName = "web.com.push.zip";
         $zipPath = "/tmp/".$zipName;
@@ -211,9 +215,7 @@ class SafariController extends Controller
 
         $error = $pushPackage->open($zipPath, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::OVERWRITE);
 
-
-        if ($error === TRUE) {
-
+        if ($error === true) {
             $icon16x16 = $this->container->getParameter('dab_push_notifications.safari.icon16x16');
             $icon16x162x = $this->container->getParameter('dab_push_notifications.safari.icon16x16@2x');
             $icon32x32 = $this->container->getParameter('dab_push_notifications.safari.icon32x32');
@@ -260,7 +262,7 @@ class SafariController extends Controller
 
 
 
-            $websiteDictContents = str_replace("\\/","/",$this->prettyPrint(json_encode($websiteJSONDict)));
+            $websiteDictContents = str_replace("\\/", "/", $this->prettyPrint(json_encode($websiteJSONDict)));
             $websiteDictContentsHash = sha1($websiteDictContents);
 
             $pushPackage->addFromString('website.json', $websiteDictContents);
@@ -280,9 +282,9 @@ class SafariController extends Controller
 
             $pkcs12 = file_get_contents($pk12Path);
             $certs = array();
-            if(!openssl_pkcs12_read($pkcs12, $certs, $passphrase)) {
+            if (!openssl_pkcs12_read($pkcs12, $certs, $passphrase)) {
                 $logger->error("Can't open certificate");
-                return;
+                return null;
             }
 
             $cert_data = openssl_x509_read($certs['cert']);
@@ -295,15 +297,15 @@ class SafariController extends Controller
             $wroteManifest = fwrite($fp, $manifestDictContents);
             fclose($fp);
 
-            if(!$wroteManifest) {
+            if (!$wroteManifest) {
                 $logger->error("Can't write temp manifest");
             }
 
             $signed = openssl_pkcs7_sign($tempManifest, $tempManifestSigned, $cert_data, $private_key, array(), PKCS7_BINARY | PKCS7_DETACHED);
 
-            if(!$signed) {
+            if (!$signed) {
                 $logger->error("Can't sign manifest with openss_pkcs7");
-                return;
+                return null;
             }
 
 
@@ -312,7 +314,7 @@ class SafariController extends Controller
             if (!preg_match('~Content-Disposition:[^\n]+\s*?([A-Za-z0-9+=/\r\n]+)\s*?-----~', $signedManifestString, $matches)) {
                 $logger->error("Can't sign manifest");
 
-                return;
+                return null;
             }
             $signature_der = base64_decode($matches[1]);
             $pushPackage->addFromString('signature', $signature_der);
@@ -336,7 +338,8 @@ class SafariController extends Controller
      * PHP does not include HTTP_AUTHORIZATION in the $_SERVER array, so this header is missing.
      * We retrieve it from apache_request_headers()
      *
-     * @param HeaderBag $headers
+     * @param \Symfony\Component\HttpFoundation\HeaderBag $headers
+     * @return \Symfony\Component\HttpFoundation\HeaderBag
      */
     protected function fixAuthHeader(\Symfony\Component\HttpFoundation\HeaderBag $headers)
     {
@@ -350,52 +353,55 @@ class SafariController extends Controller
         return $headers;
     }
 
-    function prettyPrint( $json )
+    private function prettyPrint($json)
     {
         $result = '';
         $level = 0;
         $prev_char = '';
         $in_quotes = false;
-        $ends_line_level = NULL;
-        $json_length = strlen( $json );
+        $endsLineLevel = null;
+        $json_length = strlen($json);
 
-        for( $i = 0; $i < $json_length; $i++ ) {
+        for ($i = 0; $i < $json_length; $i++) {
             $char = $json[$i];
-            $new_line_level = NULL;
+            $new_line_level = null;
             $post = "";
-            if( $ends_line_level !== NULL ) {
-                $new_line_level = $ends_line_level;
-                $ends_line_level = NULL;
+            if ($endsLineLevel !== null) {
+                $new_line_level = $endsLineLevel;
+                $endsLineLevel = null;
             }
-            if( $char === '"' && $prev_char != '\\' ) {
+            if ($char === '"' && $prev_char != '\\') {
                 $in_quotes = !$in_quotes;
-            } else if( ! $in_quotes ) {
-                switch( $char ) {
-                    case '}': case ']':
-                    $level--;
-                    $ends_line_level = NULL;
-                    $new_line_level = $level;
-                    break;
-
-                    case '{': case '[':
-                    $level++;
-                    case ',':
-                        $ends_line_level = $level;
+            } elseif (!$in_quotes) {
+                switch ($char) {
+                    case '}':
+                    case ']':
+                        $level--;
+                        $endsLineLevel = null;
+                        $new_line_level = $level;
                         break;
-
+                    case '{':
+                    case '[':
+                        $level++;
+                    case ',':
+                        $endsLineLevel = $level;
+                        break;
                     case ':':
                         $post = " ";
                         break;
 
-                    case " ": case "\t": case "\n": case "\r":
-                    $char = "";
-                    $ends_line_level = $new_line_level;
-                    $new_line_level = NULL;
-                    break;
+                    case " ":
+                    case "\t":
+                    case "\n":
+                    case "\r":
+                        $char = "";
+                        $endsLineLevel = $new_line_level;
+                        $new_line_level = null;
+                        break;
                 }
             }
-            if( $new_line_level !== NULL ) {
-                $result .= "\n".str_repeat( "\t", $new_line_level );
+            if ($new_line_level !== null) {
+                $result .= "\n".str_repeat("\t", $new_line_level);
             }
             $result .= $char.$post;
             $prev_char = $char;

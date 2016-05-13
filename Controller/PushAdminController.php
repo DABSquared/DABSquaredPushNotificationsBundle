@@ -295,8 +295,8 @@ class PushAdminController extends Controller
      * @Route("push/data/app_open_graph", defaults={"_format": "json"}, name="dabsquared_push_notifications_data_app_open_graph")
      * @Method("POST")
      * @RequestParam(name="device_state", description="What device state to grab", strict=true)
-     * @RequestParam(name="internal_app_ids", description="The internal app ids to see information for.", strict=true, array=true)
-     * @RequestParam(name="device_types", description="The device types to show data for", strict=true, array=true)
+     * @RequestParam(name="internal_app_ids", description="The internal app ids to see information for.", strict=true, map=true)
+     * @RequestParam(name="device_types", description="The device types to show data for", strict=true, map=true)
      * @RequestParam(name="start_date", description="Start date", strict=false)
      * @RequestParam(name="end_date", description="End date", strict=false)
      */
@@ -369,8 +369,8 @@ class PushAdminController extends Controller
      * @Route("push/data/app_terminated_graph", defaults={"_format": "json"}, name="dabsquared_push_notifications_data_app_terminated_graph")
      * @Method("POST")
      * @RequestParam(name="device_state", description="What device state to grab", strict=true)
-     * @RequestParam(name="internal_app_ids", description="The internal app ids to see information for.", strict=true, array=true)
-     * @RequestParam(name="device_types", description="The device types to show data for", strict=true, array=true)
+     * @RequestParam(name="internal_app_ids", description="The internal app ids to see information for.", strict=true, map=true)
+     * @RequestParam(name="device_types", description="The device types to show data for", strict=true, map=true)
      * @RequestParam(name="start_date", description="Start date", strict=false)
      * @RequestParam(name="end_date", description="End date", strict=false)
      */
@@ -443,8 +443,8 @@ class PushAdminController extends Controller
      * @Route("push/data/app_backgrounded_graph", defaults={"_format": "json"}, name="dabsquared_push_notifications_data_app_backgrounded_graph")
      * @Method("POST")
      * @RequestParam(name="device_state", description="What device state to grab", strict=true)
-     * @RequestParam(name="internal_app_ids", description="The internal app ids to see information for.", strict=true, array=true)
-     * @RequestParam(name="device_types", description="The device types to show data for", strict=true, array=true)
+     * @RequestParam(name="internal_app_ids", description="The internal app ids to see information for.", strict=true, map=true)
+     * @RequestParam(name="device_types", description="The device types to show data for", strict=true, map=true)
      * @RequestParam(name="start_date", description="Start date", strict=false)
      * @RequestParam(name="end_date", description="End date", strict=false)
      */

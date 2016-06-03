@@ -13,7 +13,7 @@ Installation is a quick (I promise!) 3 step process:
 
 The following steps are optional and the order doesn't matter:
 
-- [Integration with FOSUserBundle](4-integrating_with_fosuserbundle.md)
+- [Integration with FOSUserBundle](4-integrating_with_FOSUserBundle.md)
 - [Integration with iOS](5-integration_with_ios.md)
 - [Integration with Android](6-integration_with_android.md)
 - [Integration with Safari](7-integration_with_safari.md).

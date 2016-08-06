@@ -23,7 +23,8 @@
     </parameters>
 
     <services>
-        <service id="dab_push_notifications.entity_manager" factory-service="doctrine" factory-method="getManager" class="Doctrine\ORM\EntityManager" public="false">
+        <service id="dab_push_notifications.entity_manager" class="Doctrine\ORM\EntityManager" public="false">
+            <factory service="doctrine" method="getManager" />
             <argument>%dab_push_notifications.model_manager_name%</argument>
         </service>
 

@@ -51,7 +51,7 @@ class SafariController extends Controller
     public function logSafariErrorAction()
     {
         /** @var $request \Symfony\Component\HttpFoundation\Request */
-        $request = $this->get('request');
+        $request = $this->get('request_stack')->getCurrentRequest();
 
         /** @var $logger \Symfony\Component\HttpKernel\Log\LoggerInterface */
         $logger = $this->container->get('logger');
@@ -79,7 +79,7 @@ class SafariController extends Controller
     public function registerSafariDeviceAction($deviceToken,$websitePushID)
     {
         /** @var $request \Symfony\Component\HttpFoundation\Request */
-        $request = $this->get('request');
+        $request = $this->get('request_stack')->getCurrentRequest();
         $request->headers = $this->fixAuthHeader($request->headers);
 
         $authenticationToken = $request->headers->get("Authorization");
@@ -164,7 +164,7 @@ class SafariController extends Controller
     public function downloadSafariDevicePayloadAction($websitePushID)
     {
         /** @var $request \Symfony\Component\HttpFoundation\Request */
-        $request = $this->get('request');
+        $request = $this->get('request_stack')->getCurrentRequest();
 
         /** @var $logger \Symfony\Component\HttpKernel\Log\LoggerInterface */
         $logger = $this->container->get('logger');

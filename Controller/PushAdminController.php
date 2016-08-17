@@ -114,7 +114,7 @@ class PushAdminController extends Controller
         $allDevicesQuery = $this->deviceManager->findAllDevicesQuery();
         $pagination = $this->paginator->paginate(
             $allDevicesQuery,
-            $this->get('request')->query->get('page', 1)/*page number*/,
+            $this->get('request_stack')->getCurrentRequest()->query->get('page', 1)/*page number*/,
             20/*limit per page*/
         );
         return array('pagination' => $pagination);
@@ -133,7 +133,7 @@ class PushAdminController extends Controller
 
         $pagination = $this->paginator->paginate(
             $allMessagesQuery,
-            $this->get('request')->query->get('page', 1)/*page number*/,
+            $this->get('request_stack')->getCurrentRequest()->query->get('page', 1)/*page number*/,
             10/*limit per page*/
         );
         return array('pagination' => $pagination, 'device' => $device);
@@ -151,7 +151,7 @@ class PushAdminController extends Controller
         $allMessagesQuery = $this->messageManager->findAllQuery();
         $pagination = $this->paginator->paginate(
             $allMessagesQuery,
-            $this->get('request')->query->get('page', 1)/*page number*/,
+            $this->get('request_stack')->getCurrentRequest()->query->get('page', 1)/*page number*/,
             20/*limit per page*/
         );
         return array('pagination' => $pagination);

@@ -13,7 +13,7 @@ use DABSquared\PushNotificationsBundle\Device\DeviceStatus;
 use DABSquared\PushNotificationsBundle\Device\Types;
 use DABSquared\PushNotificationsBundle\Model\AppEventInterface;
 use DABSquared\PushNotificationsBundle\Model\DeviceInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Request\ParamFetcher;
@@ -40,54 +40,57 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 use FOS\RestBundle\View\View;
 
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Validator\Constraints\Date;
 
 
-class PushAdminController extends Controller
+class PushAdminController extends AbstractController
 {
 
     /**
      * @var \Doctrine\ORM\EntityManager
-     * @DI\Inject("doctrine.orm.entity_manager")
      */
     private $em;
 
     /**
      * @var \Symfony\Component\HttpFoundation\Session\Session
-     * @DI\Inject("session")
      */
     private $session;
 
     /**
      * @var \DABSquared\PushNotificationsBundle\Model\DeviceManagerInterface
-     * @DI\Inject("dab_push_notifications.manager.device")
      */
     private $deviceManager;
 
     /**
      * @var \DABSquared\PushNotificationsBundle\Model\MessageManagerInterface
-     * @DI\Inject("dab_push_notifications.manager.message")
      */
     private $messageManager;
 
     /**
      * @var \DABSquared\PushNotificationsBundle\Model\AppEventManagerInterface
-     * @DI\Inject("dab_push_notifications.manager.appevent")
      */
     private $appEventManager;
 
     /**
      * @var \DABSquared\PushNotificationsBundle\Service\Notifications
-     * @DI\Inject("dab_push_notifications")
      */
     private $notificationManager;
 
     /**
      * @var \Knp\Component\Pager\Paginator
-     * @DI\Inject("knp_paginator")
      */
     private $paginator;
+
+    public function __construct() {
+        $this->paginator = $this->get('knp_paginator');
+        $this->notificationManager = $this->get('dab_push_notifications');
+        $this->appEventManager = $this->get('dab_push_notifications.manager.appevent');
+        $this->messageManager = $this->get('dab_push_notifications.manager.message');
+        $this->deviceManager = $this->get('dab_push_notifications.manager.device');
+        $this->session = $this->get('session');
+        $this->paginator = $this->get('doctrine.orm.entity_manager');
+
+    }
 
     /**
      * @Route("push/dashboard", name="dabsquared_push_notifications_dashboard")

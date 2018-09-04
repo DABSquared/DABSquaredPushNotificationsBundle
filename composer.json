@@ -8,8 +8,8 @@
     "authors": [
         {
             "name": "Daniel Brooks",
-            "email": "daniel_brooks@dabsquared.com",
-            "homepage": "http://www.dabsquared.com"
+            "email": "bass_rock@me.com",
+            "homepage": "http://www.danielaaronbrooks.com"
         }
     ],
     "require": {
@@ -18,7 +18,6 @@
         "kriswallsmith/buzz": "*",
         "symfony/framework-bundle": ">=2.1",
         "doctrine/common": ">=2.3",
-        "jms/di-extra-bundle": ">=1.1",
         "nelmio/api-doc-bundle": ">= 2.11.0",
         "jms/serializer-bundle": ">= 0.13.0",
         "knplabs/knp-paginator-bundle": ">=2.4",
@@ -28,7 +27,6 @@
         "doctrine/orm": "2.3.*@stable",
         "doctrine/doctrine-bundle": "1.2.*@dev",
         "friendsofsymfony/user-bundle": "1.*",
-        "jms/di-extra-bundle": "1.4.*@dev",
         "kriswallsmith/assetic": "1.1.*@dev",
         "symfony/assetic-bundle": "2.1.*@dev"
     },

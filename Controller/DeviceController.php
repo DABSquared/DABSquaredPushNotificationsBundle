@@ -173,6 +173,7 @@ class DeviceController extends Controller
         $device->setAppVersion($appVersion);
         $device->setAppId($appId);
         $device->setState(Device::STATE_PRODUCTION);
+        $device->setStatus(DeviceStatus::DEVICE_STATUS_ACTIVE);
         $deviceManager->saveDevice($device);
 
         return null;
